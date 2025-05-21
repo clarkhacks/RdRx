@@ -8,7 +8,7 @@ const cronDelete = async (env: Env) => {
 		const deletionEntries = await env.DB.prepare(
 			`
 			SELECT * FROM deletions WHERE delete_at < ?
-		`
+		`,
 		)
 			.bind(now)
 			.all();
@@ -46,7 +46,7 @@ const cronDelete = async (env: Env) => {
 				await env.DB.prepare(
 					`
 					DELETE FROM deletions WHERE id = ?
-				`
+				`,
 				)
 					.bind(entry.id)
 					.run();

@@ -215,13 +215,13 @@ function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsPro
 						(visit, index) => `
           <tr class="hover:bg-gray-50 transition duration-150">
             <td class="py-3 px-4 text-sm ${index % 2 === 0 ? 'text-primary-700' : 'text-secondary-700'}">${new Date(
-							visit.timestamp
+							visit.timestamp,
 						).toLocaleString()}</td>
             <td class="py-3 px-4 text-sm font-medium ${index % 2 === 0 ? 'text-primary-700' : 'text-secondary-700'}">
               ${visit.country ? `${visit.country}` : 'Unknown'}
             </td>
           </tr>
-        `
+        `,
 					)
 					.join('')}
       </tbody>

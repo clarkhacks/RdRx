@@ -6,15 +6,28 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
 	const canViewInBrowser = (fileType: string): boolean => {
 		const viewableTypes = [
 			// Images
-			'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp',
+			'jpg',
+			'jpeg',
+			'png',
+			'gif',
+			'svg',
+			'webp',
 			// Documents
 			'pdf',
 			// Videos
-			'mp4', 'webm',
+			'mp4',
+			'webm',
 			// Audio
-			'mp3', 'wav', 'ogg',
+			'mp3',
+			'wav',
+			'ogg',
 			// Text
-			'txt', 'html', 'css', 'js', 'json', 'xml'
+			'txt',
+			'html',
+			'css',
+			'js',
+			'json',
+			'xml',
 		];
 		return viewableTypes.includes(fileType.toLowerCase());
 	};
@@ -55,7 +68,9 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                     <td class="py-4 px-6 text-right text-gray-500 hidden sm:table-cell">${fileType}</td>
                     <td class="py-4 px-6 text-right">
                         <div class="flex justify-end gap-2">
-                            ${isViewable ? `
+                            ${
+															isViewable
+																? `
                                 <a href="${url}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-md hover:from-blue-600 hover:to-blue-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -63,7 +78,9 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                                     </svg>
                                     View
                                 </a>
-                            ` : ''}
+                            `
+																: ''
+														}
                             <a href="${url}" download class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-sm font-medium rounded-md hover:from-pink-600 hover:to-pink-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
