@@ -89,9 +89,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 											(url) => `
 												<tr class="hover:bg-gray-50 transition duration-150">
 													<td class="py-3 px-4 text-sm text-gray-700">
-														<a href="/${
-															url.shortcode
-														}" target="_blank" class="text-primary-600 hover:text-primary-800 font-medium">
+														<a href="/${url.shortcode}" target="_blank" class="text-primary-600 hover:text-primary-800 font-medium">
 															${url.shortcode}
 														</a>
 													</td>
@@ -115,7 +113,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 														</a>
 													</td>
 												</tr>
-											`
+											`,
 										)
 										.join('')
 								: `
@@ -169,8 +167,8 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 	paginationHtml += `
 		<a href="?page=${Math.max(1, currentPage - 1)}&perPage=${itemsPerPage}" 
 		   class="${
-				currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''
-			} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
+					currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''
+				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
 			Previous
 		</a>
 	`;
@@ -188,10 +186,8 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 		paginationHtml += `
 			<a href="?page=${i}&perPage=${itemsPerPage}" 
 			   class="relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-					i === currentPage
-						? 'pagination-active'
-						: 'text-gray-700 bg-white border-t border-b border-gray-300 hover:bg-gray-50'
-				}">
+						i === currentPage ? 'pagination-active' : 'text-gray-700 bg-white border-t border-b border-gray-300 hover:bg-gray-50'
+					}">
 				${i}
 			</a>
 		`;
@@ -201,8 +197,8 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 	paginationHtml += `
 		<a href="?page=${Math.min(totalPages, currentPage + 1)}&perPage=${itemsPerPage}" 
 		   class="${
-				currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''
-			} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
+					currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''
+				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
 			Next
 		</a>
 	`;

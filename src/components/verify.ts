@@ -20,6 +20,6 @@ export const renderVerify = () => {
 	</html>`,
 		{
 			headers: { 'Content-Type': 'text/html' },
-		}
+		},
 	);
 };

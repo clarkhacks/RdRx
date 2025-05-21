@@ -3,7 +3,7 @@
  * @returns A random 6-character shortcode
  */
 export function generateShortcode(): string {
-  return Math.random().toString(36).substr(2, 6);
+	return Math.random().toString(36).substr(2, 6);
 }
 
 /**
@@ -12,9 +12,9 @@ export function generateShortcode(): string {
  * @returns The shortcode or null if not found
  */
 export function getShortcodeFromRequest(request: { url: string | URL }): string | null {
-  const url = new URL(typeof request.url === 'string' ? request.url : request.url.toString());
-  const shortcode = url.pathname.substring(1);
-  return shortcode && shortcode.length >= 2 ? shortcode : null;
+	const url = new URL(typeof request.url === 'string' ? request.url : request.url.toString());
+	const shortcode = url.pathname.substring(1);
+	return shortcode && shortcode.length >= 2 ? shortcode : null;
 }
 
 /**
@@ -23,7 +23,7 @@ export function getShortcodeFromRequest(request: { url: string | URL }): string 
  * @returns True if the shortcode is a snippet shortcode
  */
 export function isSnippetShortcode(shortcode: string): boolean {
-  return shortcode.startsWith('c-');
+	return shortcode.startsWith('c-');
 }
 
 /**
@@ -32,7 +32,7 @@ export function isSnippetShortcode(shortcode: string): boolean {
  * @returns True if the shortcode is a file shortcode
  */
 export function isFileShortcode(shortcode: string): boolean {
-  return shortcode.startsWith('f-');
+	return shortcode.startsWith('f-');
 }
 
 /**
@@ -41,7 +41,7 @@ export function isFileShortcode(shortcode: string): boolean {
  * @returns True if the shortcode is a special shortcode
  */
 export function isSpecialShortcode(shortcode: string): boolean {
-  return shortcode.startsWith('19102-');
+	return shortcode.startsWith('19102-');
 }
 
 /**
@@ -50,8 +50,8 @@ export function isSpecialShortcode(shortcode: string): boolean {
  * @returns The file extension or 'txt' if not found
  */
 export function getFileExtensionFromShortcode(shortcode: string): string {
-  const parts = shortcode.split('.');
-  return parts.length > 1 ? parts[1] : 'txt';
+	const parts = shortcode.split('.');
+	return parts.length > 1 ? parts[1] : 'txt';
 }
 
 /**
@@ -60,13 +60,13 @@ export function getFileExtensionFromShortcode(shortcode: string): string {
  * @returns The content type
  */
 export function getContentTypeForExtension(extension: string): string {
-  const contentTypes: Record<string, string> = {
-    'js': 'application/javascript',
-    'css': 'text/css',
-    'html': 'text/html',
-    'txt': 'text/plain',
-    // Add more as needed
-  };
-  
-  return contentTypes[extension] || 'text/plain';
+	const contentTypes: Record<string, string> = {
+		js: 'application/javascript',
+		css: 'text/css',
+		html: 'text/html',
+		txt: 'text/plain',
+		// Add more as needed
+	};
+
+	return contentTypes[extension] || 'text/plain';
 }

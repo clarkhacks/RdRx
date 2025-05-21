@@ -225,6 +225,6 @@ function renderNotFoundPage(): Response {
 		{
 			headers: { 'Content-Type': 'text/html' },
 			status: 404,
-		}
+		},
 	);
 }

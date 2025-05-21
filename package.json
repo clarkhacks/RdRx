@@ -1,28 +1,29 @@
 {
-  "name": "rdrx-shorturls",
-  "version": "1.2.1",
-  "private": true,
-  "scripts": {
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "start": "wrangler dev",
-    "test": "vitest",
-    "cf-typegen": "wrangler types",
-    "build": "wrangler deploy"
-  },
-  "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.5.2",
-    "@cloudflare/workers-types": "^4.20241205.0",
-    "autoprefixer": "^10.4.16",
-    "concurrently": "^8.2.2",
-    "typescript": "^5.5.2",
-    "vitest": "2.1.8",
-    "wrangler": "^3.60.3"
-  },
-  "dependencies": {
-    "@clerk/backend": "^1.25.5",
-    "@clerk/clerk-js": "^5.57.2",
-    "jose": "^6.0.10",
-    "jsonwebtoken": "^9.0.2"
-  }
+	"name": "rdrx-shorturls",
+	"version": "1.2.1",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"cf-typegen": "wrangler types",
+		"build": "wrangler deploy",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.5.2",
+		"@cloudflare/workers-types": "^4.20241205.0",
+		"autoprefixer": "^10.4.16",
+		"concurrently": "^8.2.2",
+		"typescript": "^5.5.2",
+		"vitest": "2.1.8",
+		"wrangler": "^3.60.3"
+	},
+	"dependencies": {
+		"@clerk/backend": "^1.25.5",
+		"@clerk/clerk-js": "^5.57.2",
+		"jose": "^6.0.10",
+		"jsonwebtoken": "^9.0.2"
+	}
 }

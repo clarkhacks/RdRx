@@ -63,7 +63,7 @@ async function getUserUrls(env: Env, userId: string, page: number = 1, itemsPerP
 			GROUP BY s.shortcode
 			ORDER BY s.created_at DESC
 			LIMIT ? OFFSET ?
-		`
+		`,
 		)
 			.bind(userId, itemsPerPage, offset)
 			.all();
