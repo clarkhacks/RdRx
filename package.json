@@ -8,19 +8,13 @@
     "start": "wrangler dev",
     "test": "vitest",
     "cf-typegen": "wrangler types",
-    "build:css": "postcss src/styles/tailwind.css -o static/css/styles.css",
-    "watch:css": "postcss src/styles/tailwind.css -o static/css/styles.css --watch",
-    "build": "npm run build:css && wrangler deploy",
-    "dev:all": "npm run build:css && concurrently \"npm run watch:css\" \"npm run dev\""
+    "build": "wrangler deploy"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.5.2",
     "@cloudflare/workers-types": "^4.20241205.0",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
-    "postcss": "^8.4.32",
-    "postcss-cli": "^11.0.0",
-    "tailwindcss": "^3.4.0",
     "typescript": "^5.5.2",
     "vitest": "2.1.8",
     "wrangler": "^3.60.3"
