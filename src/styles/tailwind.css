@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer components {
+  /* Add any custom component styles here */
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-pink-500;
+  }
+  
+  .gradient-border-top {
+    @apply border-t-4 border-gradient-to-r from-blue-500 to-pink-500;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-r from-blue-500 to-pink-500;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+  }
+}
+
+@layer utilities {
+  /* Add any custom utility styles here */
+  .border-gradient-to-r {
+    border-image: linear-gradient(to right, theme('colors.blue.500'), theme('colors.pink.500')) 1;
+  }
+}

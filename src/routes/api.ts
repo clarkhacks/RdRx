@@ -1,0 +1,205 @@
+import { Env, CreateShortUrlRequest } from '../types';
+import { isAuthenticated, getUserID } from '../utils/clerk';
+import { saveUrlToDatabase, fetchUrlByShortcode, saveDeletionEntry } from '../utils/database';
+import { generateShortcode } from '../utils/shortcode';
+
+/**
+ * Handle API routes
+ * - POST /upload - Handle file upload
+ * - POST / - Handle URL or snippet creation
+ */
+export async function handleApiRoutes(request: Request, env: Env): Promise<Response> {
+  // Check if the user is authenticated
+  const isAuthenticatedUser = await isAuthenticated(request, env);
+  if (!isAuthenticatedUser) {
+    console.log('Unauthorized POST request');
+    return new Response('Unauthorized', { status: 403 });
+  }
+  
+  // Get the user ID from the authenticated user
+  const userId = await getUserID(request, env);
+  
+  // Handle file upload
+  if (request.url.endsWith('/upload')) {
+    return handleFileUpload(request, env, userId);
+  }
+  
+  // Handle URL or snippet creation
+  return handleCreateShortUrl(request, env, userId);
+}
+
+/**
+ * Handle file upload
+ */
+async function handleFileUpload(request: Request, env: Env, userId: string | null = null): Promise<Response> {
+  const formData = await request.formData();
+  const files = formData.getAll('files') as File[];
+  const customCode = formData.get('customCode') as string;
+  const apiKey = formData.get('apiKey') as string;
+  const deleteDate = formData.get('deleteAfter') as string;
+  const deleteDateCheckbox = formData.has('deleteDate');
+  
+  console.log('Delete date checkbox:', deleteDateCheckbox);
+  console.log('Delete date:', deleteDate);
+  
+  const urls = [];
+  const shortcode = `f-${customCode}`;
+  
+  for (const file of files) {
+    const key = `uploads/${customCode}-${file.name}`;
+    await env.R2_RDRX.put(key, file.stream());
+    console.log(`Uploaded file: ${key}`);
+    
+    // Handle delete date - only if both checkbox is checked AND a valid date is provided
+    if (deleteDateCheckbox && deleteDate) {
+      const deleteTimestamp = new Date(deleteDate).getTime();
+      if (!isNaN(deleteTimestamp)) {
+        console.log('Saving delete date to D1');
+        // Save to D1 - for files, we need to pass true for isFile and remove the f- prefix
+        await saveDeletionEntry(env, customCode, deleteTimestamp, true);
+      } else {
+        console.log('Invalid delete date format, skipping expiration');
+      }
+    }
+    
+    const url = `https://cdn.rdrx.co/${key}`;
+    urls.push(url);
+  }
+  
+  // Save to D1
+  try {
+    await saveUrlToDatabase(`f-${customCode}`, JSON.stringify(urls), env, userId);
+  } catch (error) {
+    console.error('Error saving file URLs to D1:', error);
+    throw error;
+  }
+  
+  return new Response(JSON.stringify({ urls, shortcode }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+/**
+ * Handle create short URL
+ */
+async function handleCreateShortUrl(request: Request, env: Env, userId: string | null): Promise<Response> {
+  try {
+    const body = await request.json();
+    if (typeof body !== 'object' || body === null) {
+      return new Response('Invalid request body', { status: 400 });
+    }
+    
+    const { url, custom, custom_code, admin_override_code, delete_after, snippet, userId: frontendUserId } = body as CreateShortUrlRequest;
+    
+    // Use userId from the request body if provided, otherwise use the one from authentication
+    const creatorId = frontendUserId || userId;
+    
+    // Check for admin override
+    if (admin_override_code && env.API_KEY_ADMIN === admin_override_code) {
+      return handleAdminOverride(url, custom_code, delete_after, env, creatorId);
+    }
+    
+    // Validate URL
+    if (!url && !snippet) {
+      console.log('Bad Request: Missing or invalid URL');
+      return new Response('Bad Request: Missing or invalid URL', {
+        status: 400,
+      });
+    }
+    
+    // Generate shortcode if not provided
+    const shortcode = custom && custom_code ? custom_code : generateShortcode();
+    
+    // Check if shortcode already exists
+    const existingUrl = await checkShortcodeExists(shortcode, env);
+    if (existingUrl) {
+      console.log('Shortcode already exists');
+      return new Response(JSON.stringify({ message: 'Shortcode already exists' }), { status: 409 });
+    }
+    
+    // Save the URL to D1
+    if (snippet) {
+      await saveUrlToDatabase(`c-${shortcode}`, snippet, env, creatorId);
+    } else if (url) {
+      await saveUrlToDatabase(shortcode, url, env, creatorId);
+    } else {
+      // This should never happen due to earlier validation, but added for type safety
+      return new Response('Missing URL or snippet', { status: 400 });
+    }
+    
+    // Add delete key if delete_after is provided
+    if (delete_after) {
+      await handleDeleteAfter(shortcode, delete_after, env);
+    }
+    
+    console.log('Short URL created');
+    return new Response(JSON.stringify({ shortcode }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error handling POST request:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
+}
+
+/**
+ * Handle admin override
+ */
+async function handleAdminOverride(
+  url: string | undefined,
+  custom_code: string | undefined,
+  delete_after: string | undefined,
+  env: Env,
+  creatorId: string | null
+): Promise<Response> {
+  if (!custom_code || !url) {
+    return new Response('Missing custom code or URL', { status: 400 });
+  }
+  
+  // url is guaranteed to be a string at this point
+  await saveUrlToDatabase(custom_code, url, env, creatorId);
+  
+  // Add delete entry if delete_after is provided
+  if (delete_after) {
+    await handleDeleteAfter(custom_code, delete_after, env);
+  }
+  
+  console.log('Short URL overwritten');
+  return new Response(JSON.stringify({ message: 'Short URL overwritten', shortcode: custom_code }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+/**
+ * Handle delete after date
+ */
+async function handleDeleteAfter(shortcode: string, delete_after: string, env: Env): Promise<void> {
+  console.log('Delete after date:', delete_after);
+  const deleteTimestamp = new Date(delete_after).getTime();
+  if (!isNaN(deleteTimestamp)) {
+    console.log('Saving delete_after date to D1');
+    await saveDeletionEntry(env, shortcode, deleteTimestamp, false);
+  } else {
+    console.log('Invalid delete_after date');
+    throw new Error('Invalid delete_after date');
+  }
+}
+
+/**
+ * Check if a shortcode already exists
+ */
+async function checkShortcodeExists(shortcode: string, env: Env): Promise<string | null> {
+  try {
+    const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+    if (result && typeof result === 'object' && 'target_url' in result) {
+      return result.target_url as string;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error checking if shortcode exists in D1:', error);
+    return null;
+  }
+}
