@@ -1,9 +1,9 @@
 function renderHeader(): string {
 	return `
-  <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50">
-    <a href="/" class="flex items-center gap-2">
-      <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
-      <span class="text-2xl font-bold text-gray-800">RdRx</span>
+  <header class="bg-surface-light shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50 rounded-b-2xl playful-shadow">
+    <a href="/" class="flex items-center gap-2 btn-playful">
+      <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-10 h-10 logo-bounce">
+      <span class="text-2xl font-bold gradient-text">RdRx</span>
     </a>
     
     <div class="flex items-center">
@@ -11,10 +11,10 @@ function renderHeader(): string {
       <div id="user-dropdown" class="relative" x-data="{ open: false }">
         <button 
           @click="open = !open" 
-          class="flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none"
+          class="flex items-center gap-2 text-gray-700 hover:text-primary-500 focus:outline-none transition-colors duration-200 btn-playful"
           id="user-menu-button"
         >
-          <div id="user-avatar" class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+          <div id="user-avatar" class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-500 border-2 border-primary-300">
             <span id="user-initials">?</span>
           </div>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -25,15 +25,18 @@ function renderHeader(): string {
         <div 
           x-show="open" 
           @click.away="open = false"
-          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 z-50 border-2 border-accent-300"
           style="display: none;"
         >
-          <a href="/account" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors duration-200">
+            Dashboard
+          </a>
+          <a href="/account" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors duration-200">
             Account Settings
           </a>
           <button 
             id="logout-button" 
-            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-secondary-50 transition-colors duration-200"
           >
             Sign Out
           </button>
@@ -52,10 +55,10 @@ function renderHeader(): string {
       const logoutButton = document.getElementById('logout-button');
       
       if (!token) {
-        // If not logged in, show login button instead
-        if (userMenuButton) {
-          userMenuButton.outerHTML = '<a href="/login" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Login</a>';
-        }
+          // If not logged in, show login button instead
+          if (userMenuButton) {
+            userMenuButton.outerHTML = '<div class="flex items-center gap-3"><a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 rounded-xl text-sm font-medium transition-colors duration-200">Login</a><a href="/signup" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 btn-playful">Sign Up</a></div>';
+          }
         return;
       }
       
