@@ -239,8 +239,6 @@ function renderUploadFormScripts(): string {
         if (deleteDateCheckbox && deleteAfter) {
             formData.append('deleteAfter', deleteAfter);
         }
-        // Add the user ID from Clerk
-        formData.append('userId', Clerk.user ? Clerk.user.id : null);
 
         // Create a single progress bar for all files
         const progressWrapper = document.createElement('div');

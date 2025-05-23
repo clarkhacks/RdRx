@@ -308,37 +308,73 @@ async function handleResetPasswordConfirmAPI(request: Request, env: Env, corsHea
  */
 async function handleProfilePictureUploadAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
 	try {
+		console.log('Profile picture upload API called');
+
 		// Verify session
 		const { user } = await verifySession(env, request);
 		if (!user) {
+			console.log('Profile picture upload: Unauthorized - no user found');
 			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
 				status: 401,
 				headers: { 'Content-Type': 'application/json', ...corsHeaders },
 			});
 		}
 
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
+		console.log('Profile picture upload: User authenticated:', user.uid);
 
-		if (!file) {
-			return new Response(JSON.stringify({ success: false, message: 'No file provided' }), {
-				status: 400,
+		try {
+			const formData = await request.formData();
+			console.log('Form data parsed successfully');
+
+			const file = formData.get('file') as File;
+			if (!file) {
+				console.log('Profile picture upload: No file provided in form data');
+				return new Response(JSON.stringify({ success: false, message: 'No file provided' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				});
+			}
+
+			console.log('Profile picture upload: File received:', file.name, file.type, file.size);
+
+			// Check if R2 bucket is available
+			if (!env.R2_RDRX) {
+				console.error('Profile picture upload: R2_RDRX bucket not available');
+				return new Response(JSON.stringify({ success: false, message: 'Storage service unavailable' }), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				});
+			}
+
+			const result = await uploadProfilePicture(env, user.uid, file);
+			console.log('Profile picture upload result:', result);
+
+			return new Response(JSON.stringify(result), {
+				status: result.success ? 200 : 400,
 				headers: { 'Content-Type': 'application/json', ...corsHeaders },
 			});
+		} catch (formError) {
+			console.error('Profile picture upload: Error parsing form data:', formError);
+			return new Response(
+				JSON.stringify({
+					success: false,
+					message: 'Error processing form data: ' + (formError instanceof Error ? formError.message : String(formError)),
+				}),
+				{
+					status: 400,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				}
+			);
 		}
-
-		const result = await uploadProfilePicture(env, user.uid, file);
-
-		return new Response(JSON.stringify(result), {
-			status: result.success ? 200 : 400,
-			headers: { 'Content-Type': 'application/json', ...corsHeaders },
-		});
 	} catch (error) {
 		console.error('Profile picture upload API error:', error);
-		return new Response(JSON.stringify({ success: false, message: 'Invalid request' }), {
-			status: 400,
-			headers: { 'Content-Type': 'application/json', ...corsHeaders },
-		});
+		return new Response(
+			JSON.stringify({ success: false, message: 'Server error: ' + (error instanceof Error ? error.message : String(error)) }),
+			{
+				status: 500,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			}
+		);
 	}
 }
 

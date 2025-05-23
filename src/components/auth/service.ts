@@ -380,9 +380,11 @@ export async function verifySession(env: Env, request: Request): Promise<{ user:
 export async function uploadProfilePicture(env: Env, uid: string, file: File): Promise<AuthResponse> {
 	try {
 		console.log('Profile picture upload for user:', uid);
+		console.log('File details:', file.name, file.type, file.size);
 
 		// Validate file type
 		if (!isValidProfilePictureType(file.name)) {
+			console.log('Invalid file type:', file.name, file.type);
 			return {
 				success: false,
 				message: 'Invalid file type. Only PNG, JPG, JPEG, and WebP are allowed',
@@ -391,6 +393,7 @@ export async function uploadProfilePicture(env: Env, uid: string, file: File): P
 
 		// Check file size (max 5MB)
 		if (file.size > 5 * 1024 * 1024) {
+			console.log('File too large:', file.size);
 			return {
 				success: false,
 				message: 'File size too large. Maximum 5MB allowed',
@@ -399,49 +402,73 @@ export async function uploadProfilePicture(env: Env, uid: string, file: File): P
 
 		// Generate file path
 		const filePath = generateProfilePicturePath(uid, file.name);
+		console.log('Generated file path:', filePath);
 
-		// Upload to R2
-		await env.R2_RDRX.put(filePath, file.stream(), {
-			httpMetadata: {
-				contentType: file.type,
-			},
-		});
+		try {
+			// Check if R2 bucket is available
+			if (!env.R2_RDRX) {
+				console.error('R2_RDRX bucket not available');
+				return {
+					success: false,
+					message: 'Storage service unavailable',
+				};
+			}
 
-		console.log('File uploaded to R2:', filePath);
+			// Get file data as ArrayBuffer
+			const arrayBuffer = await file.arrayBuffer();
 
-		// Update user profile picture URL
-		const profilePictureUrl = `https://r2.rdrx.app/${filePath}`;
-		await updateUserProfilePicture(env, uid, profilePictureUrl);
+			// Upload to R2
+			await env.R2_RDRX.put(filePath, arrayBuffer, {
+				httpMetadata: {
+					contentType: file.type,
+				},
+			});
 
-		// Get updated user
-		const user = await getUserByUid(env, uid);
-		if (!user) {
+			console.log('File uploaded to R2:', filePath);
+
+			// Update user profile picture URL
+			// Use a timestamp query parameter to prevent caching
+			const timestamp = Date.now();
+			const profilePictureUrl = `https://r2.rdrx.app/${filePath}?t=${timestamp}`;
+			await updateUserProfilePicture(env, uid, profilePictureUrl);
+
+			// Get updated user
+			const user = await getUserByUid(env, uid);
+			if (!user) {
+				console.log('User not found after upload');
+				return {
+					success: false,
+					message: 'User not found',
+				};
+			}
+
+			console.log('Profile picture updated successfully');
+
+			return {
+				success: true,
+				message: 'Profile picture uploaded successfully',
+				user: {
+					uid: user.uid,
+					name: user.name,
+					email: user.email,
+					profile_picture_url: user.profile_picture_url,
+					created_at: user.created_at,
+					updated_at: user.updated_at,
+					email_verified: user.email_verified,
+				},
+			};
+		} catch (uploadError) {
+			console.error('Error during R2 upload:', uploadError);
 			return {
 				success: false,
-				message: 'User not found',
+				message: 'Error uploading file: ' + (uploadError instanceof Error ? uploadError.message : String(uploadError)),
 			};
 		}
-
-		console.log('Profile picture updated successfully');
-
-		return {
-			success: true,
-			message: 'Profile picture uploaded successfully',
-			user: {
-				uid: user.uid,
-				name: user.name,
-				email: user.email,
-				profile_picture_url: user.profile_picture_url,
-				created_at: user.created_at,
-				updated_at: user.updated_at,
-				email_verified: user.email_verified,
-			},
-		};
 	} catch (error) {
 		console.error('Error uploading profile picture:', error);
 		return {
 			success: false,
-			message: 'Internal server error during file upload',
+			message: 'Internal server error during file upload: ' + (error instanceof Error ? error.message : String(error)),
 		};
 	}
 }
