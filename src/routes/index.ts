@@ -6,6 +6,7 @@ import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
 import { renderLandingPage } from '../components/pages/LandingPage';
 import { renderAccountPage } from '../components/pages/AccountPage';
+import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -33,6 +34,11 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	// Handle account page
 	if (url.pathname === '/account') {
 		return renderAccountPage(enhancedRequest, env);
+	}
+
+	// Handle dashboard page
+	if (url.pathname === '/dashboard') {
+		return renderDashboardPage(enhancedRequest, env);
 	}
 
 	// Handle API routes for POST requests
