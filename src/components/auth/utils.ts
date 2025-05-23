@@ -100,6 +100,18 @@ function base64UrlEncode(str: string): string {
 }
 
 /**
+ * Base64 URL decode
+ */
+function base64UrlDecode(str: string): string {
+	// Add back padding if needed
+	let padded = str;
+	while (padded.length % 4 !== 0) {
+		padded += '=';
+	}
+	return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
+}
+
+/**
  * Validate email format
  */
 export function isValidEmail(email: string): boolean {

@@ -3,9 +3,9 @@ import { renderCreateFormPage as renderCreateForm } from '../components/pages/Cr
 import { renderSnippetFormPage as renderSnippetForm } from '../components/pages/SnippetFormPage';
 import { renderUploadFormPage as renderUploadForm } from '../components/pages/UploadFormPage';
 import { renderViewFiles } from '../components/viewFiles';
-import { isAuthenticated } from '../utils/auth';
 import { fetchUrlByShortcode, trackView } from '../utils/database';
 import { isSnippetShortcode, isFileShortcode, getContentTypeForExtension } from '../utils/shortcode';
+import { redirectToLoginIfNotAuthenticated } from '../middleware/auth';
 
 /**
  * Handle shortcode routes
@@ -56,13 +56,16 @@ export async function handleShortcodeRoutes(request: Request, env: Env, shortcod
  * Handle protected paths that require authentication
  */
 async function handleProtectedPath(request: Request, env: Env, shortcode: string): Promise<Response> {
-	const isAuthenticatedUser = await isAuthenticated(request, env);
+	const isAuthenticatedUser = request.user !== undefined && request.user !== null;
+
 	if (!isAuthenticatedUser) {
 		console.log('Unauthorized access attempt to:', shortcode);
 		// get current URL and append it to the login redirect
 		const url = new URL(request.url);
-		const redirectUrl = `${url.origin}${url.pathname}?redirect_url=${encodeURIComponent(url.href)}`;
-		return redirectToLogin(redirectUrl, env);
+		const redirectResponse = redirectToLoginIfNotAuthenticated(isAuthenticatedUser, url.href);
+		if (redirectResponse) {
+			return redirectResponse;
+		}
 	}
 
 	switch (shortcode) {
@@ -191,18 +194,6 @@ async function handlePossibleSnippetWithoutPrefix(shortcode: string, env: Env): 
 
 	console.log('Shortcode not found');
 	return renderNotFoundPage();
-}
-
-/**
- * Redirect to login page
- */
-function redirectToLogin(redirectUrl: string, string: any): Response {
-	return new Response(null, {
-		status: 302,
-		headers: {
-			Location: '/login?redirect_url=' + encodeURIComponent(redirectUrl),
-		},
-	});
 }
 
 /**

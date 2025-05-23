@@ -4,6 +4,13 @@ main = "src/index.ts"
 compatibility_date = "2024-12-05"
 compatibility_flags = ["nodejs_compat"]
 
+
+# Vars
+[vars]
+FRONTEND_URL = "https://rdrx.co"
+MAILGUN_DOMAIN = "go.rdrx.co"
+FROM_EMAIL = "no-reply@go.rdrx.co"
+
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/
 # Configuration: https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs

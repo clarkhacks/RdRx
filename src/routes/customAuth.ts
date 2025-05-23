@@ -147,6 +147,33 @@ async function handleSignupAPI(request: Request, env: Env, corsHeaders: Record<s
 		const body = (await request.json()) as SignupRequest;
 		const result = await signupUser(env, body);
 
+		// If signup was successful and we have a token, set a secure HTTP-only cookie
+		if (result.success && result.token) {
+			// Set cookie expiration (default to 24 hours for new signups)
+			const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
+
+			// Get the request URL to determine the domain
+			const url = new URL(request.url);
+			const domain = url.hostname;
+
+			// Create secure cookie with the token
+			// Use SameSite=Lax to allow the cookie to be sent with top-level navigations
+			const cookieHeader = `auth_token=${
+				result.token
+			}; Expires=${expires.toUTCString()}; Path=/; Domain=${domain}; HttpOnly; Secure; SameSite=Lax; Max-Age=86400`;
+
+			// Return response with the cookie set
+			return new Response(JSON.stringify(result), {
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Set-Cookie': cookieHeader,
+					...corsHeaders,
+				},
+			});
+		}
+
+		// For failed signup attempts, just return the result
 		return new Response(JSON.stringify(result), {
 			status: result.success ? 200 : 400,
 			headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -178,8 +205,17 @@ async function handleLoginAPI(request: Request, env: Env, corsHeaders: Record<st
 				? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
 				: new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
 
+			// Get the request URL to determine the domain
+			const url = new URL(request.url);
+			const domain = url.hostname;
+
 			// Create secure cookie with the token
-			const cookieHeader = `auth_token=${result.token}; Expires=${expires.toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Strict`;
+			// Use SameSite=Lax to allow the cookie to be sent with top-level navigations
+			const cookieHeader = `auth_token=${
+				result.token
+			}; Expires=${expires.toUTCString()}; Path=/; Domain=${domain}; HttpOnly; Secure; SameSite=Lax; Max-Age=${
+				rememberMe ? 2592000 : 86400
+			}`;
 
 			// Return response with the cookie set
 			return new Response(JSON.stringify(result), {
@@ -408,8 +444,8 @@ async function handleResetPasswordPage(request: Request, env: Env): Promise<Resp
  * Handle logout API
  */
 async function handleLogoutAPI(corsHeaders: Record<string, string>): Promise<Response> {
-	// Clear the auth cookie by setting an expired cookie
-	const cookieHeader = 'auth_token=; Expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; HttpOnly; Secure; SameSite=Strict';
+	// Clear the auth cookie by setting an expired cookie with the same attributes as when setting it
+	const cookieHeader = 'auth_token=; Expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0';
 
 	return new Response(JSON.stringify({ success: true, message: 'Logged out successfully' }), {
 		status: 200,

@@ -1,7 +1,7 @@
 import { Env, CreateShortUrlRequest } from '../types';
-import { isAuthenticated, getUserID } from '../utils/auth';
 import { saveUrlToDatabase, saveDeletionEntry } from '../utils/database';
 import { generateShortcode } from '../utils/shortcode';
+import { unauthorizedResponseIfNotAuthenticated } from '../middleware/auth';
 
 /**
  * Handle API routes
@@ -9,15 +9,18 @@ import { generateShortcode } from '../utils/shortcode';
  * - POST / - Handle URL or snippet creation
  */
 export async function handleApiRoutes(request: Request, env: Env): Promise<Response> {
-	// Check if the user is authenticated
-	const isAuthenticatedUser = await isAuthenticated(request, env);
-	if (!isAuthenticatedUser) {
+	// Check if the user is authenticated using the user property attached by the middleware
+	const isAuthenticatedUser = request.user !== undefined && request.user !== null;
+
+	// Return unauthorized response if not authenticated
+	const unauthorizedResponse = unauthorizedResponseIfNotAuthenticated(isAuthenticatedUser);
+	if (unauthorizedResponse) {
 		console.log('Unauthorized POST request');
-		return new Response('Unauthorized', { status: 403 });
+		return unauthorizedResponse;
 	}
 
 	// Get the user ID from the authenticated user
-	const userId = await getUserID(request, env);
+	const userId = request.user?.uid || null;
 
 	// Handle file upload
 	if (request.url.endsWith('/upload')) {
