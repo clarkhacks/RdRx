@@ -31,7 +31,7 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/rdrx-shorturls.git
+git clone https://github.com/clarkhacks/RdRx.git
 cd rdrx-shorturls
 ```
 

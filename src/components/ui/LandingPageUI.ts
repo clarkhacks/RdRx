@@ -17,7 +17,7 @@ function renderLandingPageUI(): string {
                 <a href="#features" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
                     Explore Features
                 </a>
-                <a href="https://github.com/yourusername/rdrx-short-url" target="_blank" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
+                <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
                     <i class="fab fa-github mr-2"></i> GitHub
                 </a>
             </div>
@@ -210,7 +210,7 @@ function renderLandingPageUI(): string {
                 
                 <div>
                     <p class="text-gray-400 mb-2">
-                        Released under the <a href="https://github.com/yourusername/rdrx-short-url/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">MIT License</a>
+                        Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">MIT License</a>
                     </p>
                     <p class="text-gray-500 text-sm">
                         &copy; 2025 RdRx. All rights reserved.
