@@ -196,8 +196,7 @@ export async function verifySessionToken(token: string, secret: string): Promise
  */
 export function isValidEmail(email: string): boolean {
 	// More comprehensive email regex that handles various valid email formats
-	const emailRegex =
-		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailRegex.test(String(email).toLowerCase());
 }
 
