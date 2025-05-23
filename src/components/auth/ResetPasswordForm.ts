@@ -250,9 +250,13 @@ export function ResetPasswordFormUI(): string {
 					if (!data.email) {
 						showError('email', 'Email is required');
 						hasErrors = true;
-					} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-						showError('email', 'Please enter a valid email address');
-						hasErrors = true;
+					} else {
+						// More comprehensive email validation
+						const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+						if (!emailRegex.test(String(data.email).toLowerCase())) {
+							showError('email', 'Please enter a valid email address');
+							hasErrors = true;
+						}
 					}
 					
 					if (hasErrors) return;
@@ -659,8 +663,8 @@ export function ResetPasswordConfirmUI(): string {
 						requirements.lower.classList.remove('valid');
 					}
 					
-					// Check number
-					if (/\d/.test(password)) {
+					// Check number - explicitly check for digits 0-9
+					if (/[0-9]/.test(password)) {
 						requirements.number.classList.add('valid');
 					} else {
 						requirements.number.classList.remove('valid');
@@ -712,7 +716,7 @@ export function ResetPasswordConfirmUI(): string {
 						} else if (!/[a-z]/.test(password)) {
 							showError('password', 'Password must contain at least one lowercase letter');
 							hasErrors = true;
-						} else if (!/\d/.test(password)) {
+						} else if (!/[0-9]/.test(password)) {
 							showError('password', 'Password must contain at least one number');
 							hasErrors = true;
 						}

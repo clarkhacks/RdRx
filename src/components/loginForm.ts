@@ -129,23 +129,18 @@ function renderLoginPage(env: Env): Response {
                         },
                         body: JSON.stringify({
                             email,
-                            password
+                            password,
+                            remember: rememberMe
                         })
                     });
                     
                     const data = await response.json();
                     
                     if (data.success) {
-                        // Store token
+                        // Store token in localStorage for client-side access
+                        // The secure HttpOnly cookie is set by the server
                         if (data.token) {
                             localStorage.setItem('auth_token', data.token);
-                            
-                            // Set cookie for server-side access
-                            const expires = rememberMe ? 
-                                new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : // 30 days
-                                new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
-                            
-                            document.cookie = \`auth_token=\${data.token}; expires=\${expires.toUTCString()}; path=/; secure; samesite=strict\`;
                         }
                         
                         // Redirect to the specified URL or default to create page

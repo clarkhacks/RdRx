@@ -115,6 +115,15 @@ async function handleAuthAPI(request: Request, env: Env, path: string, method: s
 				}
 				return await handleMeAPI(request, env, corsHeaders);
 
+			case '/api/auth/logout':
+				if (method !== 'POST') {
+					return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
+						status: 405,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+				return await handleLogoutAPI(corsHeaders);
+
 			default:
 				return new Response(JSON.stringify({ success: false, message: 'Not found' }), {
 					status: 404,
@@ -159,6 +168,31 @@ async function handleLoginAPI(request: Request, env: Env, corsHeaders: Record<st
 		const body = (await request.json()) as LoginRequest;
 		const result = await loginUser(env, body);
 
+		// If login was successful and we have a token, set a secure HTTP-only cookie
+		if (result.success && result.token) {
+			// Get remember-me preference from request body
+			const rememberMe = body.remember || false;
+
+			// Set cookie expiration based on remember-me preference
+			const expires = rememberMe
+				? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+				: new Date(Date.now() + 24 * 60 * 60 * 1000); // 1 day
+
+			// Create secure cookie with the token
+			const cookieHeader = `auth_token=${result.token}; Expires=${expires.toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Strict`;
+
+			// Return response with the cookie set
+			return new Response(JSON.stringify(result), {
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Set-Cookie': cookieHeader,
+					...corsHeaders,
+				},
+			});
+		}
+
+		// For failed login attempts, just return the result
 		return new Response(JSON.stringify(result), {
 			status: result.success ? 200 : 400,
 			headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -367,6 +401,23 @@ async function handleResetPasswordPage(request: Request, env: Env): Promise<Resp
 
 	return new Response(html, {
 		headers: { 'Content-Type': 'text/html' },
+	});
+}
+
+/**
+ * Handle logout API
+ */
+async function handleLogoutAPI(corsHeaders: Record<string, string>): Promise<Response> {
+	// Clear the auth cookie by setting an expired cookie
+	const cookieHeader = 'auth_token=; Expires=Thu, 01 Jan 1970 00:00:00 UTC; Path=/; HttpOnly; Secure; SameSite=Strict';
+
+	return new Response(JSON.stringify({ success: true, message: 'Logged out successfully' }), {
+		status: 200,
+		headers: {
+			'Content-Type': 'application/json',
+			'Set-Cookie': cookieHeader,
+			...corsHeaders,
+		},
 	});
 }
 

@@ -91,12 +91,23 @@ function renderHeader(): string {
       // Handle logout
       if (logoutButton) {
         logoutButton.addEventListener('click', function() {
-          // Clear auth token
+          // Clear auth token from localStorage
           localStorage.removeItem('auth_token');
-          document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; secure; samesite=strict';
           
-          // Redirect to home page
-          window.location.href = '/';
+          // Call logout API to clear the HttpOnly cookie
+          fetch('/api/auth/logout', {
+            method: 'POST',
+            credentials: 'same-origin'
+          })
+          .then(() => {
+            // Redirect to home page
+            window.location.href = '/';
+          })
+          .catch(error => {
+            console.error('Logout error:', error);
+            // Even if the API call fails, redirect to home page
+            window.location.href = '/';
+          });
         });
       }
       

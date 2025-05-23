@@ -195,8 +195,10 @@ export async function verifySessionToken(token: string, secret: string): Promise
  * Validate email format
  */
 export function isValidEmail(email: string): boolean {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return emailRegex.test(email);
+	// More comprehensive email regex that handles various valid email formats
+	const emailRegex =
+		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return emailRegex.test(String(email).toLowerCase());
 }
 
 /**
@@ -215,7 +217,9 @@ export function isValidPassword(password: string): { valid: boolean; message?: s
 		return { valid: false, message: 'Password must contain at least one lowercase letter' };
 	}
 
-	if (!/\d/.test(password)) {
+	// Explicitly check for at least one digit (0-9)
+	const hasNumber = /[0-9]/.test(password);
+	if (!hasNumber) {
 		return { valid: false, message: 'Password must contain at least one number' };
 	}
 
