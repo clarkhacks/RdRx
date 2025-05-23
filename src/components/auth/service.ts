@@ -427,9 +427,9 @@ export async function uploadProfilePicture(env: Env, uid: string, file: File): P
 			console.log('File uploaded to R2:', filePath);
 
 			// Update user profile picture URL
-			// Use a timestamp query parameter to prevent caching
+			// Use a direct URL to the bucket with a timestamp to prevent caching
 			const timestamp = Date.now();
-			const profilePictureUrl = `https://r2.rdrx.app/${filePath}?t=${timestamp}`;
+			const profilePictureUrl = `https://cdn.rdrx.co/${filePath}?t=${timestamp}`;
 			await updateUserProfilePicture(env, uid, profilePictureUrl);
 
 			// Get updated user

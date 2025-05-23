@@ -30,15 +30,21 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 			})}
 			<script>
 				// Profile picture upload
-				document.getElementById('profile-picture-upload').addEventListener('change', async (e) => {
-					const file = e.target.files[0];
-					if (!file) return;
+				document.getElementById('profile-picture-form').addEventListener('submit', async (e) => {
+					e.preventDefault();
+					const fileInput = document.getElementById('profile-picture-upload');
+					const file = fileInput.files[0];
+					if (!file) {
+						document.getElementById('upload-status').textContent = 'Please select a file first';
+						return;
+					}
 					
 					const formData = new FormData();
 					formData.append('file', file);
 					
 					try {
 						document.getElementById('upload-status').textContent = 'Uploading...';
+						document.getElementById('profile-upload-button').disabled = true;
 						
 						// Log the file details for debugging
 						console.log('Uploading file:', file.name, file.type, file.size);
@@ -51,15 +57,41 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 						// Log the response status for debugging
 						console.log('Upload response status:', response.status);
 						
+						if (!response.ok) {
+							const text = await response.text();
+							console.error('Upload response text:', text);
+							throw new Error('Server returned ' + response.status + ': ' + text);
+						}
+						
 						const result = await response.json();
 						if (result.success) {
 							document.getElementById('upload-status').textContent = 'Upload successful!';
-							document.getElementById('profile-picture').src = result.user.profile_picture_url + '?t=' + new Date().getTime();
+							// Force browser to reload the image by adding a timestamp
+							const timestamp = new Date().getTime();
+							
+							// Get the profile picture URL from the result
+							let profilePicUrl = result.user.profile_picture_url;
+							
+							// If the URL doesn't already have a timestamp parameter, add one
+							if (profilePicUrl.indexOf('?') === -1) {
+								profilePicUrl += '?t=' + timestamp;
+							} else {
+								profilePicUrl += '&t=' + timestamp;
+							}
+							
+							// Update the image source
+							document.getElementById('profile-picture').src = profilePicUrl;
+							
+							// Log the updated URL for debugging
+							console.log('Updated profile picture URL:', profilePicUrl);
 						} else {
 							document.getElementById('upload-status').textContent = 'Upload failed: ' + result.message;
 						}
 					} catch (error) {
+						console.error('Upload error:', error);
 						document.getElementById('upload-status').textContent = 'Upload failed: ' + error.message;
+					} finally {
+						document.getElementById('profile-upload-button').disabled = false;
 					}
 				});
 				
@@ -155,10 +187,15 @@ function renderAccountContent(user: User): string {
 					<h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
 					<div class="flex flex-col items-center">
 						<img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-4">
-						<label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer">
-							Upload New Picture
-							<input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
-						</label>
+						<form id="profile-picture-form" class="flex flex-col items-center">
+							<label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer mb-2">
+								Select New Picture
+								<input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+							</label>
+							<button id="profile-upload-button" type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mt-2">
+								Upload Picture
+							</button>
+						</form>
 						<p id="upload-status" class="mt-2 text-sm text-gray-600"></p>
 					</div>
 				</div>
