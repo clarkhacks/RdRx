@@ -2,13 +2,7 @@
  * Environment variables and configuration
  */
 export interface Env {
-	// Clerk authentication
-	CLERK_API_KEY: string;
-	CLERK_FRONTEND_API: string;
-	CLERK_PUBLISHABLE_KEY: string;
-	CLERK_JWT_KEY?: string;
-
-	// Custom authentication
+	// Authentication
 	JWT_SECRET: string;
 	MAILGUN_DOMAIN: string;
 	MAILGUN_API_KEY: string;

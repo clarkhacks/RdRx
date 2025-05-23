@@ -1,13 +1,7 @@
 API_KEY="123456789$"
-CLERK_API_KEY="sk_test_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-CLERK_PUBLISHABLE_KEY="pk_test_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-CLERK_PEM_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----
-XXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXX
------END PUBLIC KEY-----"
+API_KEY_ADMIN="admin-key-here"
 
-# Custom Authentication
+# Authentication
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
 MAILGUN_DOMAIN="your-domain.com"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"

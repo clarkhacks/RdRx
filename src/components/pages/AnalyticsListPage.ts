@@ -25,7 +25,6 @@ async function renderAnalyticsListPage(env: Env, userId: string, request: Reques
 	// Use the PageLayout component to create the complete HTML document
 	const html = renderPageLayout({
 		title: 'Your Analytics',
-		clerkPublishableKey: env.CLERK_PUBLISHABLE_KEY,
 		activeNavItem: 'analytics',
 		content: pageContent,
 	});
@@ -63,7 +62,7 @@ async function getUserUrls(env: Env, userId: string, page: number = 1, itemsPerP
 			GROUP BY s.shortcode
 			ORDER BY s.created_at DESC
 			LIMIT ? OFFSET ?
-		`,
+		`
 		)
 			.bind(userId, itemsPerPage, offset)
 			.all();

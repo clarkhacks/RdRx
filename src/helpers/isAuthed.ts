@@ -1,4 +1,4 @@
-// Re-export functions from the new clerk utility
-import { isAuthenticated, getUserID } from '../utils/clerk';
+// Re-export functions from the custom auth utility
+import { isAuthenticated, getUserID, getCurrentUser } from '../utils/auth';
 
-export { isAuthenticated, getUserID };
+export { isAuthenticated, getUserID, getCurrentUser };

@@ -1,10 +1,9 @@
 interface DocumentHeadProps {
 	title: string;
-	clerkPublishableKey?: string;
 	additionalScripts?: string;
 }
 
-function renderDocumentHead({ title, clerkPublishableKey, additionalScripts = '' }: DocumentHeadProps): string {
+function renderDocumentHead({ title, additionalScripts = '' }: DocumentHeadProps): string {
 	return `
 <head>
   <meta charset="UTF-8">
@@ -34,12 +33,6 @@ function renderDocumentHead({ title, clerkPublishableKey, additionalScripts = ''
 <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.rdrx.co/favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.rdrx.co/favicons/favicon-96x96.png">
 <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.rdrx.co/favicons/favicon-16x16.png">
-  <script
-    crossorigin="anonymous"
-    data-clerk-publishable-key="${clerkPublishableKey}"
-    src="https://grateful-koi-58.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
-    type="text/javascript">
-  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {

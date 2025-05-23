@@ -1,7 +1,6 @@
 import { Env } from '../types';
 import { getShortcodeFromRequest } from '../utils/shortcode';
 import { handleAnalyticsRoutes } from './analytics';
-import { handleAuthRoutes } from './auth';
 import { handleCustomAuthRoutes } from './customAuth';
 import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
@@ -14,20 +13,15 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	const url = new URL(request.url);
 	const shortcode = getShortcodeFromRequest(request);
 
-	// Handle custom authentication routes first
-	const customAuthResponse = await handleCustomAuthRoutes(request, env);
-	if (customAuthResponse) {
-		return customAuthResponse;
+	// Handle authentication routes first
+	const authResponse = await handleCustomAuthRoutes(request, env);
+	if (authResponse) {
+		return authResponse;
 	}
 
 	// Handle analytics routes
 	if (url.pathname === '/analytics' || url.pathname.startsWith('/analytics/')) {
 		return handleAnalyticsRoutes(request, env, url.pathname);
-	}
-
-	// Handle authentication routes (existing Clerk auth)
-	if (url.pathname === '/login' || url.pathname === '/verify') {
-		return handleAuthRoutes(request, env, url.pathname);
 	}
 
 	// Handle API routes for POST requests

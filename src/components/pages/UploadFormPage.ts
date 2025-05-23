@@ -2,9 +2,7 @@ import { renderPageLayout } from '../layouts/PageLayout';
 import { renderUploadFormUI, renderUploadFormScripts } from '../ui/UploadFormUI';
 import { renderUploadModalUI, renderUploadModalScripts } from '../ui/UploadModalUI';
 
-interface Env {
-	CLERK_PUBLISHABLE_KEY: string;
-}
+interface Env {}
 
 function renderUploadFormPage(env: Env): Response {
 	// Assemble the content
@@ -24,7 +22,6 @@ function renderUploadFormPage(env: Env): Response {
 	// Render the complete page using the layout
 	const html = renderPageLayout({
 		title: 'Upload Files | RdRx',
-		clerkPublishableKey: env.CLERK_PUBLISHABLE_KEY,
 		activeNavItem: 'upload',
 		content,
 		scripts,

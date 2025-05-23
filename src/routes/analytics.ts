@@ -1,7 +1,7 @@
 import { Env } from '../types';
 import { renderAnalyticsPage } from '../components/pages/AnalyticsPage';
 import { renderAnalyticsListPage } from '../components/pages/AnalyticsListPage';
-import { isAuthenticated, getUserID } from '../utils/clerk';
+import { isAuthenticated, getUserID } from '../utils/auth';
 
 /**
  * Handle analytics routes

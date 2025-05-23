@@ -1,6 +1,6 @@
 import { Env, CreateShortUrlRequest } from '../types';
-import { isAuthenticated, getUserID } from '../utils/clerk';
-import { saveUrlToDatabase, fetchUrlByShortcode, saveDeletionEntry } from '../utils/database';
+import { isAuthenticated, getUserID } from '../utils/auth';
+import { saveUrlToDatabase, saveDeletionEntry } from '../utils/database';
 import { generateShortcode } from '../utils/shortcode';
 
 /**
@@ -152,7 +152,7 @@ async function handleAdminOverride(
 	custom_code: string | undefined,
 	delete_after: string | undefined,
 	env: Env,
-	creatorId: string | null,
+	creatorId: string | null
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });
