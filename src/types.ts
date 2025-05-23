@@ -8,9 +8,17 @@ export interface Env {
 	CLERK_PUBLISHABLE_KEY: string;
 	CLERK_JWT_KEY?: string;
 
+	// Custom authentication
+	JWT_SECRET: string;
+	MAILGUN_DOMAIN: string;
+	MAILGUN_API_KEY: string;
+	FROM_EMAIL?: string;
+	FRONTEND_URL?: string;
+
 	// Storage
 	R2_RDRX: R2Bucket;
 	DB: D1Database;
+	KV_RDRX: KVNamespace;
 
 	// API keys
 	API_KEY: string;
