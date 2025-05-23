@@ -25,12 +25,12 @@ export async function handleShortcodeRoutes(request: Request, env: Env, shortcod
 
 	// Handle snippet shortcode
 	if (isSnippetShortcode(shortcode)) {
-		return handleSnippetRequest(shortcode, env);
+		return handleSnippetRequest(request, shortcode, env);
 	}
 
 	// Handle file shortcode
 	if (isFileShortcode(shortcode)) {
-		return handleFileRequest(shortcode, env);
+		return handleFileRequest(request, shortcode, env);
 	}
 
 	// Handle data parameter
@@ -83,16 +83,18 @@ async function handleProtectedPath(request: Request, env: Env, shortcode: string
 /**
  * Handle snippet request
  */
-async function handleSnippetRequest(shortcode: string, env: Env): Promise<Response> {
+async function handleSnippetRequest(request: Request, shortcode: string, env: Env): Promise<Response> {
 	const lookUp = shortcode.replace('c-', '').split('.');
 
 	// Try to get from D1
 	let codeSnippet = null;
+	let targetUrl = null;
 	try {
 		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(lookUp[0]).first();
 
 		if (result && typeof result === 'object' && 'target_url' in result) {
 			codeSnippet = result.target_url as string;
+			targetUrl = codeSnippet;
 		}
 	} catch (error) {
 		console.error('Error fetching snippet from D1:', error);
@@ -101,6 +103,17 @@ async function handleSnippetRequest(shortcode: string, env: Env): Promise<Respon
 	if (!codeSnippet) {
 		console.log('Code snippet not found');
 		return new Response('Not Found', { status: 404 });
+	}
+
+	// Track the view in D1
+	if (targetUrl) {
+		try {
+			await trackView(request, env, lookUp[0], targetUrl);
+			console.log(`View tracked for snippet shortcode: ${lookUp[0]}`);
+		} catch (error) {
+			console.error('Error tracking view for snippet:', error);
+			// Continue even if tracking fails
+		}
 	}
 
 	const extension = lookUp[1] || 'txt';
@@ -117,15 +130,17 @@ async function handleSnippetRequest(shortcode: string, env: Env): Promise<Respon
 /**
  * Handle file request
  */
-async function handleFileRequest(shortcode: string, env: Env): Promise<Response> {
+async function handleFileRequest(request: Request, shortcode: string, env: Env): Promise<Response> {
 	// Try to get from D1
 	let fileUrls = null;
+	let targetUrl = null;
 	try {
 		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
 		if (result && typeof result === 'object' && 'target_url' in result) {
+			targetUrl = result.target_url as string;
 			try {
-				fileUrls = JSON.parse(result.target_url as string);
+				fileUrls = JSON.parse(targetUrl);
 			} catch (error) {
 				console.error('Error parsing JSON from D1:', error);
 			}
@@ -137,6 +152,17 @@ async function handleFileRequest(shortcode: string, env: Env): Promise<Response>
 	if (!fileUrls) {
 		console.log('Files not found');
 		return new Response('Not Found', { status: 404 });
+	}
+
+	// Track the view in D1
+	if (targetUrl) {
+		try {
+			await trackView(request, env, shortcode, targetUrl);
+			console.log(`View tracked for file shortcode: ${shortcode}`);
+		} catch (error) {
+			console.error('Error tracking view for file:', error);
+			// Continue even if tracking fails
+		}
 	}
 
 	if (Array.isArray(fileUrls)) {
