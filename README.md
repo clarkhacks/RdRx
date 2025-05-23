@@ -1,6 +1,12 @@
 # RdRx URL Shortener
 
-A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database, and R2 Storage.
+<div align="center">
+  <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" width="120" height="120">
+  <h1>RdRx</h1>
+  <p><strong>Modern URL Shortening & Content Sharing</strong></p>
+</div>
+
+> **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
 
 ## Features
 
@@ -9,7 +15,8 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
 - **File Sharing**: Upload and share files securely
 - **Analytics**: Track visits to your short links with detailed statistics
 - **Custom Authentication**: Secure server-side authentication with JWT tokens
-- **User Account Management**: Profile editing, password management, and profile pictures
+- **User Dashboard**: View your links, snippets, files, and analytics
+- **Account Management**: Profile editing, password management, and profile pictures
 - **Expiration**: Set links to expire after a specific time
 
 ## Prerequisites
@@ -19,136 +26,224 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
 - A [Cloudflare](https://www.cloudflare.com/) account
 
-## Installation
+## Step-by-Step Installation Guide
 
-1. Clone the repository:
+### 1. Clone the Repository
 
-   ```bash
-   git clone https://github.com/yourusername/rdrx-shorturls.git
-   cd rdrx-shorturls
-   ```
+```bash
+git clone https://github.com/yourusername/rdrx-shorturls.git
+cd rdrx-shorturls
+```
 
-2. Install dependencies:
+### 2. Install Dependencies
 
-   ```bash
-   npm install
-   # or
-   pnpm install
-   ```
+```bash
+npm install
+# or
+pnpm install
+```
 
-3. Build the CSS:
-   ```bash
-   npm run build:css
-   # or
-   pnpm build:css
-   ```
+### 3. Cloudflare Setup
 
-## Configuration
+#### 3.1. Log in to Cloudflare
 
-### Cloudflare Setup
+```bash
+npx wrangler login
+```
 
-1. Log in to your Cloudflare account and create a new Worker:
+Follow the prompts to authenticate with your Cloudflare account.
 
-   ```bash
-   npx wrangler login
-   ```
+#### 3.2. Create a D1 Database
 
-2. Create a D1 database:
+```bash
+npx wrangler d1 create rdrx-shorturls
+```
 
-   ```bash
-   npx wrangler d1 create rdrx-shorturls
-   ```
+This will output a database ID. Copy this ID for the next step.
 
-3. Create an R2 bucket for file storage:
+#### 3.3. Create an R2 Bucket
 
-   ```bash
-   npx wrangler r2 bucket create rdrx-files
-   ```
+```bash
+npx wrangler r2 bucket create rdrx-files
+```
 
-4. Update your `wrangler.toml` file with the database and bucket information:
+#### 3.4. Create a KV Namespace
 
-   ```toml
-   [[d1_databases]]
-   binding = "DB"
-   database_name = "rdrx-shorturls"
-   database_id = "your-database-id"
+```bash
+npx wrangler kv:namespace create KV_RDRX
+npx wrangler kv:namespace create KV_RDRX --preview
+```
 
-   [[r2_buckets]]
-   binding = "R2_RDRX"
-   bucket_name = "rdrx-files"
-   ```
+Copy the IDs from these commands for the next step.
 
-5. Create the database schema:
-   ```bash
-   npx wrangler d1 execute rdrx-shorturls --file=./schema.sql
-   ```
+### 4. Configure Your Project
 
-### Authentication Setup
+#### 4.1. Update wrangler.toml
 
-1. Create a `.dev.vars` file in the project root with your configuration:
+Edit your `wrangler.toml` file to include the database, bucket, and KV namespace information:
 
-   ```
-   JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
-   MAILGUN_DOMAIN="your-domain.com"
-   MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
-   FROM_EMAIL="noreply@your-domain.com"
-   FRONTEND_URL="http://localhost:8787"
-   API_KEY="your-api-key-here"
-   API_KEY_ADMIN="your-admin-api-key-here"
-   ```
+```toml
+name = "rdrx"
+main = "src/index.ts"
+compatibility_date = "2024-12-05"
+compatibility_flags = ["nodejs_compat"]
 
-2. For production, set these environment variables in the Cloudflare Dashboard or using Wrangler:
-   ```bash
-   npx wrangler secret put JWT_SECRET
-   npx wrangler secret put MAILGUN_API_KEY
-   # etc.
-   ```
+[vars]
+FRONTEND_URL = "http://localhost:8787"
 
-## Development
+[observability]
+enabled = true
 
-1. Start the development server with CSS watching:
+[triggers]
+crons = ["0 0 * * *"]
 
-   ```bash
-   npm run dev:all
-   # or
-   pnpm dev:all
-   ```
+[[d1_databases]]
+binding = "DB"
+database_name = "rdrx-shorturls"
+database_id = "YOUR_DATABASE_ID" # Replace with your actual database ID
 
-   This will:
+[[kv_namespaces]]
+binding = "KV_RDRX"
+id = "YOUR_KV_NAMESPACE_ID" # Replace with your actual KV namespace ID
+preview_id = "YOUR_KV_NAMESPACE_PREVIEW_ID" # Replace with your actual preview ID
 
-   - Build the CSS file
-   - Watch for CSS changes and rebuild automatically
-   - Start the Wrangler development server
+[[r2_buckets]]
+binding = "R2_RDRX"
+bucket_name = "rdrx-files"
+```
 
-2. Visit `http://localhost:8787` to see your application
+#### 4.2. Set Up Environment Variables
 
-## Deployment
+Create a `.dev.vars` file in the project root with your configuration:
 
-1. Build the CSS for production:
+```
+API_KEY="your-api-key-here"
+API_KEY_ADMIN="your-admin-api-key-here"
 
-   ```bash
-   npm run build:css
-   # or
-   pnpm build:css
-   ```
+# Authentication
+JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
+MAILGUN_DOMAIN="your-domain.com"
+MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
+FROM_EMAIL="noreply@your-domain.com"
+FRONTEND_URL="http://localhost:8787"
+```
 
-2. Deploy to Cloudflare Workers:
+### 5. Initialize the Database
 
-   ```bash
-   npm run deploy
-   # or
-   pnpm deploy
-   ```
+Create a file called `schema.sql` in the project root with the following content:
 
-## Authentication System
+```sql
+-- Create short_urls table
+CREATE TABLE IF NOT EXISTS short_urls (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  shortcode TEXT NOT NULL UNIQUE,
+  target_url TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  creator_id TEXT,
+  is_snippet BOOLEAN NOT NULL DEFAULT 0,
+  is_file BOOLEAN NOT NULL DEFAULT 0
+);
 
-The application uses a custom server-side authentication system with the following features:
+-- Create analytics table
+CREATE TABLE IF NOT EXISTS analytics (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  shortcode TEXT NOT NULL,
+  target_url TEXT NOT NULL,
+  country TEXT,
+  timestamp TEXT NOT NULL
+);
 
-- **JWT Tokens**: Secure authentication using JSON Web Tokens
-- **HTTP-Only Cookies**: Tokens are stored in secure, HTTP-only cookies for maximum security
-- **Password Hashing**: PBKDF2 with salt for secure password storage
-- **Account Management**: Users can update their profile, change passwords, and upload profile pictures
-- **Email Integration**: Password reset via email using Mailgun
+-- Create deletions table
+CREATE TABLE IF NOT EXISTS deletions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  shortcode TEXT NOT NULL,
+  delete_at INTEGER NOT NULL,
+  is_file BOOLEAN NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL
+);
+
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  uid TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  salt TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  profile_picture_url TEXT
+);
+
+-- Create sessions table
+CREATE TABLE IF NOT EXISTS sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  session_id TEXT NOT NULL UNIQUE,
+  user_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL
+);
+```
+
+Then run:
+
+```bash
+npx wrangler d1 execute rdrx-shorturls --file=./schema.sql
+```
+
+### 6. Run the Development Server
+
+```bash
+npm run dev
+# or
+pnpm dev
+```
+
+Visit `http://localhost:8787` to see your application.
+
+### 7. Deploy to Production
+
+```bash
+npm run deploy
+# or
+pnpm deploy
+```
+
+For production, set your environment variables in the Cloudflare Dashboard or using Wrangler:
+
+```bash
+npx wrangler secret put JWT_SECRET
+npx wrangler secret put MAILGUN_API_KEY
+# etc.
+```
+
+## Troubleshooting
+
+### Authentication Issues
+
+If you encounter authentication issues:
+
+1. Check that your JWT_SECRET is properly set in your environment variables
+2. Ensure cookies are being properly set (check browser dev tools)
+3. Verify that your R2 bucket is properly configured for profile picture uploads
+4. Check server logs for detailed error messages
+
+### Database Issues
+
+If you encounter database issues:
+
+1. Verify your D1 database is properly configured in wrangler.toml
+2. Check that all tables were created successfully
+3. Try running the schema.sql file again to ensure all tables exist
+
+### Deployment Issues
+
+If you encounter issues during deployment:
+
+1. Ensure your Wrangler CLI is up to date: `npm install -g wrangler@latest`
+2. Verify your Cloudflare authentication: `npx wrangler whoami`
+3. Check your `wrangler.toml` configuration
+4. Make sure all required environment variables are set
 
 ## Project Structure
 
@@ -163,17 +258,12 @@ rdrx-shorturls/
 │   ├── helpers/          # Helper functions
 │   ├── middleware/       # Middleware functions
 │   ├── routes/           # Route handlers
-│   ├── styles/           # CSS styles
 │   ├── utils/            # Utility functions
 │   ├── index.ts          # Entry point
 │   └── types.ts          # TypeScript types
-├── static/               # Static assets
-│   └── css/              # Compiled CSS
 ├── test/                 # Tests
 ├── .dev.vars             # Development environment variables
 ├── package.json          # Dependencies and scripts
-├── postcss.config.js     # PostCSS configuration
-├── tailwind.config.js    # Tailwind CSS configuration
 ├── tsconfig.json         # TypeScript configuration
 ├── wrangler.toml         # Wrangler configuration
 └── README.md             # This file
@@ -182,48 +272,20 @@ rdrx-shorturls/
 ## Available Scripts
 
 - `npm run dev` - Start the development server
-- `npm run build:css` - Build the CSS file
-- `npm run watch:css` - Watch for CSS changes and rebuild
-- `npm run dev:all` - Build CSS, watch for changes, and start the dev server
 - `npm run deploy` - Deploy to Cloudflare Workers
 - `npm run test` - Run tests
 - `npm run cf-typegen` - Generate TypeScript types for Cloudflare bindings
+- `npm run format` - Format code with Prettier
 
-## Troubleshooting
+## Authentication System
 
-### Authentication Issues
+The application uses a custom server-side authentication system with the following features:
 
-If you encounter authentication issues:
-
-1. Check that your JWT_SECRET is properly set in your environment variables
-2. Ensure cookies are being properly set (check browser dev tools)
-3. Verify that your R2 bucket is properly configured for profile picture uploads
-4. Check server logs for detailed error messages
-
-### CSS not updating
-
-If your CSS changes are not reflected, try:
-
-1. Manually rebuilding the CSS: `npm run build:css`
-2. Clearing your browser cache
-3. Checking the console for errors
-
-### Deployment issues
-
-If you encounter issues during deployment:
-
-1. Ensure your Wrangler CLI is up to date: `npm install -g wrangler@latest`
-2. Verify your Cloudflare authentication: `npx wrangler whoami`
-3. Check your `wrangler.toml` configuration
-4. Make sure your lock file is up to date: `pnpm install` (without `--frozen-lockfile`)
-
-### Database migrations
-
-To update your database schema:
-
-```bash
-npx wrangler d1 execute rdrx-shorturls --file=./migrations/your-migration.sql
-```
+- **JWT Tokens**: Secure authentication using JSON Web Tokens
+- **HTTP-Only Cookies**: Tokens are stored in secure, HTTP-only cookies for maximum security
+- **Password Hashing**: PBKDF2 with salt for secure password storage
+- **Account Management**: Users can update their profile, change passwords, and upload profile pictures
+- **Email Integration**: Password reset via email using Mailgun
 
 ## License
 
