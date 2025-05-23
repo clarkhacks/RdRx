@@ -59,7 +59,10 @@ async function handleProtectedPath(request: Request, env: Env, shortcode: string
 	const isAuthenticatedUser = await isAuthenticated(request, env);
 	if (!isAuthenticatedUser) {
 		console.log('Unauthorized access attempt to:', shortcode);
-		return redirectToLogin();
+		// get current URL and append it to the login redirect
+		const url = new URL(request.url);
+		const redirectUrl = `${url.origin}${url.pathname}?redirect_url=${encodeURIComponent(url.href)}`;
+		return redirectToLogin(redirectUrl, env);
 	}
 
 	switch (shortcode) {
@@ -193,11 +196,11 @@ async function handlePossibleSnippetWithoutPrefix(shortcode: string, env: Env): 
 /**
  * Redirect to login page
  */
-function redirectToLogin(): Response {
+function redirectToLogin(redirectUrl: string, string: any): Response {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: '/login',
+			Location: '/login?redirect_url=' + encodeURIComponent(redirectUrl),
 		},
 	});
 }
@@ -225,6 +228,6 @@ function renderNotFoundPage(): Response {
 		{
 			headers: { 'Content-Type': 'text/html' },
 			status: 404,
-		},
+		}
 	);
 }

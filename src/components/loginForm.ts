@@ -76,6 +76,11 @@ function renderLoginPage(env: Env): Response {
                 function updateUI() {
                     if (Clerk.user) {
                         // If the user is signed in, show the UserButton
+                        const urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.has('redirect_url')) {
+                            // Redirect to the specified URL after sign in
+                            window.location.href = urlParams.get('redirect_url');
+                        }
                         document.getElementById('app').innerHTML = \`
                             <div id="user-button" class="flex justify-center mt-4"></div>
                             <div class="text-center mt-4 text-green-600">You are logged in!</div>
@@ -88,9 +93,11 @@ function renderLoginPage(env: Env): Response {
                             <div id="sign-in" class="flex justify-center mt-4"></div>
                         \`;
                         const signInDiv = document.getElementById('sign-in');
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect_url') || '/create';
                         Clerk.mountSignIn(signInDiv, {
                             // After sign in, redirect to home or a protected route
-                            afterSignInUrl: '/create',
+                            afterSignInUrl: redirectUrl,
                             signUpUrl: window.location.origin + '/sign-up',
                         });
                     }
