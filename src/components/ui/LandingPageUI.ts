@@ -143,7 +143,7 @@ function renderLandingPageUI(): string {
                     </div>
                     <h3 class="text-xl font-semibold mb-2">Authentication</h3>
                     <p class="text-gray-600">
-                        Secure access with Clerk authentication and user management.
+                        Secure server-side authentication with JWT tokens and HTTP-only cookies.
                     </p>
                 </div>
                 
@@ -162,23 +162,23 @@ function renderLandingPageUI(): string {
             <div class="mt-16">
                 <h3 class="text-2xl font-semibold mb-6 text-center">Coming Soon</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="feature-card bg-gray-100 p-6 rounded-xl shadow-sm border border-dashed border-gray-300">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-envelope text-gray-600 text-xl"></i>
+                    <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-envelope text-primary-600 text-xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold mb-2">Email Integration</h3>
                         <p class="text-gray-600">
-                            Send notifications and reports via Cloudflare Email.
+                            Password reset and notifications via Mailgun integration.
                         </p>
                     </div>
                     
-                    <div class="feature-card bg-gray-100 p-6 rounded-xl shadow-sm border border-dashed border-gray-300">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-hourglass-end text-gray-600 text-xl"></i>
+                    <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-user-cog text-primary-600 text-xl"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2">Enhanced Expiration</h3>
+                        <h3 class="text-xl font-semibold mb-2">Account Management</h3>
                         <p class="text-gray-600">
-                            More flexible options for expiring domains, files, and snippets.
+                            Complete user profile management with profile pictures and password changes.
                         </p>
                     </div>
                     
@@ -188,7 +188,7 @@ function renderLandingPageUI(): string {
                         </div>
                         <h3 class="text-xl font-semibold mb-2">Mobile App</h3>
                         <p class="text-gray-600">
-                            Native mobile applications for iOS and Android.
+                            Native mobile applications for iOS and Android coming soon.
                         </p>
                     </div>
                 </div>

@@ -8,7 +8,8 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
 - **Code Snippets**: Share code snippets with syntax highlighting
 - **File Sharing**: Upload and share files securely
 - **Analytics**: Track visits to your short links with detailed statistics
-- **User Authentication**: Secure access with Clerk authentication
+- **Custom Authentication**: Secure server-side authentication with JWT tokens
+- **User Account Management**: Profile editing, password management, and profile pictures
 - **Expiration**: Set links to expire after a specific time
 
 ## Prerequisites
@@ -17,7 +18,6 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
 - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
 - A [Cloudflare](https://www.cloudflare.com/) account
-- A [Clerk](https://clerk.dev/) account for authentication
 
 ## Installation
 
@@ -83,22 +83,25 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
    npx wrangler d1 execute rdrx-shorturls --file=./schema.sql
    ```
 
-### Clerk Setup
+### Authentication Setup
 
-1. Create a new application in [Clerk Dashboard](https://dashboard.clerk.dev/)
+1. Create a `.dev.vars` file in the project root with your configuration:
 
-2. Configure your application:
-
-   - Set up sign-in methods (email, social providers, etc.)
-   - Configure the JWT template with appropriate claims
-   - Set up your application URLs
-
-3. Get your API keys from the Clerk Dashboard
-
-4. Create a `.dev.vars` file in the project root with your Clerk keys:
    ```
-   CLERK_SECRET_KEY=your_clerk_secret_key
-   CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+   JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
+   MAILGUN_DOMAIN="your-domain.com"
+   MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
+   FROM_EMAIL="noreply@your-domain.com"
+   FRONTEND_URL="http://localhost:8787"
+   API_KEY="your-api-key-here"
+   API_KEY_ADMIN="your-admin-api-key-here"
+   ```
+
+2. For production, set these environment variables in the Cloudflare Dashboard or using Wrangler:
+   ```bash
+   npx wrangler secret put JWT_SECRET
+   npx wrangler secret put MAILGUN_API_KEY
+   # etc.
    ```
 
 ## Development
@@ -137,9 +140,15 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
    pnpm deploy
    ```
 
-3. Set up your environment variables in the Cloudflare Dashboard:
-   - CLERK_SECRET_KEY
-   - CLERK_PUBLISHABLE_KEY
+## Authentication System
+
+The application uses a custom server-side authentication system with the following features:
+
+- **JWT Tokens**: Secure authentication using JSON Web Tokens
+- **HTTP-Only Cookies**: Tokens are stored in secure, HTTP-only cookies for maximum security
+- **Password Hashing**: PBKDF2 with salt for secure password storage
+- **Account Management**: Users can update their profile, change passwords, and upload profile pictures
+- **Email Integration**: Password reset via email using Mailgun
 
 ## Project Structure
 
@@ -147,10 +156,12 @@ A modern, feature-rich URL shortener built with Cloudflare Workers, D1 Database,
 rdrx-shorturls/
 ├── src/                  # Source code
 │   ├── components/       # UI components
+│   │   ├── auth/         # Authentication components
 │   │   ├── layouts/      # Layout components
 │   │   ├── pages/        # Page components
 │   │   └── ui/           # UI components
 │   ├── helpers/          # Helper functions
+│   ├── middleware/       # Middleware functions
 │   ├── routes/           # Route handlers
 │   ├── styles/           # CSS styles
 │   ├── utils/            # Utility functions
@@ -178,25 +189,16 @@ rdrx-shorturls/
 - `npm run test` - Run tests
 - `npm run cf-typegen` - Generate TypeScript types for Cloudflare bindings
 
-## Updating Dependencies
-
-After making changes to `package.json` (like adding new dependencies), you need to update the lock file:
-
-```bash
-# If using npm
-npm install
-
-# If using pnpm
-pnpm install
-```
-
-This is especially important in CI environments where `--frozen-lockfile` is used by default. Without updating the lock file, you'll get an error like:
-
-```
-ERR_PNPM_OUTDATED_LOCKFILE  Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up to date with package.json
-```
-
 ## Troubleshooting
+
+### Authentication Issues
+
+If you encounter authentication issues:
+
+1. Check that your JWT_SECRET is properly set in your environment variables
+2. Ensure cookies are being properly set (check browser dev tools)
+3. Verify that your R2 bucket is properly configured for profile picture uploads
+4. Check server logs for detailed error messages
 
 ### CSS not updating
 
