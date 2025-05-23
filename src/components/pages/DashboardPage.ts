@@ -30,7 +30,10 @@ export async function renderDashboardPage(request: Request, env: Env): Promise<R
 	const html = `
 		<!DOCTYPE html>
 		<html lang="en">
-		${renderDocumentHead({ title: 'Dashboard - RDRX' })}
+		${renderDocumentHead({
+			title: 'Dashboard - RDRX',
+			additionalScripts: '<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>',
+		})}
 		<body class="bg-gray-50">
 			${renderPageLayout({
 				title: 'Dashboard - RDRX',
