@@ -189,7 +189,7 @@ function renderAccountContent(user: User): string {
 						<img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-4">
 						<form id="profile-picture-form" class="flex flex-col items-center">
 							<label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer mb-2">
-								Select New Picture
+								Select Photo
 								<input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
 							</label>
 							<button id="profile-upload-button" type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mt-2">
