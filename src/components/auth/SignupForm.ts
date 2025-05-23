@@ -406,7 +406,7 @@ export function SignupFormUI(): string {
 						hasErrors = true;
 					} else {
 						// More comprehensive email validation
-						const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+						const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 						if (!emailRegex.test(String(data.email).toLowerCase())) {
 							showError('email', 'Please enter a valid email address');
 							hasErrors = true;
