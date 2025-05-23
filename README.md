@@ -289,4 +289,4 @@ The application uses a custom server-side authentication system with the followi
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for details.

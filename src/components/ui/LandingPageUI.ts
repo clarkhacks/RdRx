@@ -210,7 +210,7 @@ function renderLandingPageUI(): string {
                 
                 <div>
                     <p class="text-gray-400 mb-2">
-                        Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">MIT License</a>
+                        Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">GPL-3.0</a>
                     </p>
                     <p class="text-gray-500 text-sm">
                         &copy; 2025 RdRx. All rights reserved.
