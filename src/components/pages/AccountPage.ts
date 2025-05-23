@@ -39,10 +39,17 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 					
 					try {
 						document.getElementById('upload-status').textContent = 'Uploading...';
+						
+						// Log the file details for debugging
+						console.log('Uploading file:', file.name, file.type, file.size);
+						
 						const response = await fetch('/api/auth/profile/picture', {
 							method: 'POST',
 							body: formData
 						});
+						
+						// Log the response status for debugging
+						console.log('Upload response status:', response.status);
 						
 						const result = await response.json();
 						if (result.success) {
