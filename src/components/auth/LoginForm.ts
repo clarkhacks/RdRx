@@ -340,7 +340,7 @@ export function LoginFormUI(): string {
 						hasErrors = true;
 					} else {
 						// More comprehensive email validation
-						const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+						const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 						if (!emailRegex.test(String(data.email).toLowerCase())) {
 							showError('email', 'Please enter a valid email address');
 							hasErrors = true;
