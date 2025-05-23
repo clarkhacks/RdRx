@@ -386,7 +386,7 @@ export function LoginFormUI(): string {
 							// Redirect after a short delay
 							setTimeout(() => {
 								const urlParams = new URLSearchParams(window.location.search);
-								const redirect = urlParams.get('redirect') || '/dashboard';
+								const redirect = urlParams.get('redirect') || '/create';
 								window.location.href = redirect;
 							}, 1500);
 						} else {

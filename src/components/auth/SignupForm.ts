@@ -468,7 +468,7 @@ export function SignupFormUI(): string {
 							
 							// Redirect after a short delay
 							setTimeout(() => {
-								window.location.href = '/dashboard';
+								window.location.href = '/create';
 							}, 1500);
 						} else {
 							showMessage(result.message || 'Failed to create account', 'error');
