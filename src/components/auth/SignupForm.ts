@@ -405,10 +405,9 @@ export function SignupFormUI(): string {
 						showError('email', 'Email is required');
 						hasErrors = true;
 					} else {
-						// More comprehensive email validation
-						const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-						if (!emailRegex.test(String(data.email).toLowerCase())) {
-							showError('email', 'Please enter a valid email address');
+						// Check for @ sign and . using contains
+						if (!data.email.includes('@') || !data.email.includes('.')) {
+							showError('email', 'Invalid email address');
 							hasErrors = true;
 						}
 					}

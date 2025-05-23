@@ -100,13 +100,11 @@ function base64UrlEncode(str: string): string {
 }
 
 /**
- * Base64 URL decode
+ * Validate email format
  */
-function base64UrlDecode(str: string): string {
-	// Add padding if needed
-	const padding = '='.repeat((4 - (str.length % 4)) % 4);
-	const base64 = str.replace(/-/g, '+').replace(/_/g, '/') + padding;
-	return atob(base64);
+export function isValidEmail(email: string): boolean {
+	// Simple email validation - just check for @ and .
+	return email.includes('@') && email.includes('.');
 }
 
 /**
@@ -189,15 +187,6 @@ export async function verifySessionToken(token: string, secret: string): Promise
 		console.error('Error verifying session token:', error);
 		return null;
 	}
-}
-
-/**
- * Validate email format
- */
-export function isValidEmail(email: string): boolean {
-	// More comprehensive email regex that handles various valid email formats
-	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-	return emailRegex.test(String(email).toLowerCase());
 }
 
 /**
