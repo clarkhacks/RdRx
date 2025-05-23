@@ -32,7 +32,7 @@
 
 ```bash
 git clone https://github.com/clarkhacks/RdRx.git
-cd rdrx-shorturls
+cd RdRx
 ```
 
 ### 2. Install Dependencies
