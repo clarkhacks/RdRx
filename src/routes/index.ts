@@ -5,6 +5,7 @@ import { handleCustomAuthRoutes } from './customAuth';
 import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
 import { renderLandingPage } from '../components/pages/LandingPage';
+import { renderAccountPage } from '../components/pages/AccountPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -27,6 +28,11 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	// Handle analytics routes
 	if (url.pathname === '/analytics' || url.pathname.startsWith('/analytics/')) {
 		return handleAnalyticsRoutes(enhancedRequest, env, url.pathname);
+	}
+
+	// Handle account page
+	if (url.pathname === '/account') {
+		return renderAccountPage(enhancedRequest, env);
 	}
 
 	// Handle API routes for POST requests

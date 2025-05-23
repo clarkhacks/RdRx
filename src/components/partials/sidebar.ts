@@ -86,6 +86,21 @@ function renderSidebar(currentPage: string = ''): string {
               <span>Analytics</span>
             </a>
           </li>
+          <li>
+            <a 
+              href="/account" 
+              class="flex items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 ${
+								currentPage === 'account' ? 'bg-primary-50 text-primary-700 font-medium' : ''
+							}"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 ${
+								currentPage === 'account' ? 'text-primary-500' : 'text-gray-500'
+							}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>My Account</span>
+            </a>
+          </li>
         </ul>
         
         <div class="mt-auto px-4 md:hidden">
@@ -97,18 +112,26 @@ function renderSidebar(currentPage: string = ''): string {
   
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Wait for Clerk to be loaded
-      if (window.Clerk && Clerk.user) {
-        // Get the analytics link
-        const analyticsLink = document.getElementById('analytics-link');
-        if (analyticsLink) {
-          // Update the href to include the user ID
-          const userId = Clerk.user.id;
-          if (userId) {
-            const currentHref = analyticsLink.getAttribute('href');
-            analyticsLink.setAttribute('href', currentHref + '?userId=' + userId);
+      // Get the current user info from our custom auth API
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.user) {
+            // Get the analytics link
+            const analyticsLink = document.getElementById('analytics-link');
+            if (analyticsLink) {
+              // Update the href to include the user ID
+              const userId = data.user.uid;
+              if (userId) {
+                const currentHref = analyticsLink.getAttribute('href');
+                analyticsLink.setAttribute('href', currentHref + '?userId=' + userId);
+              }
+            }
           }
         }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     });
   </script>

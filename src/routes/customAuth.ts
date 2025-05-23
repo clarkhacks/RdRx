@@ -7,6 +7,7 @@ import {
 	verifySession,
 	uploadProfilePicture,
 } from '../components/auth/service';
+import { hashPassword, verifyPassword, isValidPassword } from '../components/auth/utils';
 import { SignupRequest, LoginRequest, ResetPasswordRequest, ResetPasswordConfirmRequest } from '../components/auth/types';
 import { SignupFormUI } from '../components/auth/SignupForm';
 import { LoginFormUI } from '../components/auth/LoginForm';
@@ -15,7 +16,7 @@ import { TestAuthUI } from '../components/auth/TestAuthUI';
 import { renderDocumentHead } from '../components/layouts/DocumentHead';
 
 /**
- * Handle custom authentication routes
+ * Handle custom authentication routesppe
  */
 export async function handleCustomAuthRoutes(request: Request, env: Env): Promise<Response | null> {
 	const url = new URL(request.url);
@@ -114,6 +115,24 @@ async function handleAuthAPI(request: Request, env: Env, path: string, method: s
 					});
 				}
 				return await handleMeAPI(request, env, corsHeaders);
+
+			case '/api/auth/profile':
+				if (method !== 'POST') {
+					return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
+						status: 405,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+				return await handleUpdateProfileAPI(request, env, corsHeaders);
+
+			case '/api/auth/password':
+				if (method !== 'POST') {
+					return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
+						status: 405,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+				return await handleChangePasswordAPI(request, env, corsHeaders);
 
 			case '/api/auth/logout':
 				if (method !== 'POST') {
@@ -455,6 +474,183 @@ async function handleLogoutAPI(corsHeaders: Record<string, string>): Promise<Res
 			...corsHeaders,
 		},
 	});
+}
+
+/**
+ * Handle update profile API
+ */
+async function handleUpdateProfileAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+	try {
+		// Verify session
+		const { user } = await verifySession(env, request);
+		if (!user) {
+			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Get request body
+		const body = (await request.json()) as { name: string; email: string };
+		if (!body || typeof body !== 'object') {
+			return new Response(JSON.stringify({ success: false, message: 'Invalid request body' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Extract profile data
+		const { name, email } = body;
+
+		// Validate inputs
+		if (!name || !email) {
+			return new Response(JSON.stringify({ success: false, message: 'Name and email are required' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Update user in database
+		try {
+			// Update user in database
+			const stmt = env.DB.prepare(`
+				UPDATE users 
+				SET name = ?, email = ?, updated_at = ? 
+				WHERE uid = ?
+			`);
+
+			await stmt.bind(name, email, Date.now(), user.uid).run();
+
+			// Return success response
+			return new Response(
+				JSON.stringify({
+					success: true,
+					message: 'Profile updated successfully',
+					user: {
+						...user,
+						name,
+						email,
+						updated_at: Date.now(),
+					},
+				}),
+				{
+					status: 200,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				}
+			);
+		} catch (error) {
+			console.error('Error updating user profile:', error);
+			return new Response(JSON.stringify({ success: false, message: 'Failed to update profile' }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+	} catch (error) {
+		console.error('Update profile API error:', error);
+		return new Response(JSON.stringify({ success: false, message: 'Invalid request' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	}
+}
+
+/**
+ * Handle change password API
+ */
+async function handleChangePasswordAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+	try {
+		// Verify session
+		const { user } = await verifySession(env, request);
+		if (!user) {
+			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Get request body
+		const body = (await request.json()) as { current_password: string; new_password: string; confirm_password: string };
+		if (!body || typeof body !== 'object') {
+			return new Response(JSON.stringify({ success: false, message: 'Invalid request body' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Extract password data
+		const { current_password, new_password, confirm_password } = body;
+
+		// Validate inputs
+		if (!current_password || !new_password || !confirm_password) {
+			return new Response(JSON.stringify({ success: false, message: 'All password fields are required' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		if (new_password !== confirm_password) {
+			return new Response(JSON.stringify({ success: false, message: 'New passwords do not match' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Validate password strength
+		const passwordValidation = isValidPassword(new_password);
+		if (!passwordValidation.valid) {
+			return new Response(JSON.stringify({ success: false, message: passwordValidation.message || 'Invalid password' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Verify current password
+		const isCurrentPasswordValid = await verifyPassword(current_password, user.password_hash);
+		if (!isCurrentPasswordValid) {
+			return new Response(JSON.stringify({ success: false, message: 'Current password is incorrect' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Hash new password
+		const newPasswordHash = await hashPassword(new_password);
+
+		// Update password in database
+		try {
+			const stmt = env.DB.prepare(`
+				UPDATE users 
+				SET password_hash = ?, updated_at = ? 
+				WHERE uid = ?
+			`);
+
+			await stmt.bind(newPasswordHash, Date.now(), user.uid).run();
+
+			// Return success response
+			return new Response(
+				JSON.stringify({
+					success: true,
+					message: 'Password updated successfully',
+				}),
+				{
+					status: 200,
+					headers: { 'Content-Type': 'application/json', ...corsHeaders },
+				}
+			);
+		} catch (error) {
+			console.error('Error updating user password:', error);
+			return new Response(JSON.stringify({ success: false, message: 'Failed to update password' }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+	} catch (error) {
+		console.error('Change password API error:', error);
+		return new Response(JSON.stringify({ success: false, message: 'Invalid request' }), {
+			status: 400,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	}
 }
 
 /**

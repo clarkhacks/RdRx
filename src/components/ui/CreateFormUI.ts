@@ -152,8 +152,8 @@ function renderCreateFormScripts(): string {
         url: longUrl,
         custom: true,
         custom_code: customCode,
-        userId: Clerk.user ? Clerk.user.id : null, // Add the user ID from Clerk
       };
+      
       if (adminOverrideCode.length > 0) {
         body.admin_override_code = adminOverrideCode;
       }

@@ -142,7 +142,6 @@ function renderSnippetFormScripts(): string {
                 custom_code: customCode,
                 custom: true,
                 snippet: codeSnippet,
-                userId: Clerk.user ? Clerk.user.id : null, // Add the user ID from Clerk
             });
 
             const response = await fetch('/snippet', {
