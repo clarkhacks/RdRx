@@ -19,35 +19,41 @@ export async function handleUserRoutes(request: Request, env: Env): Promise<Resp
 		const path = url.pathname.replace('/api/user/', '');
 		const userId = request.user.uid;
 		
-		switch (true) {
-			// URL operations
-			case path.startsWith('url/') && request.method === 'PUT':
-				return handleUpdateUserUrl(request, env, path, userId);
-			
-			// Snippet operations
-			case path.startsWith('snippet/') && path.endsWith('/') === false && request.method === 'GET':
-				return handleGetUserSnippet(request, env, path, userId);
-			case path.startsWith('snippet/') && request.method === 'PUT':
-				return handleUpdateUserSnippet(request, env, path, userId);
-			
-			// File operations
-			case path.startsWith('files/') && path.endsWith('/upload') && request.method === 'POST':
-				return handleUploadUserFiles(request, env, path, userId);
-			case path.startsWith('files/') && !path.includes('/') && request.method === 'GET':
-				return handleGetUserFiles(request, env, path, userId);
-			case path.startsWith('files/') && path.split('/').length === 3 && request.method === 'DELETE':
-				return handleDeleteUserFile(request, env, path, userId);
-			
-			// Delete operations
-			case path.startsWith('delete/') && request.method === 'DELETE':
-				return handleDeleteUserItem(request, env, path, userId);
-			
-			default:
-				return new Response(JSON.stringify({ success: false, message: 'Not found' }), {
-					status: 404,
-					headers: { 'Content-Type': 'application/json' }
-				});
+		console.log('User API path:', path, 'Method:', request.method);
+		
+		// URL operations
+		if (path.startsWith('url/') && request.method === 'PUT') {
+			return handleUpdateUserUrl(request, env, path, userId);
 		}
+		
+		// Snippet operations
+		if (path.startsWith('snippet/') && request.method === 'GET') {
+			return handleGetUserSnippet(request, env, path, userId);
+		}
+		if (path.startsWith('snippet/') && request.method === 'PUT') {
+			return handleUpdateUserSnippet(request, env, path, userId);
+		}
+		
+		// File operations
+		if (path.startsWith('files/') && path.endsWith('/upload') && request.method === 'POST') {
+			return handleUploadUserFiles(request, env, path, userId);
+		}
+		if (path.startsWith('files/') && !path.includes('/upload') && path.split('/').length === 2 && request.method === 'GET') {
+			return handleGetUserFiles(request, env, path, userId);
+		}
+		if (path.startsWith('files/') && path.split('/').length === 3 && request.method === 'DELETE') {
+			return handleDeleteUserFile(request, env, path, userId);
+		}
+		
+		// Delete operations
+		if (path.startsWith('delete/') && request.method === 'DELETE') {
+			return handleDeleteUserItem(request, env, path, userId);
+		}
+		
+		return new Response(JSON.stringify({ success: false, message: 'Not found', path: path, method: request.method }), {
+			status: 404,
+			headers: { 'Content-Type': 'application/json' }
+		});
 	}
 
 	return null;
