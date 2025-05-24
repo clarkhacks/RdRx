@@ -206,7 +206,7 @@ async function handleDeleteUser(request: Request, env: Env, path: string): Promi
 		}
 		
 		// Get all user's shortcodes to delete files from R2
-		const userShortcodes = await env.DB.prepare('SELECT shortcode FROM shortcodes WHERE user_id = ?').bind(userId).all();
+		const userShortcodes = await env.DB.prepare('SELECT shortcode FROM short_urls WHERE creator_id = ?').bind(userId).all();
 		
 		// Delete files from R2 for each shortcode
 		for (const row of userShortcodes.results || []) {
@@ -222,8 +222,8 @@ async function handleDeleteUser(request: Request, env: Env, path: string): Promi
 		
 		// Delete user's data from database (cascading deletes should handle related records)
 		await env.DB.prepare('DELETE FROM users WHERE uid = ?').bind(userId).run();
-		await env.DB.prepare('DELETE FROM shortcodes WHERE user_id = ?').bind(userId).run();
-		await env.DB.prepare('DELETE FROM deletions WHERE user_id = ?').bind(userId).run();
+		await env.DB.prepare('DELETE FROM short_urls WHERE creator_id = ?').bind(userId).run();
+		await env.DB.prepare('DELETE FROM deletions WHERE shortcode IN (SELECT shortcode FROM short_urls WHERE creator_id = ?)').bind(userId).run();
 		
 		return new Response(JSON.stringify({ success: true, message: 'User and all associated data deleted successfully' }), {
 			headers: { 'Content-Type': 'application/json' }
@@ -252,32 +252,32 @@ async function handleGetUrls(request: Request, env: Env): Promise<Response> {
 		
 		// Build query based on filters
 		let query = `
-			SELECT s.shortcode, s.url, s.snippet, s.files, s.created_at, u.name as user_name,
+			SELECT s.shortcode, s.target_url as url, s.created_at, u.name as user_name,
 			CASE 
-				WHEN s.snippet IS NOT NULL THEN 'snippet'
-				WHEN s.files IS NOT NULL THEN 'file'
+				WHEN s.is_snippet = 1 THEN 'snippet'
+				WHEN s.is_file = 1 THEN 'file'
 				ELSE 'url'
 			END as type
-			FROM shortcodes s
-			LEFT JOIN users u ON s.user_id = u.uid
+			FROM short_urls s
+			LEFT JOIN users u ON s.creator_id = u.uid
 		`;
-		let countQuery = 'SELECT COUNT(*) as total FROM shortcodes s LEFT JOIN users u ON s.user_id = u.uid';
+		let countQuery = 'SELECT COUNT(*) as total FROM short_urls s LEFT JOIN users u ON s.creator_id = u.uid';
 		const params: any[] = [];
 		const countParams: any[] = [];
 		
 		let whereClause = '';
 		if (search) {
-			whereClause = ' WHERE (s.shortcode LIKE ? OR s.url LIKE ? OR u.name LIKE ?)';
+			whereClause = ' WHERE (s.shortcode LIKE ? OR s.target_url LIKE ? OR u.name LIKE ?)';
 			params.push(`%${search}%`, `%${search}%`, `%${search}%`);
 			countParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
 		}
 		
 		if (filter === 'url') {
-			whereClause += whereClause ? ' AND s.url IS NOT NULL AND s.snippet IS NULL AND s.files IS NULL' : ' WHERE s.url IS NOT NULL AND s.snippet IS NULL AND s.files IS NULL';
+			whereClause += whereClause ? ' AND s.is_snippet = 0 AND s.is_file = 0' : ' WHERE s.is_snippet = 0 AND s.is_file = 0';
 		} else if (filter === 'snippet') {
-			whereClause += whereClause ? ' AND s.snippet IS NOT NULL' : ' WHERE s.snippet IS NOT NULL';
+			whereClause += whereClause ? ' AND s.is_snippet = 1' : ' WHERE s.is_snippet = 1';
 		} else if (filter === 'file') {
-			whereClause += whereClause ? ' AND s.files IS NOT NULL' : ' WHERE s.files IS NOT NULL';
+			whereClause += whereClause ? ' AND s.is_file = 1' : ' WHERE s.is_file = 1';
 		}
 		
 		query += whereClause + ' ORDER BY s.created_at DESC LIMIT ? OFFSET ?';
@@ -325,7 +325,7 @@ async function handleUpdateUrl(request: Request, env: Env, path: string): Promis
 		const { url } = body;
 		
 		await env.DB.prepare(`
-			UPDATE shortcodes SET url = ?, updated_at = datetime('now')
+			UPDATE short_urls SET target_url = ?
 			WHERE shortcode = ?
 		`).bind(url, shortcode).run();
 		
@@ -359,7 +359,7 @@ async function handleDeleteUrl(request: Request, env: Env, path: string): Promis
 		}
 		
 		// Delete from database
-		await env.DB.prepare('DELETE FROM shortcodes WHERE shortcode = ?').bind(shortcode).run();
+		await env.DB.prepare('DELETE FROM short_urls WHERE shortcode = ?').bind(shortcode).run();
 		await env.DB.prepare('DELETE FROM deletions WHERE shortcode = ?').bind(shortcode).run();
 		
 		return new Response(JSON.stringify({ success: true, message: 'URL deleted successfully' }), {
@@ -381,7 +381,7 @@ async function handleGetStats(request: Request, env: Env): Promise<Response> {
 	try {
 		const [usersResult, urlsResult] = await Promise.all([
 			env.DB.prepare('SELECT COUNT(*) as total FROM users').first(),
-			env.DB.prepare('SELECT COUNT(*) as total FROM shortcodes').first()
+			env.DB.prepare('SELECT COUNT(*) as total FROM short_urls').first()
 		]);
 		
 		return new Response(JSON.stringify({
@@ -409,7 +409,7 @@ async function handleGetAnalytics(request: Request, env: Env): Promise<Response>
 	try {
 		const [usersResult, urlsResult, viewsResult] = await Promise.all([
 			env.DB.prepare('SELECT COUNT(*) as total FROM users').first(),
-			env.DB.prepare('SELECT COUNT(*) as total FROM shortcodes').first(),
+			env.DB.prepare('SELECT COUNT(*) as total FROM short_urls').first(),
 			env.DB.prepare('SELECT COUNT(*) as total FROM analytics').first()
 		]);
 		
