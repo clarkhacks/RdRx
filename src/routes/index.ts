@@ -18,12 +18,6 @@ import { authMiddleware } from '../middleware/auth';
 export async function router(request: Request, env: Env): Promise<Response> {
 	const url = new URL(request.url);
 	const shortcode = getShortcodeFromRequest(request);
-	// Check if /static
-	if (url.pathname.startsWith('/static/')) {
-		// Serve static assets directly from the STATIC
-		console.log(`Serving static asset: ${url.pathname}`);
-		return env.STATIC.fetch(request);
-	}
 
 	// Apply authentication middleware to all requests
 	// This will verify the session and attach the user to the request
