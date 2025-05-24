@@ -29,7 +29,7 @@ interface AnalyticsRecentVisitsProps {
  */
 function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: AnalyticsOverviewProps): string {
 	const isArray = targetUrl.includes('[') && targetUrl.includes(']');
-	const displayUrl = isArray ? `rdrx.co/${shortcode}` : targetUrl;
+	const displayUrl = isArray ? `https://rdrx.co/${shortcode}` : targetUrl;
 	const linkText = isArray ? `File Bin: ${shortcode}` : targetUrl;
 
 	return `
@@ -242,7 +242,7 @@ function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsPro
             <td data-label="Time">${new Date(visit.timestamp).toLocaleString()}</td>
             <td data-label="Country">${visit.country ? `${visit.country}` : 'Unknown'}</td>
           </tr>
-        `,
+        `
 					)
 					.join('')}
       </tbody>
