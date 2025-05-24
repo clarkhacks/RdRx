@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RdRx - Modern URL Shortener</title>
+    <meta name="description" content="RdRx is a modern URL shortener that allows you to create and share short URLs easily.">
+    <meta name="keywords" content="URL shortener, short URLs, share links, modern URL shortener">
+    <meta name="author" content="RdRx Team">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="RdRx - Modern URL Shortener">
+    <meta property="og:description" content="RdRx is a modern URL shortener that allows you to create and share short URLs easily.">
+    <meta property="og:image" content="https://cdn.rdrx.co/banner.jpg">
+    <meta property="og:url" content="https://rdrx.co/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RdRx">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="RdRx - Modern URL Shortener">
+    <meta property="twitter:description" content="RdRx is a modern URL shortener that allows you to create and share short URLs easily.">
+    <meta property="twitter:image" content="https://cdn.rdrx.co/banner.jpg">
+    
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="https://cdn.rdrx.co/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://cdn.rdrx.co/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://cdn.rdrx.co/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://cdn.rdrx.co/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://cdn.rdrx.co/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.rdrx.co/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://cdn.rdrx.co/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rdrx.co/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://cdn.rdrx.co/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.rdrx.co/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.rdrx.co/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.rdrx.co/favicons/favicon-16x16.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/built.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    
+    <!-- Alpine.js for landing page -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    
+    <style>
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            background-color: #FFFDF9;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #FFC107, #E91E63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-gradient {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 193, 7, 0.15), transparent 30%),
+                        radial-gradient(circle at 70% 70%, rgba(233, 30, 99, 0.15), transparent 30%);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border-radius: 1.5rem;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #E16ED8;
+        }
+        
+        .playful-shadow {
+            box-shadow: 5px 5px 0px #E91E63;
+        }
+        
+        .btn-playful {
+            transition: all 0.2s ease;
+            transform-origin: center;
+        }
+        
+        .btn-playful:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+        
+        .btn-playful:active {
+            transform: scale(0.98);
+        }
+        
+        .logo-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Tailwind Config */
+        :root {
+            --primary-50: #FFF9E6;
+            --primary-100: #FFF3CC;
+            --primary-200: #FFE799;
+            --primary-300: #FFDB66;
+            --primary-400: #FFCF33;
+            --primary-500: #FFC300;
+            --primary-600: #E6B000;
+            --primary-700: #CC9C00;
+            --primary-800: #B38800;
+            --primary-900: #996600;
+            --secondary-50: #FCE4EC;
+            --secondary-100: #F8BBD0;
+            --secondary-200: #F48FB1;
+            --secondary-300: #F06292;
+            --secondary-400: #EC407A;
+            --secondary-500: #E91E63;
+            --secondary-600: #D81B60;
+            --secondary-700: #C2185B;
+            --secondary-800: #AD1457;
+            --secondary-900: #880E4F;
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    
+<!-- Navigation -->
+<nav 
+  x-data="{ open: false }"
+  class="bg-white shadow-md py-3 px-6 flex items-center justify-between sticky top-0 z-50 rounded-full mx-4 my-3 card-container"
+>
+    <a href="/" class="flex items-center gap-2">
+        <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
+        <span class="text-xl font-bold text-gray-800">RdRx</span>
+    </a>
+    
+    <!-- Mobile menu button -->
+    <button 
+      @click="open = !open"
+      class="md:hidden ml-auto text-gray-700 hover:text-primary-500 focus:outline-none"
+      aria-label="Open Menu"
+    >
+      <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Desktop & mobile nav links -->
+    <div 
+      class="flex items-center gap-4"
+      :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-white shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
+    >
+        <a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
+        <a href="/coming-soon" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
+        <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful btn-outline text-sm py-2 px-4">
+            <i class="fab fa-github mr-1"></i> GitHub
+        </a>
+    </div>
+</nav>
+<style>
+  @media (max-width: 768px) {
+    nav .flex.items-center.gap-4 {
+      display: none;
+    }
+    nav .flex.items-center.gap-4.flex {
+      display: flex !important;
+    }
+  }
+</style>
+
+
+<!-- Hero Section -->
+<header class="hero-gradient min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
+    <div class="max-w-5xl mx-auto text-center">
+        <div class="mb-2">
+            <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-36 h-36 mx-auto">
+        </div>
+        <p class="text-xl sm:text-2xl md:text-3xl text-gray-600 mb-8">Modern URL Shortening & Content Sharing</p>
+        <p class="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto mb-12">
+            Simplify your links, share code snippets, and host files with our powerful, cloud-native platform
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="#features" class="text-gray-800 bg-primary-600 hover:bg-primary-700 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
+                Explore Features
+            </a>
+            <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
+                <i class="fab fa-github mr-2"></i> GitHub
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- About Section -->
+<section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">What is <span class="gradient-text">RdRx</span>?</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                RdRx (Redirects) is an open-source URL shortener and content sharing platform built with modern cloud technologies.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="bg-gray-50 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-semibold mb-4">Powered by Cloudflare</h3>
+                <p class="text-gray-600 mb-6">
+                    RdRx runs on Cloudflare Workers, a serverless platform that delivers lightning-fast performance at the edge. Your links and content are delivered from data centers close to your users, ensuring minimal latency.
+                </p>
+                <div class="flex items-center">
+                    <i class="fas fa-server text-primary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">Serverless architecture</span>
+                </div>
+                <div class="flex items-center mt-3">
+                    <i class="fas fa-globe text-primary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">Global edge network</span>
+                </div>
+                <div class="flex items-center mt-3">
+                    <i class="fas fa-bolt text-primary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">Ultra-low latency</span>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-semibold mb-4">Data Storage with D1</h3>
+                <p class="text-gray-600 mb-6">
+                    All your links and analytics are stored in Cloudflare D1, a serverless SQL database built on SQLite. This provides reliable, scalable storage with minimal overhead and maximum performance.
+                </p>
+                <div class="flex items-center">
+                    <i class="fas fa-database text-secondary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">Serverless SQL database</span>
+                </div>
+                <div class="flex items-center mt-3">
+                    <i class="fas fa-shield-alt text-secondary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">Secure data storage</span>
+                </div>
+                <div class="flex items-center mt-3">
+                    <i class="fas fa-tachometer-alt text-secondary-500 text-xl mr-3"></i>
+                    <span class="text-gray-700">High-performance queries</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-16 text-center">
+            <p class="text-gray-600 mb-4">
+                RdRx is open source but the code is currently private while we clean it up for public release.
+            </p>
+            <p class="text-gray-600">
+                We're committed to transparency and community collaboration, and we'll be making the codebase public soon.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">Features</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                RdRx offers a comprehensive set of features for link management and content sharing.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Current Features -->
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-link text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">URL Shortening</h3>
+                <p class="text-gray-600">
+                    Create concise, memorable links from long URLs with custom shortcodes.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-code text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Code Snippets</h3>
+                <p class="text-gray-600">
+                    Share code snippets with syntax highlighting and easy access.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-file-alt text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">File Hosting</h3>
+                <p class="text-gray-600">
+                    Upload and share files through short links with global CDN delivery.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-chart-line text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Analytics</h3>
+                <p class="text-gray-600">
+                    Track link performance with detailed analytics and insights.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-user-shield text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Authentication</h3>
+                <p class="text-gray-600">
+                    Secure server-side authentication with JWT tokens and HTTP-only cookies.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-clock text-primary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Auto Cleanup</h3>
+                <p class="text-gray-600">
+                    Schedule automatic deletion of expired links and files.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Coming Soon Features -->
+        <div class="mt-16">
+            <h3 class="text-2xl font-semibold mb-6 text-center">Coming Soon</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-envelope text-primary-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Email Integration</h3>
+                    <p class="text-gray-600">
+                        Password reset and notifications via Mailgun integration.
+                    </p>
+                </div>
+                
+                <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-user-cog text-primary-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Account Management</h3>
+                    <p class="text-gray-600">
+                        Complete user profile management with profile pictures and password changes.
+                    </p>
+                </div>
+                
+                <div class="feature-card bg-gray-100 p-6 rounded-xl shadow-sm border border-dashed border-gray-300">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-mobile-alt text-gray-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Mobile App</h3>
+                    <p class="text-gray-600">
+                        Native mobile applications for iOS and Android coming soon.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-8 md:mb-0">
+                <div class="flex items-center">
+                    <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-10 h-10 mr-3">
+                    <span class="text-2xl font-bold gradient-text">RdRx</span>
+                </div>
+                <p class="text-gray-400 mt-2">Modern URL shortening & content sharing</p>
+            </div>
+            
+            <div class="flex flex-col items-end">
+                <div class="flex gap-4 mb-3">
+                    <a href="/terms/" class="text-gray-300 hover:text-primary-300 transition-colors duration-200">Terms of Service</a>
+                    <a href="/privacy/" class="text-gray-300 hover:text-primary-300 transition-colors duration-200">Privacy Policy</a>
+                </div>
+                <p class="text-gray-400 mb-2">
+                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">GPL-3.0</a>
+                </p>
+                <p class="text-gray-500 text-sm">
+                    &copy; 2025 RdRx. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>
