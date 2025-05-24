@@ -242,7 +242,7 @@ function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsPro
             <td data-label="Time">${new Date(visit.timestamp).toLocaleString()}</td>
             <td data-label="Country">${visit.country ? `${visit.country}` : 'Unknown'}</td>
           </tr>
-        `
+        `,
 					)
 					.join('')}
       </tbody>
