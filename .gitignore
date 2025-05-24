@@ -171,11 +171,6 @@ dist
 .dev.vars
 .wrangler/
 
-# Generated static files (keep assets directory)
-static/index.html
-static/privacy/
-static/terms/
-static/verify/
-static/coming-soon/
 # Keep static/assets/ directory but ignore built.css
 static/assets/built.css
+
