@@ -300,16 +300,16 @@ function renderLandingPageTailwindConfig(): string {
             extend: {
                 colors: {
                     primary: {
-                        50: '#FFF8E1',
-                        100: '#FFECB3',
-                        200: '#FFE082',
-                        300: '#FFD54F',
-                        400: '#FFCA28',
-                        500: '#FFC107', /* Sunset Yellow */
-                        600: '#FFB300',
-                        700: '#FFA000',
-                        800: '#FF8F00',
-                        900: '#FF6F00',
+                        50: '#FFF9E6',
+                        100: '#FFF3CC',
+                        200: '#FFE799',
+                        300: '#FFDB66',
+                        400: '#FFCF33',
+                        500: '#FFC300', /* Primary Yellow */
+                        600: '#E6B000',
+                        700: '#CC9C00',
+                        800: '#B38800',
+                        900: '#996600',
                     },
                     secondary: {
                         50: '#FCE4EC',
