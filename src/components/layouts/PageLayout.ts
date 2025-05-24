@@ -30,6 +30,19 @@ ${renderDocumentHead({ title, additionalScripts: additionalHeadScripts })}
     </main>
   </div>
 
+  <!-- Footer -->
+  <footer class="bg-surface-light border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+        <div>© ${new Date().getFullYear()} RdRx. All rights reserved.</div>
+        <div class="flex gap-4">
+          <a href="/terms" class="hover:text-primary-500 transition-colors duration-200">Terms of Service</a>
+          <a href="/privacy" class="hover:text-primary-500 transition-colors duration-200">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script>
     ${scripts}
   </script>

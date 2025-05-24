@@ -7,6 +7,8 @@ import { handleApiRoutes } from './api';
 import { renderLandingPage } from '../components/pages/LandingPage';
 import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
+import { renderTermsOfServicePage } from '../components/pages/TermsOfServicePage';
+import { renderPrivacyPolicyPage } from '../components/pages/PrivacyPolicyPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -39,6 +41,16 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	// Handle dashboard page
 	if (url.pathname === '/dashboard') {
 		return renderDashboardPage(enhancedRequest, env);
+	}
+
+	// Handle Terms of Service page
+	if (url.pathname === '/terms' || url.pathname === '/tos') {
+		return renderTermsOfServicePage();
+	}
+
+	// Handle Privacy Policy page
+	if (url.pathname === '/privacy' || url.pathname === '/privacy-policy') {
+		return renderPrivacyPolicyPage();
 	}
 
 	// Handle API routes for POST requests
