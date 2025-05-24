@@ -4,12 +4,8 @@ import { handleAnalyticsRoutes } from './analytics';
 import { handleCustomAuthRoutes } from './customAuth';
 import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
-import { renderLandingPage } from '../components/pages/LandingPage';
 import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
-import { renderTermsOfServicePage } from '../components/pages/TermsOfServicePage';
-import { renderPrivacyPolicyPage } from '../components/pages/PrivacyPolicyPage';
-import { renderComingSoonPage } from '../components/pages/ComingSoonPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -44,29 +40,22 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return renderDashboardPage(enhancedRequest, env);
 	}
 
-	// Handle Terms of Service page
-	if (url.pathname === '/terms' || url.pathname === '/tos') {
-		return renderTermsOfServicePage();
-	}
-
-	// Handle Privacy Policy page
-	if (url.pathname === '/privacy' || url.pathname === '/privacy-policy') {
-		return renderPrivacyPolicyPage();
-	}
-
-	// Handle Coming Soon page
-	if (url.pathname === '/coming-soon' || url.pathname === '/signup') {
-		return renderComingSoonPage();
-	}
 
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
 		return handleApiRoutes(enhancedRequest, env);
 	}
 
-	// Handle home page (no shortcode)
+	// Static files (landing page, terms, privacy, verify) are now served from /static directory
+	// Landing page (/), terms (/terms/), privacy (/privacy/), and verify (/verify/) 
+	// are handled by Cloudflare Workers static asset serving
+	
+	// If no shortcode is present and we reach here, it means the static file wasn't found
+	// This could be a request for the root path or other static paths
 	if (!shortcode) {
-		return renderLandingPage();
+		// Let static assets be served by the Workers runtime
+		// If the static file doesn't exist, this will eventually return a 404
+		return new Response('Not Found', { status: 404 });
 	}
 
 	// Handle all shortcode routes (including protected paths)
