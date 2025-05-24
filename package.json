@@ -7,7 +7,7 @@
 	"description": "A short URL service built with Cloudflare Wrangler, D1, and R2",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/clarkhacks/rdrx.git",
+		"url": "https://github.com/clarkhacks/rdrx.git"
 	},
 	"homepage": "https://rdrx.co",
 	"scripts": {
