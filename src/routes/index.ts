@@ -5,6 +5,7 @@ import { handleCustomAuthRoutes } from './customAuth';
 import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
 import { handleAdminRoutes } from './admin';
+import { handleUserRoutes } from './user';
 import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { renderAdminPage } from '../components/pages/AdminPage';
@@ -32,6 +33,14 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		const adminResponse = await handleAdminRoutes(enhancedRequest, env);
 		if (adminResponse) {
 			return adminResponse;
+		}
+	}
+
+	// Handle user API routes
+	if (url.pathname.startsWith('/api/user/')) {
+		const userResponse = await handleUserRoutes(enhancedRequest, env);
+		if (userResponse) {
+			return userResponse;
 		}
 	}
 
