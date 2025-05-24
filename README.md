@@ -21,10 +21,60 @@
 - **Code Snippets**: Share code snippets with syntax highlighting
 - **File Sharing**: Upload and share files securely
 - **Analytics**: Track visits to your short links with detailed statistics
+- **Content Editing**: Edit URLs, modify snippets, and manage files after creation
+- **File Gallery Management**: Visual file gallery with add/remove capabilities and R2 storage integration
 - **Custom Authentication**: Secure server-side authentication with JWT tokens
 - **User Dashboard**: View your links, snippets, files, and analytics
 - **Account Management**: Profile editing, password management, and profile pictures
+- **Admin Panel**: Comprehensive admin interface for user and content management
 - **Expiration**: Set links to expire after a specific time
+
+## User Features
+
+### Content Creation & Management
+- **Create Short URLs**: Transform long URLs into short, shareable links
+- **Code Snippet Sharing**: Share formatted code with syntax highlighting
+- **File Upload & Sharing**: Upload multiple files and create shareable file bins
+- **Edit After Creation**: Modify URLs, update snippet content, and manage files
+- **Delete Content**: Remove unwanted links, snippets, or files with proper cleanup
+
+### File Management
+- **Visual File Gallery**: Browse uploaded files with image thumbnails
+- **Individual File Control**: Add or remove specific files from collections
+- **Storage Integration**: Automatic R2 storage management with proper cleanup
+- **File Type Support**: Support for images, documents, and various file types
+
+### Analytics & Tracking
+- **Detailed Analytics**: View click statistics, geographic data, and visit trends
+- **Real-time Data**: Live tracking of link performance
+- **Export Capabilities**: Download analytics data for external analysis
+- **User-specific Analytics**: Track only your own content performance
+
+### Account Features
+- **Secure Authentication**: JWT-based authentication with HTTP-only cookies
+- **Profile Management**: Update personal information and profile pictures
+- **Password Security**: Secure password hashing with PBKDF2 and salt
+- **Email Integration**: Password reset functionality via Mailgun
+
+## Admin Features
+
+### User Management
+- **User Overview**: View all registered users with search and filtering
+- **Account Control**: Create, edit, verify, and delete user accounts
+- **Bulk Operations**: Manage multiple users efficiently
+- **Security Monitoring**: Track user activity and authentication status
+
+### Content Administration
+- **URL Management**: View, edit, and delete all shortened URLs
+- **Content Moderation**: Monitor and manage user-generated content
+- **File Administration**: Manage uploaded files with R2 storage integration
+- **Bulk Content Operations**: Efficiently manage large amounts of content
+
+### System Analytics
+- **Platform Statistics**: Overall system usage and performance metrics
+- **Storage Monitoring**: R2 storage usage and file management statistics
+- **User Analytics**: Platform-wide user engagement and activity data
+- **Performance Tracking**: Monitor system health and response times
 
 ## Prerequisites
 
@@ -128,6 +178,7 @@ Create a `.dev.vars` file in the project root with your configuration:
 ```
 API_KEY="your-api-key-here"
 API_KEY_ADMIN="your-admin-api-key-here"
+ADMIN_UID="your-admin-user-id-here"
 
 # Authentication
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
@@ -176,6 +227,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   salt TEXT NOT NULL,
+  email_verified BOOLEAN NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   profile_picture_url TEXT
@@ -220,8 +272,47 @@ For production, set your environment variables in the Cloudflare Dashboard or us
 ```bash
 npx wrangler secret put JWT_SECRET
 npx wrangler secret put MAILGUN_API_KEY
+npx wrangler secret put ADMIN_UID
 # etc.
 ```
+
+## Admin Setup
+
+To access the admin panel:
+
+1. Create your user account through the normal registration process
+2. Note your user ID (UID) from the account page or database
+3. Set the `ADMIN_UID` environment variable to your user ID:
+   ```bash
+   # For local development
+   echo "ADMIN_UID=your-user-id-here" >> .dev.vars
+   
+   # For production
+   npx wrangler secret put ADMIN_UID
+   ```
+4. Restart your application
+5. The admin panel link will appear in your sidebar navigation
+
+## API Endpoints
+
+### User Content Management
+- `PUT /api/user/url/{shortcode}` - Update URL target
+- `GET /api/user/snippet/{shortcode}` - Get snippet content
+- `PUT /api/user/snippet/{shortcode}` - Update snippet content
+- `GET /api/user/files/{shortcode}` - Get file list
+- `DELETE /api/user/files/{shortcode}/{filename}` - Remove specific file
+- `POST /api/user/files/{shortcode}/upload` - Add files to collection
+- `DELETE /api/user/delete/{shortcode}` - Delete entire item
+
+### Admin API
+- `GET /api/admin/users` - List all users
+- `POST /api/admin/users` - Create new user
+- `DELETE /api/admin/users/{id}` - Delete user
+- `GET /api/admin/urls` - List all URLs
+- `PUT /api/admin/urls/{shortcode}` - Update URL
+- `DELETE /api/admin/urls/{shortcode}` - Delete URL
+- `GET /api/admin/stats` - System statistics
+- `GET /api/admin/analytics` - Platform analytics
 
 ## Troubleshooting
 
@@ -234,6 +325,15 @@ If you encounter authentication issues:
 3. Verify that your R2 bucket is properly configured for profile picture uploads
 4. Check server logs for detailed error messages
 
+### Admin Panel Access
+
+If you can't access the admin panel:
+
+1. Verify your ADMIN_UID is set correctly in environment variables
+2. Ensure your user account exists and you're logged in
+3. Check that the UID matches exactly (case-sensitive)
+4. Restart the application after setting the ADMIN_UID
+
 ### Database Issues
 
 If you encounter database issues:
@@ -241,6 +341,16 @@ If you encounter database issues:
 1. Verify your D1 database is properly configured in wrangler.toml
 2. Check that all tables were created successfully
 3. Try running the schema.sql file again to ensure all tables exist
+4. Verify the `email_verified` column exists in the users table
+
+### File Upload Issues
+
+If file uploads aren't working:
+
+1. Check R2 bucket configuration in wrangler.toml
+2. Verify R2 bucket permissions
+3. Ensure the bucket name matches in your configuration
+4. Check browser console for upload errors
 
 ### Deployment Issues
 
@@ -249,7 +359,7 @@ If you encounter issues during deployment:
 1. Ensure your Wrangler CLI is up to date: `npm install -g wrangler@latest`
 2. Verify your Cloudflare authentication: `npx wrangler whoami`
 3. Check your `wrangler.toml` configuration
-4. Make sure all required environment variables are set
+4. Make sure all required environment variables are set as secrets
 
 ## Project Structure
 
@@ -264,10 +374,14 @@ rdrx-shorturls/
 │   ├── helpers/          # Helper functions
 │   ├── middleware/       # Middleware functions
 │   ├── routes/           # Route handlers
+│   │   ├── admin.ts      # Admin API routes
+│   │   ├── user.ts       # User content management routes
+│   │   └── ...           # Other route handlers
 │   ├── utils/            # Utility functions
 │   ├── index.ts          # Entry point
 │   └── types.ts          # TypeScript types
 ├── test/                 # Tests
+├── static/               # Static assets
 ├── .dev.vars             # Development environment variables
 ├── package.json          # Dependencies and scripts
 ├── tsconfig.json         # TypeScript configuration
@@ -292,6 +406,16 @@ The application uses a custom server-side authentication system with the followi
 - **Password Hashing**: PBKDF2 with salt for secure password storage
 - **Account Management**: Users can update their profile, change passwords, and upload profile pictures
 - **Email Integration**: Password reset via email using Mailgun
+- **Admin Authentication**: Role-based access control for administrative functions
+
+## Security Features
+
+- **Environment Variable Secrets**: Sensitive data stored as Cloudflare Worker secrets
+- **User Ownership Verification**: Users can only edit their own content
+- **Admin Role Protection**: Admin functions require specific user ID verification
+- **Secure File Handling**: Proper R2 storage management with cleanup
+- **Input Validation**: Comprehensive validation for all user inputs
+- **CSRF Protection**: Secure form handling and API endpoints
 
 ## License
 

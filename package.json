@@ -17,7 +17,7 @@
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
 		"build:site": "npx @11ty/eleventy --input=./website --output=./static",
-		"build:css": "npx @tailwindcss/cli -i ./static/assets/tailwind.input.css -o ./static/assets/built.css --postcss --minify",
+		"build:css": "npx @tailwindcss/cli -i ./tailwind.input.css -o ./static/assets/built.css --postcss --minify",
 		"build": "pnpm run build:css && pnpm run build:site && wrangler build",
 		"format": "prettier --write ."
 	},
