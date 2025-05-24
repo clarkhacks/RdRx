@@ -4,8 +4,10 @@ import { handleAnalyticsRoutes } from './analytics';
 import { handleCustomAuthRoutes } from './customAuth';
 import { handleShortcodeRoutes } from './shortcode';
 import { handleApiRoutes } from './api';
+import { handleAdminRoutes } from './admin';
 import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
+import { renderAdminPage } from '../components/pages/AdminPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -25,6 +27,14 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return authResponse;
 	}
 
+	// Handle admin API routes
+	if (url.pathname.startsWith('/api/admin/')) {
+		const adminResponse = await handleAdminRoutes(enhancedRequest, env);
+		if (adminResponse) {
+			return adminResponse;
+		}
+	}
+
 	// Handle analytics routes
 	if (url.pathname === '/analytics' || url.pathname.startsWith('/analytics/')) {
 		return handleAnalyticsRoutes(enhancedRequest, env, url.pathname);
@@ -40,6 +50,10 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return renderDashboardPage(enhancedRequest, env);
 	}
 
+	// Handle admin page
+	if (url.pathname === '/admin') {
+		return renderAdminPage(enhancedRequest, env);
+	}
 
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
@@ -47,9 +61,9 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	}
 
 	// Static files (landing page, terms, privacy, verify) are now served from /static directory
-	// Landing page (/), terms (/terms/), privacy (/privacy/), and verify (/verify/) 
+	// Landing page (/), terms (/terms/), privacy (/privacy/), and verify (/verify/)
 	// are handled by Cloudflare Workers static asset serving
-	
+
 	// If no shortcode is present and we reach here, it means the static file wasn't found
 	// This could be a request for the root path or other static paths
 	if (!shortcode) {
