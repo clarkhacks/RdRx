@@ -17,6 +17,9 @@ export interface Env {
 	// API keys
 	API_KEY: string;
 	API_KEY_ADMIN: string;
+
+	// Static assets
+	STATIC: Fetcher;
 }
 
 /**

@@ -59,6 +59,11 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return renderComingSoonPage();
 	}
 
+	// Static Assets
+	if (url.pathname.startsWith('/static/') || url.pathname.startsWith('/assets/')) {
+		// Serve static assets directly
+		return env.STATIC.fetch(request);
+	}
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
 		return handleApiRoutes(enhancedRequest, env);
