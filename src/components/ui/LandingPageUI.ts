@@ -8,12 +8,9 @@ function renderLandingPageUI(): string {
     <!-- Hero Section -->
     <header class="hero-gradient min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
         <div class="max-w-5xl mx-auto text-center">
-            <div class="mb-8">
-                <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-24 h-24 mx-auto">
+            <div class="mb-2">
+                <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-36 h-36 mx-auto">
             </div>
-            <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold mb-6">
-                <span class="gradient-text">RdRx</span>
-            </h1>
             <p class="text-xl sm:text-2xl md:text-3xl text-gray-600 mb-8">Modern URL Shortening & Content Sharing</p>
             <p class="text-lg md:text-xl text-gray-500 max-w-3xl mx-auto mb-12">
                 Simplify your links, share code snippets, and host files with our powerful, cloud-native platform
