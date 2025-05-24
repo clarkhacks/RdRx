@@ -15,7 +15,7 @@ function renderPageLayout({ title, activeNavItem = '', content, scripts = '', ad
 <!DOCTYPE html>
 <html lang="en">
 ${renderDocumentHead({ title, additionalScripts: additionalHeadScripts })}
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-surface-light min-h-screen flex flex-col">
 
   <!-- Header -->
   ${renderHeader()}

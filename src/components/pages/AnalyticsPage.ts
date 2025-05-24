@@ -32,17 +32,7 @@ async function renderAnalyticsPage(shortcode: string, env: Env): Promise<Respons
 
 	// Assemble the page content from UI components
 	const pageContent = `
-    <!-- Add gradient styles -->
-    <style>
-      .form-card {
-        transition: all 0.3s ease;
-        border-top: 4px solid transparent;
-        border-image: linear-gradient(to right, #0ea5e9, #ec4899);
-        border-image-slice: 1;
-      }
-    </style>
-
-    <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
+    <div class="bg-white shadow-notion p-6 md:p-8 mb-8 max-w-6xl mx-auto notion-card">
       ${renderAnalyticsOverview({ analyticsData, shortcode, targetUrl })}
       ${renderAnalyticsCharts({ analyticsData })}
       ${renderAnalyticsRecentVisits({ analyticsData })}
