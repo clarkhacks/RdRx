@@ -16,7 +16,7 @@
 		"start": "wrangler dev",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
-		"build:css": "npx @tailwindcss/cli -i ./static/assets/tailwind.input.css -o ./static/assets/built.css --postcss",
+		"build:css": "npx @tailwindcss/cli -i ./static/assets/tailwind.input.css -o ./static/assets/built.css --postcss --minify",
 		"build": "pnpm run build:css && wrangler build",
 		"format": "prettier --write ."
 	},
