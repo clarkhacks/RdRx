@@ -29,6 +29,49 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 				activeNavItem: 'account',
 			})}
 			<script>
+				// Store original profile picture URL for cancel functionality
+				let originalProfilePicture = document.getElementById('profile-picture').src;
+				
+				// Handle file selection
+				document.getElementById('profile-picture-upload').addEventListener('change', function(e) {
+					const file = e.target.files[0];
+					const uploadButton = document.getElementById('profile-upload-button');
+					const cancelButton = document.getElementById('profile-cancel-button');
+					const profilePicture = document.getElementById('profile-picture');
+					
+					if (file) {
+						// Show preview of selected image
+						const reader = new FileReader();
+						reader.onload = function(e) {
+							profilePicture.src = e.target.result;
+						};
+						reader.readAsDataURL(file);
+						
+						// Show Save and Cancel buttons
+						uploadButton.classList.remove('hidden');
+						cancelButton.classList.remove('hidden');
+						
+						// Clear any previous status messages
+						document.getElementById('upload-status').textContent = '';
+					}
+				});
+				
+				// Handle cancel button
+				document.getElementById('profile-cancel-button').addEventListener('click', function() {
+					// Reset to original image
+					document.getElementById('profile-picture').src = originalProfilePicture;
+					
+					// Clear file input
+					document.getElementById('profile-picture-upload').value = '';
+					
+					// Hide Save and Cancel buttons
+					document.getElementById('profile-upload-button').classList.add('hidden');
+					document.getElementById('profile-cancel-button').classList.add('hidden');
+					
+					// Clear status message
+					document.getElementById('upload-status').textContent = '';
+				});
+				
 				// Profile picture upload
 				document.getElementById('profile-picture-form').addEventListener('submit', async (e) => {
 					e.preventDefault();
@@ -45,6 +88,7 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 					try {
 						document.getElementById('upload-status').textContent = 'Uploading...';
 						document.getElementById('profile-upload-button').disabled = true;
+						document.getElementById('profile-cancel-button').disabled = true;
 						
 						// Log the file details for debugging
 						console.log('Uploading file:', file.name, file.type, file.size);
@@ -79,8 +123,16 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 								profilePicUrl += '&t=' + timestamp;
 							}
 							
-							// Update the image source
+							// Update the image source and store as new original
 							document.getElementById('profile-picture').src = profilePicUrl;
+							originalProfilePicture = profilePicUrl;
+							
+							// Hide buttons after successful upload
+							document.getElementById('profile-upload-button').classList.add('hidden');
+							document.getElementById('profile-cancel-button').classList.add('hidden');
+							
+							// Clear file input
+							fileInput.value = '';
 							
 							// Log the updated URL for debugging
 							console.log('Updated profile picture URL:', profilePicUrl);
@@ -92,6 +144,7 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 						document.getElementById('upload-status').textContent = 'Upload failed: ' + error.message;
 					} finally {
 						document.getElementById('profile-upload-button').disabled = false;
+						document.getElementById('profile-cancel-button').disabled = false;
 					}
 				});
 				
@@ -178,58 +231,125 @@ function renderAccountContent(user: User): string {
 	const profilePicture = user.profile_picture_url || 'https://via.placeholder.com/150';
 
 	return `
+        <!-- Add gradient styles to match other forms -->
+        <style>
+          .gradient-text {
+            background: linear-gradient(90deg, #FFC107, #FF8A00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+          
+          .form-card {
+            transition: all 0.3s ease;
+            border-radius: 24px;
+            border: 2px solid #FFF;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+          }
+          
+          .input-focus:focus {
+            border-color: transparent;
+            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+          }
+          
+          .btn-gradient {
+            background: #000;
+            color: white;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+          }
+          
+          .btn-gradient:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+          }
+          
+          .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+          }
+          
+          .btn-secondary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+          }
+          
+          .btn-cancel {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+          }
+          
+          .btn-cancel:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+          }
+          
+          .success-gradient {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: none;
+            border-left: 4px solid #10b981;
+          }
+        </style>
+
         <div class="max-w-6xl mx-auto py-8 px-4">
             <!-- Welcome Section -->
-            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-8 form-card">
                 <div class="flex items-center">
-                    <img src="${profilePicture}" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover mr-4">
+                    <img src="${profilePicture}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover mr-6 border-4 border-primary-100">
                     <div>
-                        <h1 class="text-2xl font-bold">My Account</h1>
-                        <p class="text-gray-600">Manage your profile and account settings</p>
+                        <h1 class="text-4xl font-bold mb-2 gradient-text">My Account</h1>
+                        <p class="text-gray-500">Manage your profile and account settings</p>
                     </div>
                 </div>
             </div>
             
             <!-- Account Sections -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Profile Picture Section -->
-                <div class="bg-white p-6 rounded-lg shadow-md">
-                    <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">Profile Picture</h2>
                     <div class="flex flex-col items-center">
-                        <img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-4">
-                        <form id="profile-picture-form" class="flex flex-col items-center">
-                            <label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer mb-2">
-                                Select Photo
+                        <img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-6 border-4 border-primary-100">
+                        <form id="profile-picture-form" class="flex flex-col items-center w-full space-y-4">
+                            <label class="btn-secondary text-white font-medium py-3 px-6 rounded-full cursor-pointer transition duration-300 text-center w-full">
+                                Choose Photo
                                 <input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
                             </label>
-                            <button id="profile-upload-button" type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mt-2">
-                                Upload Picture
+                            <button id="profile-upload-button" type="submit" class="btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300 w-full hidden">
+                                Save Photo
+                            </button>
+                            <button id="profile-cancel-button" type="button" class="btn-cancel text-white font-medium py-3 px-6 rounded-full focus:outline-none transition duration-300 w-full hidden">
+                                Cancel
                             </button>
                         </form>
-                        <p id="upload-status" class="mt-2 text-sm text-gray-600"></p>
+                        <p id="upload-status" class="mt-4 text-sm text-gray-600 text-center"></p>
                     </div>
                 </div>
                 
                 <!-- Profile Information Section -->
-                <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
-                    <h2 class="text-xl font-semibold mb-4">Profile Information</h2>
-                    <form id="update-profile-form">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">Profile Information</h2>
+                    <form id="update-profile-form" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="name">
                                 Name
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                            <input class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition" 
                                 id="name" name="name" type="text" value="${user.name}" required>
                         </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="email">
                                 Email
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                            <input class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition" 
                                 id="email" name="email" type="email" value="${user.email}" required>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                        <div class="flex items-center justify-between pt-4">
+                            <button class="btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300" 
                                 type="submit">
                                 Update Profile
                             </button>
@@ -239,32 +359,34 @@ function renderAccountContent(user: User): string {
                 </div>
                 
                 <!-- Change Password Section -->
-                <div class="bg-white p-6 rounded-lg shadow-md md:col-span-3">
-                    <h2 class="text-xl font-semibold mb-4">Change Password</h2>
-                    <form id="change-password-form">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="current_password">
-                                Current Password
-                            </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                id="current_password" name="current_password" type="password" required>
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card lg:col-span-3">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">Change Password</h2>
+                    <form id="change-password-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1" for="current_password">
+                                    Current Password
+                                </label>
+                                <input class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition" 
+                                    id="current_password" name="current_password" type="password" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1" for="new_password">
+                                    New Password
+                                </label>
+                                <input class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition" 
+                                    id="new_password" name="new_password" type="password" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1" for="confirm_password">
+                                    Confirm New Password
+                                </label>
+                                <input class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition" 
+                                    id="confirm_password" name="confirm_password" type="password" required>
+                            </div>
                         </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password">
-                                New Password
-                            </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                id="new_password" name="new_password" type="password" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm_password">
-                                Confirm New Password
-                            </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                id="confirm_password" name="confirm_password" type="password" required>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                        <div class="flex items-center justify-between pt-4">
+                            <button class="btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300" 
                                 type="submit">
                                 Change Password
                             </button>
