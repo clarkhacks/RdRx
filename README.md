@@ -6,6 +6,13 @@
   <p><strong>Modern URL Shortening & Content Sharing</strong></p>
 </div>
 
+<div align="center">
+  <a href="CONTRIBUTING.md">Contributing</a> |
+  <a href="https://github.com/clarkhacks/RdRx/stargazers">⭐ Star</a> |
+  <a href="https://github.com/clarkhacks/RdRx/fork">🍴 Fork</a> |
+  <a href="https://github.com/clarkhacks/RdRx/issues">🛠 Open Issue</a>
+</div>
+
 > **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
 
 ## Features

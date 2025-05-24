@@ -2,6 +2,8 @@
 
 Thanks for considering contributing to RdRx! Your input is welcome — whether it's code, documentation, or ideas to improve the project.
 
+**Looking to get started?** Check out the [To-do list](TODO.md) for tasks that need help.
+
 ## Code of Conduct
 
 This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). All contributors are expected to respect and follow it.
