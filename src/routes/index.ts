@@ -9,6 +9,7 @@ import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { renderTermsOfServicePage } from '../components/pages/TermsOfServicePage';
 import { renderPrivacyPolicyPage } from '../components/pages/PrivacyPolicyPage';
+import { renderComingSoonPage } from '../components/pages/ComingSoonPage';
 import { authMiddleware } from '../middleware/auth';
 
 /**
@@ -51,6 +52,11 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	// Handle Privacy Policy page
 	if (url.pathname === '/privacy' || url.pathname === '/privacy-policy') {
 		return renderPrivacyPolicyPage();
+	}
+
+	// Handle Coming Soon page
+	if (url.pathname === '/coming-soon' || url.pathname === '/signup') {
+		return renderComingSoonPage();
 	}
 
 	// Handle API routes for POST requests

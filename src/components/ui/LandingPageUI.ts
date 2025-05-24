@@ -1,5 +1,21 @@
 function renderLandingPageUI(): string {
 	return `
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+        <a href="/" class="flex items-center gap-2">
+            <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
+            <span class="text-xl font-medium text-gray-800">RdRx</span>
+        </a>
+        
+        <div class="flex items-center gap-4">
+            <a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a>
+            <a href="/signup" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Sign Up (Coming Soon)</a>
+            <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">
+                <i class="fab fa-github mr-1"></i> GitHub
+            </a>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <header class="hero-gradient min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
         <div class="max-w-5xl mx-auto text-center">
@@ -208,12 +224,16 @@ function renderLandingPageUI(): string {
                     <p class="text-gray-400 mt-2">Modern URL shortening & content sharing</p>
                 </div>
                 
-                <div>
+                <div class="flex flex-col items-end">
+                    <div class="flex gap-4 mb-3">
+                        <a href="/terms" class="text-gray-300 hover:text-primary-300 transition-colors duration-200">Terms of Service</a>
+                        <a href="/privacy" class="text-gray-300 hover:text-primary-300 transition-colors duration-200">Privacy Policy</a>
+                    </div>
                     <p class="text-gray-400 mb-2">
                         Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 transition">GPL-3.0</a>
                     </p>
                     <p class="text-gray-500 text-sm">
-                        &copy; 2025 RdRx. All rights reserved.
+                        &copy; ${new Date().getFullYear()} RdRx. All rights reserved.
                     </p>
                 </div>
             </div>

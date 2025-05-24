@@ -1,12 +1,62 @@
-import { renderPageLayout } from '../layouts/PageLayout';
-
 export function renderTermsOfServicePage(): Response {
-	return new Response(
-		renderPageLayout({
-			title: 'Terms of Service',
-			activeNavItem: '',
-			content: `
-      <div class="container mx-auto px-4 py-8 max-w-4xl">
+	const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | RdRx</title>
+    <meta name="description" content="Terms of Service for RdRx">
+    <meta property="og:title" content="Terms of Service | RdRx">
+    <meta property="og:description" content="Terms of Service for RdRx">
+    <meta property="og:image" content="https://cdn.rdrx.co/banner.jpg">
+    <meta property="og:url" content="https://rdrx.co/terms">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RdRx">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://cdn.rdrx.co/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://cdn.rdrx.co/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://cdn.rdrx.co/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://cdn.rdrx.co/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://cdn.rdrx.co/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.rdrx.co/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://cdn.rdrx.co/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rdrx.co/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="https://cdn.rdrx.co/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.rdrx.co/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.rdrx.co/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.rdrx.co/favicons/favicon-16x16.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: #FFFFFF;
+            color: #37352F;
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+        <a href="/" class="flex items-center gap-2">
+            <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
+            <span class="text-xl font-medium text-gray-800">RdRx</span>
+        </a>
+        
+        <div class="flex items-center gap-4">
+            <a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a>
+            <span class="text-gray-700 px-3 py-2 text-sm cursor-not-allowed opacity-70">Sign Up (Coming Soon)</span>
+            <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">
+                <i class="fab fa-github mr-1"></i> GitHub
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 md:p-8">
+      <div class="container mx-auto px-4 py-8 max-w-4xl mt-8">
         <h1 class="text-3xl font-bold mb-6">Terms of Service</h1>
         
         <div class="prose prose-lg">
@@ -87,10 +137,25 @@ export function renderTermsOfServicePage(): Response {
           <p class="mt-8 text-sm text-gray-600">Last updated: ${new Date().toLocaleDateString()}</p>
         </div>
       </div>
-    `,
-		}),
-		{
-			headers: { 'Content-Type': 'text/html' },
-		}
-	);
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <div>© ${new Date().getFullYear()} RdRx. All rights reserved.</div>
+                <div class="flex gap-4">
+                    <a href="/terms" class="font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200">Terms of Service</a>
+                    <a href="/privacy" class="hover:text-primary-500 transition-colors duration-200">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+	`;
+
+	return new Response(html, {
+		headers: { 'Content-Type': 'text/html' },
+	});
 }
