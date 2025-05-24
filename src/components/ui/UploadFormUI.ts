@@ -119,11 +119,11 @@ function renderUploadFormUI(): string {
         <!-- Delete After Date -->
         <div>
             <div class="flex items-center space-x-2 mb-1">
-                <input type="checkbox" id="deleteDate" name="deleteDate"
+                <input type="checkbox" id="deleteDate" name="deleteDate" checked
                   class="h-4 w-4 text-primary-500 rounded focus:ring-primary-500">
-                <label for="deleteDate" class="text-sm font-medium text-gray-700">Set expiration date</label>
+                <label for="deleteDate" class="text-sm font-medium text-gray-700">Set expiration date (default: 30 days)</label>
             </div>
-            <input type="date" id="deleteAfter" name="deleteAfter" disabled
+            <input type="date" id="deleteAfter" name="deleteAfter"
                 class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
         </div>
         
@@ -153,6 +153,11 @@ function renderUploadFormScripts(): string {
         input.classList.remove('shadow-md');
       });
     });
+
+    // Set default expiration date to 30 days from now
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 30);
+    document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
     
     // File input preview with enhanced styling
     const fileInput = document.getElementById('files');
@@ -308,10 +313,14 @@ function renderUploadFormScripts(): string {
             // Clear form
             document.querySelector('#files').value = '';
             document.querySelector('#customCode').value = '';
-            document.querySelector('#deleteDate').checked = false;
-            document.querySelector('#deleteAfter').value = '';
-            document.querySelector('#deleteAfter').disabled = true;
             document.querySelector('#fileList').innerHTML = '';
+            
+            // Reset expiry fields to defaults
+            document.querySelector('#deleteDate').checked = true;
+            const defaultDate = new Date();
+            defaultDate.setDate(defaultDate.getDate() + 30);
+            document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
+            document.querySelector('#deleteAfter').disabled = false;
 
             // Show success modal with link
             const linkUrl = 'https://rdrx.co/' + response.shortcode;

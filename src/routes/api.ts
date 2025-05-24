@@ -124,16 +124,21 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 		// Save the URL to D1
 		if (snippet) {
 			await saveUrlToDatabase(`c-${shortcode}`, snippet, env, creatorId);
+			
+			// Add delete key if delete_after is provided for snippets
+			if (delete_after) {
+				await handleDeleteAfter(`c-${shortcode}`, delete_after, env);
+			}
 		} else if (url) {
 			await saveUrlToDatabase(shortcode, url, env, creatorId);
+			
+			// Add delete key if delete_after is provided for URLs
+			if (delete_after) {
+				await handleDeleteAfter(shortcode, delete_after, env);
+			}
 		} else {
 			// This should never happen due to earlier validation, but added for type safety
 			return new Response('Missing URL or snippet', { status: 400 });
-		}
-
-		// Add delete key if delete_after is provided
-		if (delete_after) {
-			await handleDeleteAfter(shortcode, delete_after, env);
 		}
 
 		console.log('Short URL created');

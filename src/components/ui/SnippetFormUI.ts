@@ -103,6 +103,17 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
             <p class="mt-1 text-xs text-gray-500">Paste your code snippet here. Supports any programming language.</p>
         </div>
 
+        <!-- Expiration Date -->
+        <div>
+            <div class="flex items-center space-x-2 mb-1">
+                <input type="checkbox" id="deleteDate" name="deleteDate" checked
+                  class="h-4 w-4 text-primary-500 rounded focus:ring-primary-500">
+                <label for="deleteDate" class="text-sm font-medium text-gray-700">Set expiration date (default: 30 days)</label>
+            </div>
+            <input type="date" id="deleteAfter" name="deleteAfter"
+                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+        </div>
+
         <!-- Submit Button -->
         <div class="pt-4">
             <button type="submit"
@@ -127,10 +138,32 @@ function renderSnippetFormScripts(): string {
       });
     });
 
+    // Set default expiration date to 30 days from now
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 30);
+    document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
+
+    // Handle expiration checkbox
+    const deleteAfterCheck = document.querySelector('#deleteDate');
+    const deleteAfter = document.querySelector('#deleteAfter');
+    deleteAfterCheck.addEventListener('change', () => {
+        deleteAfter.disabled = !deleteAfterCheck.checked;
+        if (!deleteAfterCheck.checked) {
+            deleteAfter.value = '';
+        } else {
+            // Reset to default 30 days if re-enabled
+            const defaultDate = new Date();
+            defaultDate.setDate(defaultDate.getDate() + 30);
+            deleteAfter.value = defaultDate.toISOString().split('T')[0];
+        }
+    });
+
     document.getElementById('snippetForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const customCode = document.querySelector('#customCode').value;
         const codeSnippet = document.querySelector('#codeSnippet').value;
+        const deleteDateCheckbox = document.querySelector('#deleteDate').checked;
+        const deleteAfterValue = document.querySelector('#deleteAfter').value;
         
         // Show loading state on the button
         const submitButton = document.querySelector('button[type="submit"]');
@@ -144,6 +177,7 @@ function renderSnippetFormScripts(): string {
                 custom_code: customCode,
                 custom: true,
                 snippet: codeSnippet,
+                delete_after: deleteDateCheckbox && deleteAfterValue ? deleteAfterValue : null,
             });
 
             const response = await fetch('/snippet', {
@@ -163,6 +197,13 @@ function renderSnippetFormScripts(): string {
                 successAlert.classList.remove('hidden');
                 document.querySelector('#customCode').value = '';
                 document.querySelector('#codeSnippet').value = '';
+                
+                // Reset expiry fields to defaults
+                document.querySelector('#deleteDate').checked = true;
+                const defaultDate = new Date();
+                defaultDate.setDate(defaultDate.getDate() + 30);
+                document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
+                document.querySelector('#deleteAfter').disabled = false;
                 
                 // Scroll to top to show success message
                 window.scrollTo({ top: 0, behavior: 'smooth' });
