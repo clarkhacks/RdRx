@@ -16,7 +16,7 @@ function renderLandingPageUI(): string {
                 Simplify your links, share code snippets, and host files with our powerful, cloud-native platform
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="#features" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
+                <a href="#features" class="text-gray-800 bg-primary-600 hover:bg-primary-700 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
                     Explore Features
                 </a>
                 <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
