@@ -23,23 +23,23 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 	const styles = `
 		<style>
 			.gradient-text {
-				background: linear-gradient(90deg, #0ea5e9, #ec4899);
+				background: linear-gradient(90deg, #FFC107, #FF8A00);
 				-webkit-background-clip: text;
 				-webkit-text-fill-color: transparent;
 				background-clip: text;
 			}
 			.form-card {
 				transition: all 0.3s ease;
-				border-top: 4px solid transparent;
-				border-image: linear-gradient(to right, #0ea5e9, #ec4899);
-				border-image-slice: 1;
+				border-radius: 24px;
+				border: 2px solid #FFF;
+				box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 			}
 			.table-header {
-				background: linear-gradient(90deg, #0ea5e9, #ec4899);
+				background: #000;
 				color: white;
 			}
 			.pagination-active {
-				background: linear-gradient(90deg, #0ea5e9, #ec4899);
+				background: #000;
 				color: white;
 			}
 		</style>
@@ -47,7 +47,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 
 	return `
 		${styles}
-		<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
+		<div class="bg-white shadow-md rounded-2xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
 			<h1 class="text-3xl font-bold mb-6 gradient-text">Your Analytics</h1>
 			<p class="text-gray-600 mb-8">View analytics for all your shortened URLs, snippets, and file uploads.</p>
 			
@@ -70,7 +70,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 			
 			<!-- URLs Table -->
 			<div class="overflow-x-auto">
-				<table class="min-w-full bg-white border border-gray-200 rounded-lg">
+				<table class="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden">
 					<thead>
 						<tr class="table-header">
 							<th class="py-3 px-4 text-left text-sm font-medium border-b">Short URL</th>
@@ -89,7 +89,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 											(url) => `
 												<tr class="hover:bg-gray-50 transition duration-150">
 													<td class="py-3 px-4 text-sm text-gray-700">
-														<a href="/${url.shortcode}" target="_blank" class="text-primary-600 hover:text-primary-800 font-medium">
+														<a href="/${url.shortcode}" target="_blank" class="text-amber-500 hover:text-amber-600 font-medium">
 															${url.shortcode}
 														</a>
 													</td>
@@ -108,18 +108,18 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 														${url.clicks}
 													</td>
 													<td class="py-3 px-4 text-sm text-gray-700">
-														<a href="/analytics/${url.shortcode}" class="text-primary-600 hover:text-primary-800 font-medium">
+														<a href="/analytics/${url.shortcode}" class="text-amber-500 hover:text-amber-600 font-medium">
 															View Details
 														</a>
 													</td>
 												</tr>
-											`,
+											`
 										)
 										.join('')
 								: `
 									<tr>
 										<td colspan="6" class="py-4 px-4 text-center text-gray-500">
-											You haven't created any URLs yet. <a href="/create" class="text-primary-600 hover:text-primary-800">Create one now</a>.
+											You haven't created any URLs yet. <a href="/create" class="text-amber-500 hover:text-amber-600">Create one now</a>.
 										</td>
 									</tr>
 								`
@@ -168,7 +168,7 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 		<a href="?page=${Math.max(1, currentPage - 1)}&perPage=${itemsPerPage}" 
 		   class="${
 					currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''
-				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50">
+				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-l-full hover:bg-gray-50">
 			Previous
 		</a>
 	`;
@@ -186,7 +186,7 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 		paginationHtml += `
 			<a href="?page=${i}&perPage=${itemsPerPage}" 
 			   class="relative inline-flex items-center px-4 py-2 text-sm font-medium ${
-						i === currentPage ? 'pagination-active' : 'text-gray-700 bg-white border-t border-b border-gray-300 hover:bg-gray-50'
+						i === currentPage ? 'pagination-active' : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
 					}">
 				${i}
 			</a>
@@ -198,7 +198,7 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 		<a href="?page=${Math.min(totalPages, currentPage + 1)}&perPage=${itemsPerPage}" 
 		   class="${
 					currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''
-				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50">
+				} relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-r-full hover:bg-gray-50">
 			Next
 		</a>
 	`;

@@ -32,7 +32,7 @@ async function renderAnalyticsPage(shortcode: string, env: Env): Promise<Respons
 
 	// Assemble the page content from UI components
 	const pageContent = `
-    <div class="bg-white shadow-notion p-6 md:p-8 mb-8 max-w-6xl mx-auto notion-card">
+    <div class="bg-white shadow-md p-6 md:p-8 mb-8 max-w-6xl mx-auto notion-card rounded-2xl border-2 border-white">
       ${renderAnalyticsOverview({ analyticsData, shortcode, targetUrl })}
       ${renderAnalyticsCharts({ analyticsData })}
       ${renderAnalyticsRecentVisits({ analyticsData })}

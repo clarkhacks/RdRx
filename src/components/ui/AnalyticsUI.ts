@@ -28,10 +28,23 @@ interface AnalyticsRecentVisitsProps {
  * Render the analytics overview section
  */
 function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: AnalyticsOverviewProps): string {
+	const isArray = Array.isArray(targetUrl);
+	const displayUrl = isArray ? `rdrx.co/${shortcode}` : targetUrl;
+	const linkText = isArray ? `File Bin: ${shortcode}` : targetUrl;
+
 	return `
+<style>
+  .gradient-text {
+    background: linear-gradient(90deg, #FFC107, #FF8A00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+</style>
+
 <h1 class="text-3xl font-medium mb-6 text-gray-800">Analytics for: <span class="gradient-text">${shortcode}</span></h1>
 <div class="text-gray-600 mb-8">
-  <p><span class="text-gray-700">Target URL:</span> <a href="${targetUrl}" class="text-primary-500 hover:text-primary-600 hover:underline transition" target="_blank">${targetUrl}</a></p>
+  <p><span class="text-gray-700">Target URL:</span> <a href="${displayUrl}" class="text-amber-500 hover:text-amber-600 hover:underline transition" target="_blank">${linkText}</a></p>
 </div>
 
 <!-- Overview Stats -->
@@ -180,6 +193,39 @@ function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsPro
 	return `
 <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white mb-8">
   <h3 class="text-lg font-medium text-gray-800 mb-4">Recent Visits</h3>
+  <style>
+    .notion-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
+    }
+    
+    .notion-table th {
+      background-color: #f9f9f9;
+      color: #333;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .notion-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+    
+    .notion-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .notion-table tr:hover {
+      background-color: rgba(255, 193, 7, 0.05);
+    }
+  </style>
   <div class="notion-table-responsive">
     <table class="notion-table min-w-full">
       <thead>
