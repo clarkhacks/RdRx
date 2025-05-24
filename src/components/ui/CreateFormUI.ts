@@ -219,68 +219,76 @@ function renderCreateFormScripts(): string {
         body: customBody(),
       });
 
-      const data = await response.json();
       const successAlert = document.querySelector('#success-alert');
       const successMessage = document.querySelector('#success-message');
 
-      if (data.message === 'Short URL overwritten') {
-        const shortUrl = 'https://rdrx.co/' + data.shortcode;
-        successMessage.textContent = 'Short URL overwritten: ' + shortUrl;
-        successAlert.classList.remove('hidden');
+      if (response.ok) {
+        const data = await response.json();
         
-        // Show and setup copy button
-        const copyButton = document.querySelector('#copy-button');
-        copyButton.style.display = 'flex';
-        copyButton.setAttribute('data-clipboard-text', shortUrl);
-        
-        // Initialize clipboard.js when available
-        const initClipboard = () => {
-          if (typeof ClipboardJS !== 'undefined') {
-            const clipboard = new ClipboardJS('#copy-button');
-            clipboard.on('success', function(e) {
-              const originalText = copyButton.innerHTML;
-              copyButton.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Copied!';
-              setTimeout(() => {
-                copyButton.innerHTML = originalText;
-              }, 2000);
-            });
-          } else {
-            setTimeout(initClipboard, 100);
-          }
-        };
-        initClipboard();
-        
-        clearForm();
+        if (data.message === 'Short URL overwritten') {
+          const shortUrl = 'https://rdrx.co/' + data.shortcode;
+          successMessage.textContent = 'Short URL overwritten: ' + shortUrl;
+          successAlert.classList.remove('hidden');
+          
+          // Show and setup copy button
+          const copyButton = document.querySelector('#copy-button');
+          copyButton.style.display = 'flex';
+          copyButton.setAttribute('data-clipboard-text', shortUrl);
+          
+          // Initialize clipboard.js when available
+          const initClipboard = () => {
+            if (typeof ClipboardJS !== 'undefined') {
+              const clipboard = new ClipboardJS('#copy-button');
+              clipboard.on('success', function(e) {
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Copied!';
+                setTimeout(() => {
+                  copyButton.innerHTML = originalText;
+                }, 2000);
+              });
+            } else {
+              setTimeout(initClipboard, 100);
+            }
+          };
+          initClipboard();
+          
+          clearForm();
+        } else if (data.shortcode) {
+          const shortUrl = 'https://rdrx.co/' + data.shortcode;
+          successMessage.textContent = 'Short URL created: ' + shortUrl;
+          successAlert.classList.remove('hidden');
+          
+          // Show and setup copy button
+          const copyButton = document.querySelector('#copy-button');
+          copyButton.style.display = 'flex';
+          copyButton.setAttribute('data-clipboard-text', shortUrl);
+          
+          // Initialize clipboard.js when available
+          const initClipboard = () => {
+            if (typeof ClipboardJS !== 'undefined') {
+              const clipboard = new ClipboardJS('#copy-button');
+              clipboard.on('success', function(e) {
+                const originalText = copyButton.innerHTML;
+                copyButton.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Copied!';
+                setTimeout(() => {
+                  copyButton.innerHTML = originalText;
+                }, 2000);
+              });
+            } else {
+              setTimeout(initClipboard, 100);
+            }
+          };
+          initClipboard();
+          
+          clearForm();
+        } else {
+          alert('Error: Unexpected response format');
+        }
       } else if (response.status === 409) {
         alert('Shortcode already exists, requires admin override code');
       } else {
-        const shortUrl = 'https://rdrx.co/' + data.shortcode;
-        successMessage.textContent = 'Short URL created: ' + shortUrl;
-        successAlert.classList.remove('hidden');
-        
-        // Show and setup copy button
-        const copyButton = document.querySelector('#copy-button');
-        copyButton.style.display = 'flex';
-        copyButton.setAttribute('data-clipboard-text', shortUrl);
-        
-        // Initialize clipboard.js when available
-        const initClipboard = () => {
-          if (typeof ClipboardJS !== 'undefined') {
-            const clipboard = new ClipboardJS('#copy-button');
-            clipboard.on('success', function(e) {
-              const originalText = copyButton.innerHTML;
-              copyButton.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Copied!';
-              setTimeout(() => {
-                copyButton.innerHTML = originalText;
-              }, 2000);
-            });
-          } else {
-            setTimeout(initClipboard, 100);
-          }
-        };
-        initClipboard();
-        
-        clearForm();
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        alert('Error creating short URL: ' + (errorData.message || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error creating short URL:', error);
