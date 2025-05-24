@@ -1,6 +1,3 @@
-/**
- * Renders the file list UI component
- */
 function renderFileListUI(fileUrls: string[], shortcode: string): string {
 	// Function to determine if a file can be viewed in a browser
 	const canViewInBrowser = (fileType: string): boolean => {
@@ -54,8 +51,8 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
 			const isViewable = canViewInBrowser(fileType);
 
 			return `
-                <tr class="hover:bg-gray-50 transition duration-150">
-                    <td class="py-4 px-6">
+                <div class="table-row">
+                    <div class="table-cell">
                         <div class="flex items-center gap-4">
                             <a href="${url}" class="flex items-center w-12 h-12 overflow-hidden">
                                 <img class="w-full h-auto rounded-lg" src="${iconUrl}" alt="${fileName}" />
@@ -64,9 +61,9 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                                 ${fileName.length >= 20 ? `${fileName.slice(0, 15)}...${fileName.slice(-3)}` : fileName}
                             </span>
                         </div>
-                    </td>
-                    <td class="py-4 px-6 text-right text-gray-500 hidden sm:table-cell">${fileType}</td>
-                    <td class="py-4 px-6 text-right">
+                    </div>
+                    <div class="table-cell text-right text-gray-500 hidden sm:table-cell">${fileType}</div>
+                    <div class="table-cell text-right">
                         <div class="flex justify-end gap-2">
                             ${
 															isViewable
@@ -88,51 +85,60 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                                 Download
                             </a>
                         </div>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `;
 		})
 		.join('');
 
 	// Add custom CSS for gradient styling
 	const styles = `
-		<style>
-			.gradient-text {
-				background: linear-gradient(90deg, #0ea5e9, #ec4899);
-				-webkit-background-clip: text;
-				-webkit-text-fill-color: transparent;
-				background-clip: text;
-			}
-			.form-card {
-				transition: all 0.3s ease;
-				border-top: 4px solid transparent;
-				border-image: linear-gradient(to right, #0ea5e9, #ec4899);
-				border-image-slice: 1;
-			}
-		</style>
-	`;
+        <style>
+            .gradient-text {
+                background: linear-gradient(90deg, #FFC107, #FF8A00);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .form-card {
+                transition: all 0.3s ease;
+                border-radius: 24px;
+                border: 2px solid #FFF;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            }
+            .table-container {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .table-row {
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                padding: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            }
+            .table-cell {
+                margin-bottom: 0.5rem;
+            }
+            .table-cell:last-child {
+                margin-bottom: 0;
+            }
+        </style>
+    `;
 
 	return `
-		${styles}
-		<section class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-4xl mx-auto form-card">
-			<h2 class="text-3xl font-bold mb-6 gradient-text">File List: ${shortcode}</h2>
-			<p class="mb-6 text-gray-600">Contains ${fileUrls.length} file${fileUrls.length !== 1 ? 's' : ''}</p>
-			<div class="overflow-hidden rounded-lg border border-gray-200">
-				<table class="w-full text-left">
-					<thead class="bg-gradient-to-r from-blue-500 to-pink-500 text-white">
-						<tr>
-							<th class="py-3 px-6 font-medium">File</th>
-							<th class="py-3 px-6 text-right font-medium hidden sm:table-cell">Type</th>
-							<th class="py-3 px-6 text-right font-medium">Actions</th>
-						</tr>
-					</thead>
-					<tbody class="divide-y divide-gray-200">
-						${fileRows}
-					</tbody>
-				</table>
-			</div>
-		</section>
-	`;
+        ${styles}
+        <section class="bg-white shadow-md rounded-2xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
+            <h2 class="text-3xl font-bold mb-6 gradient-text">File List: ${shortcode}</h2>
+            <p class="mb-6 text-gray-600">Contains ${fileUrls.length} file${fileUrls.length !== 1 ? 's' : ''}</p>
+            <div class="table-container">
+                ${fileRows}
+            </div>
+        </section>
+    `;
 }
 
 export { renderFileListUI };
