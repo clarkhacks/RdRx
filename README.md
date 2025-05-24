@@ -89,7 +89,9 @@ compatibility_date = "2024-12-05"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-FRONTEND_URL = "http://localhost:8787"
+FRONTEND_URL = "https://localhost:8787"
+MAILGUN_DOMAIN = "your-domain.com"
+FROM_EMAIL = "no-reply@your-domain.com"
 
 [observability]
 enabled = true
