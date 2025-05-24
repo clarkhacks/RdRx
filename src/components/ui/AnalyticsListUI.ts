@@ -239,14 +239,31 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 		</div>
 	`;
 
+	// Store URL data in a global variable to avoid escaping issues
+	const urlDataScript = `
+		<script>
+			window.urlData = ${JSON.stringify(paginatedUrls.items.reduce((acc, url) => {
+				acc[url.shortcode] = {
+					shortcode: url.shortcode,
+					target_url: url.target_url,
+					type: getUrlType(url)
+				};
+				return acc;
+			}, {} as Record<string, any>))};
+		</script>
+	`;
+
 	const scripts = `
 		<script>
-			function editItem(shortcode, type, targetUrl) {
-				if (type === 'URL Shortener') {
+			function editItem(shortcode) {
+				const urlInfo = window.urlData[shortcode];
+				if (!urlInfo) return;
+				
+				if (urlInfo.type === 'URL Shortener') {
 					document.getElementById('editUrlShortcode').value = shortcode;
-					document.getElementById('editUrlTarget').value = targetUrl;
+					document.getElementById('editUrlTarget').value = urlInfo.target_url;
 					document.getElementById('editUrlModal').style.display = 'block';
-				} else if (type === 'Code Snippet') {
+				} else if (urlInfo.type === 'Code Snippet') {
 					document.getElementById('editSnippetShortcode').value = shortcode;
 					// Fetch current snippet content
 					fetch('/api/user/snippet/' + shortcode)
@@ -257,7 +274,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 								document.getElementById('editSnippetModal').style.display = 'block';
 							}
 						});
-				} else if (type === 'File Upload') {
+				} else if (urlInfo.type === 'File Upload') {
 					document.getElementById('editFilesShortcode').value = shortcode;
 					loadFileGallery(shortcode);
 					document.getElementById('editFilesModal').style.display = 'block';
@@ -455,7 +472,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 							<a href="/analytics/${url.shortcode}" class="text-amber-500 hover:text-amber-600 font-medium text-sm">
 								View
 							</a>
-							<button onclick="editItem('${url.shortcode}', '${getUrlType(url)}', '${url.target_url.replace(/'/g, "\\'")}'" class="edit-btn">
+							<button onclick="editItem('${url.shortcode}')" class="edit-btn">
 								Edit
 							</button>
 							<button onclick="deleteItem('${url.shortcode}')" class="delete-btn">
@@ -500,7 +517,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 						<a href="/analytics/${url.shortcode}" class="text-amber-500 hover:text-amber-600 font-medium text-sm">
 							View
 						</a>
-						<button onclick="editItem('${url.shortcode}', '${getUrlType(url)}', '${url.target_url.replace(/'/g, "\\'")}'" class="edit-btn">
+						<button onclick="editItem('${url.shortcode}')" class="edit-btn">
 							Edit
 						</button>
 						<button onclick="deleteItem('${url.shortcode}')" class="delete-btn">
@@ -530,6 +547,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 </div>
 
 ${editModals}
+${urlDataScript}
 ${scripts}
     `;
 }
