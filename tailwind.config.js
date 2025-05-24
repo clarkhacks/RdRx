@@ -1,6 +1,7 @@
 module.exports = {
 	content: [
 		'./src/**/*.{ts,tsx,js,jsx,html}', // Scan all relevant files in src/
+		'./websitee/**/*.{ts,tsx,js,jsx,html}', // Scan all relevant files in website/
 		'./static/**/*.html', // Scan static HTML files
 	],
 	theme: {
