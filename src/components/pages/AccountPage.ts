@@ -178,91 +178,101 @@ function renderAccountContent(user: User): string {
 	const profilePicture = user.profile_picture_url || 'https://via.placeholder.com/150';
 
 	return `
-		<div class="max-w-4xl mx-auto py-8 px-4">
-			<h1 class="text-3xl font-bold mb-8">My Account</h1>
-			
-			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-				<!-- Profile Picture Section -->
-				<div class="bg-white p-6 rounded-lg shadow-md">
-					<h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
-					<div class="flex flex-col items-center">
-						<img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-4">
-						<form id="profile-picture-form" class="flex flex-col items-center">
-							<label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer mb-2">
-								Select Photo
-								<input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
-							</label>
-							<button id="profile-upload-button" type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mt-2">
-								Upload Picture
-							</button>
-						</form>
-						<p id="upload-status" class="mt-2 text-sm text-gray-600"></p>
-					</div>
-				</div>
-				
-				<!-- Profile Information Section -->
-				<div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
-					<h2 class="text-xl font-semibold mb-4">Profile Information</h2>
-					<form id="update-profile-form">
-						<div class="mb-4">
-							<label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-								Name
-							</label>
-							<input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-								id="name" name="name" type="text" value="${user.name}" required>
-						</div>
-						<div class="mb-4">
-							<label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-								Email
-							</label>
-							<input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-								id="email" name="email" type="email" value="${user.email}" required>
-						</div>
-						<div class="flex items-center justify-between">
-							<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-								type="submit">
-								Update Profile
-							</button>
-							<p id="profile-status" class="text-sm text-gray-600"></p>
-						</div>
-					</form>
-				</div>
-				
-				<!-- Change Password Section -->
-				<div class="bg-white p-6 rounded-lg shadow-md md:col-span-3">
-					<h2 class="text-xl font-semibold mb-4">Change Password</h2>
-					<form id="change-password-form">
-						<div class="mb-4">
-							<label class="block text-gray-700 text-sm font-bold mb-2" for="current_password">
-								Current Password
-							</label>
-							<input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-								id="current_password" name="current_password" type="password" required>
-						</div>
-						<div class="mb-4">
-							<label class="block text-gray-700 text-sm font-bold mb-2" for="new_password">
-								New Password
-							</label>
-							<input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-								id="new_password" name="new_password" type="password" required>
-						</div>
-						<div class="mb-4">
-							<label class="block text-gray-700 text-sm font-bold mb-2" for="confirm_password">
-								Confirm New Password
-							</label>
-							<input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-								id="confirm_password" name="confirm_password" type="password" required>
-						</div>
-						<div class="flex items-center justify-between">
-							<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-								type="submit">
-								Change Password
-							</button>
-							<p id="password-status" class="text-sm text-gray-600"></p>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	`;
+        <div class="max-w-6xl mx-auto py-8 px-4">
+            <!-- Welcome Section -->
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <div class="flex items-center">
+                    <img src="${profilePicture}" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover mr-4">
+                    <div>
+                        <h1 class="text-2xl font-bold">My Account</h1>
+                        <p class="text-gray-600">Manage your profile and account settings</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Account Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Profile Picture Section -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
+                    <div class="flex flex-col items-center">
+                        <img id="profile-picture" src="${profilePicture}" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover mb-4">
+                        <form id="profile-picture-form" class="flex flex-col items-center">
+                            <label class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded cursor-pointer mb-2">
+                                Select Photo
+                                <input id="profile-picture-upload" type="file" accept="image/png, image/jpeg, image/jpg, image/webp" class="hidden">
+                            </label>
+                            <button id="profile-upload-button" type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded mt-2">
+                                Upload Picture
+                            </button>
+                        </form>
+                        <p id="upload-status" class="mt-2 text-sm text-gray-600"></p>
+                    </div>
+                </div>
+                
+                <!-- Profile Information Section -->
+                <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
+                    <h2 class="text-xl font-semibold mb-4">Profile Information</h2>
+                    <form id="update-profile-form">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                                Name
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="name" name="name" type="text" value="${user.name}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                                Email
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="email" name="email" type="email" value="${user.email}" required>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                type="submit">
+                                Update Profile
+                            </button>
+                            <p id="profile-status" class="text-sm text-gray-600"></p>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Change Password Section -->
+                <div class="bg-white p-6 rounded-lg shadow-md md:col-span-3">
+                    <h2 class="text-xl font-semibold mb-4">Change Password</h2>
+                    <form id="change-password-form">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="current_password">
+                                Current Password
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="current_password" name="current_password" type="password" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="new_password">
+                                New Password
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="new_password" name="new_password" type="password" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm_password">
+                                Confirm New Password
+                            </label>
+                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                id="confirm_password" name="confirm_password" type="password" required>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                type="submit">
+                                Change Password
+                            </button>
+                            <p id="password-status" class="text-sm text-gray-600"></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    `;
 }
