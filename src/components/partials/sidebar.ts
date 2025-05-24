@@ -2,7 +2,7 @@ function renderSidebar(currentPage: string = ''): string {
 	return `
   <div x-data="{ sidebarOpen: false }" class="relative">
     <!-- Mobile sidebar toggle -->
-    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden fixed bottom-4 right-4 bg-white text-gray-800 p-3 rounded-md shadow-notion z-50 flex items-center justify-center">
+    <button @click="sidebarOpen = !sidebarOpen" class="md:hidden fixed bottom-4 right-4 bg-white text-gray-800 p-3 rounded-full shadow-md border-2 border-white z-50 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
@@ -14,7 +14,7 @@ function renderSidebar(currentPage: string = ''): string {
     <!-- Sidebar -->
     <aside 
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'" 
-      class="fixed top-0 left-0 z-40 h-screen w-64 bg-surface-light shadow-notion transition-transform duration-300 ease-in-out md:sticky md:top-[57px] md:h-[calc(100vh-57px)] md:pt-0"
+      class="fixed top-0 left-0 z-40 h-screen w-64 bg-white shadow-md transition-transform duration-300 ease-in-out md:sticky md:top-[57px] md:h-[calc(100vh-57px)] md:pt-0 rounded-r-2xl"
     >
       <div class="flex h-full flex-col overflow-y-auto py-4 px-3">
         <div class="mb-6 px-4 md:hidden">
@@ -28,8 +28,8 @@ function renderSidebar(currentPage: string = ''): string {
           <li>
             <a 
               href="/dashboard" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'dashboard' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'dashboard' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">
@@ -45,8 +45,8 @@ function renderSidebar(currentPage: string = ''): string {
           <li>
             <a 
               href="/create" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'create' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'create' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">
@@ -62,8 +62,8 @@ function renderSidebar(currentPage: string = ''): string {
           <li>
             <a 
               href="/upload" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'upload' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'upload' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">
@@ -79,8 +79,8 @@ function renderSidebar(currentPage: string = ''): string {
           <li>
             <a 
               href="/snippet" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'snippet' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'snippet' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">
@@ -97,8 +97,8 @@ function renderSidebar(currentPage: string = ''): string {
             <a 
               id="analytics-link"
               href="/analytics" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'analytics' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'analytics' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">
@@ -114,8 +114,8 @@ function renderSidebar(currentPage: string = ''): string {
           <li>
             <a 
               href="/account" 
-              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
-								currentPage === 'account' ? 'bg-gray-100 text-gray-900 font-medium' : ''
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'account' ? 'bg-primary-50 text-primary-700 font-medium' : ''
 							}"
             >
               <div class="w-6 h-6 flex items-center justify-center mr-3">

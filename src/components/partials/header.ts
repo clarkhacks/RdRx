@@ -1,6 +1,6 @@
 function renderHeader(): string {
 	return `
-  <header class="bg-surface-light shadow-notion py-3 px-6 flex justify-between items-center sticky top-0 z-50">
+  <header class="bg-white shadow-md py-3 px-6 flex justify-between items-center sticky top-0 z-50 rounded-full mx-4 my-3 card-container">
     <a href="/" class="flex items-center gap-2">
       <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
       <span class="text-xl font-medium text-gray-800">RdRx</span>
@@ -14,7 +14,7 @@ function renderHeader(): string {
           class="flex items-center gap-2 text-gray-700 hover:text-primary-500 focus:outline-none transition-colors duration-200"
           id="user-menu-button"
         >
-          <div id="user-avatar" class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-500">
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 border-2 border-primary-100">
             <span id="user-initials" class="text-sm">?</span>
           </div>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -25,7 +25,7 @@ function renderHeader(): string {
         <div 
           x-show="open" 
           @click.away="open = false"
-          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-notion py-1 z-50"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-md border-2 border-white py-1 z-50"
           style="display: none;"
         >
           <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
@@ -57,7 +57,7 @@ function renderHeader(): string {
       if (!token) {
           // If not logged in, show login button instead
           if (userMenuButton) {
-            userMenuButton.outerHTML = '<div class="flex items-center gap-3"><a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a><a href="/coming-soon" class="notion-btn notion-btn-primary text-sm">Sign Up</a></div>';
+            userMenuButton.outerHTML = '<div class="flex items-center gap-3"><a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a><a href="/coming-soon" class="btn-playful text-sm py-2 px-4">Sign Up</a></div>';
           }
         return;
       }

@@ -71,17 +71,18 @@ export function LoginFormUI(): string {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				background: linear-gradient(135deg, #FFD54F, #FF9800);
 				padding: 20px;
 			}
 			
 			.auth-card {
 				background: white;
-				border-radius: 12px;
+				border-radius: 24px;
 				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 				padding: 40px;
 				width: 100%;
 				max-width: 400px;
+				border: 2px solid #FFF;
 			}
 			
 			.auth-header {
@@ -123,7 +124,7 @@ export function LoginFormUI(): string {
 			.form-group input {
 				padding: 12px 16px;
 				border: 2px solid #e1e5e9;
-				border-radius: 8px;
+				border-radius: 16px;
 				font-size: 16px;
 				transition: border-color 0.2s ease;
 				background: #fff;
@@ -131,8 +132,8 @@ export function LoginFormUI(): string {
 			
 			.form-group input:focus {
 				outline: none;
-				border-color: #667eea;
-				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+				border-color: #FFC107;
+				box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
 			}
 			
 			.form-group input.error {
@@ -170,8 +171,8 @@ export function LoginFormUI(): string {
 			}
 			
 			.checkbox-container input[type="checkbox"]:checked + .checkmark {
-				background: #667eea;
-				border-color: #667eea;
+				background: #FFC107;
+				border-color: #FFC107;
 			}
 			
 			.checkbox-container input[type="checkbox"]:checked + .checkmark::after {
@@ -185,7 +186,7 @@ export function LoginFormUI(): string {
 			}
 			
 			.forgot-link {
-				color: #667eea;
+				color: #FF9800;
 				text-decoration: none;
 				font-size: 14px;
 				font-weight: 500;
@@ -203,11 +204,11 @@ export function LoginFormUI(): string {
 			}
 			
 			.auth-button {
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				background: #000;
 				color: white;
 				border: none;
 				padding: 14px 24px;
-				border-radius: 8px;
+				border-radius: 50px;
 				font-size: 16px;
 				font-weight: 600;
 				cursor: pointer;
@@ -217,8 +218,8 @@ export function LoginFormUI(): string {
 			}
 			
 			.auth-button:hover:not(:disabled) {
-				transform: translateY(-2px);
-				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+				transform: scale(1.05);
+				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 			}
 			
 			.auth-button:disabled {
@@ -252,7 +253,7 @@ export function LoginFormUI(): string {
 			}
 			
 			.auth-link {
-				color: #667eea;
+				color: #FF9800;
 				text-decoration: none;
 				font-weight: 500;
 			}

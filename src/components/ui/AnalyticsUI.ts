@@ -36,17 +36,17 @@ function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: Analyt
 
 <!-- Overview Stats -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-  <div class="notion-card bg-white p-6 rounded-xl">
+  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Total Visits</h3>
     <p class="text-3xl font-medium text-gray-800">${analyticsData.visits}</p>
   </div>
-  <div class="notion-card bg-white p-6 rounded-xl">
+  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Avg. Daily Visits</h3>
     <p class="text-3xl font-medium text-gray-800">
       ${analyticsData.views_by_date.length > 0 ? Math.round(analyticsData.visits / analyticsData.views_by_date.length) : 0}
     </p>
   </div>
-  <div class="notion-card bg-white p-6 rounded-xl">
+  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Last Visit</h3>
     <p class="text-3xl font-medium text-gray-800">
       ${analyticsData.recent_visits.length > 0 ? new Date(analyticsData.recent_visits[0].timestamp).toLocaleDateString() : 'N/A'}
@@ -62,11 +62,11 @@ function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: Analyt
 function renderAnalyticsCharts({ analyticsData }: AnalyticsChartsProps): string {
 	return `
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-  <div class="notion-card bg-white p-6 rounded-xl">
+  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
     <h3 class="text-lg font-medium text-gray-800 mb-4">Visits Over Time</h3>
     <canvas id="visitsChart" width="400" height="300"></canvas>
   </div>
-  <div class="notion-card bg-white p-6 rounded-xl">
+  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
     <h3 class="text-lg font-medium text-gray-800 mb-4">Top Countries</h3>
     <canvas id="countriesChart" width="400" height="300"></canvas>
   </div>
@@ -84,12 +84,12 @@ function initCharts() {
   // Create gradient for charts
   const visitsChartCtx = document.getElementById('visitsChart').getContext('2d');
   const visitGradient = visitsChartCtx.createLinearGradient(0, 0, 0, 300);
-  visitGradient.addColorStop(0, 'rgba(83, 131, 183, 0.2)');
-  visitGradient.addColorStop(1, 'rgba(158, 119, 237, 0.05)');
+  visitGradient.addColorStop(0, 'rgba(255, 193, 7, 0.2)');
+  visitGradient.addColorStop(1, 'rgba(255, 138, 0, 0.05)');
   
   const visitBorderGradient = visitsChartCtx.createLinearGradient(0, 0, 0, 300);
-  visitBorderGradient.addColorStop(0, 'rgba(83, 131, 183, 1)');
-  visitBorderGradient.addColorStop(1, 'rgba(158, 119, 237, 1)');
+  visitBorderGradient.addColorStop(0, 'rgba(255, 193, 7, 1)');
+  visitBorderGradient.addColorStop(1, 'rgba(255, 138, 0, 1)');
   
   // Visits Over Time Chart
   new Chart(visitsChartCtx, {
@@ -104,9 +104,9 @@ function initCharts() {
         borderWidth: 2,
         tension: 0.4,
         fill: true,
-        pointBackgroundColor: '#5383B7',
+        pointBackgroundColor: '#FFC107',
         pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#9E77ED',
+        pointHoverBackgroundColor: '#FF8A00',
         pointHoverBorderColor: '#fff',
         pointRadius: 3,
         pointHoverRadius: 5
@@ -138,16 +138,16 @@ function initCharts() {
       datasets: [{
         data: ${JSON.stringify(analyticsData.views_by_country.map((item) => item.count))},
         backgroundColor: [
-          'rgba(83, 131, 183, 0.8)',
-          'rgba(158, 119, 237, 0.8)',
-          'rgba(83, 131, 183, 0.6)',
-          'rgba(158, 119, 237, 0.6)',
-          'rgba(83, 131, 183, 0.4)',
-          'rgba(158, 119, 237, 0.4)',
-          'rgba(83, 131, 183, 0.2)',
-          'rgba(158, 119, 237, 0.2)',
-          'rgba(163, 163, 163, 0.5)',
-          'rgba(163, 163, 163, 0.3)',
+          'rgba(255, 193, 7, 0.8)',
+          'rgba(255, 138, 0, 0.8)',
+          'rgba(255, 193, 7, 0.6)',
+          'rgba(255, 138, 0, 0.6)',
+          'rgba(255, 193, 7, 0.4)',
+          'rgba(255, 138, 0, 0.4)',
+          'rgba(255, 193, 7, 0.2)',
+          'rgba(255, 138, 0, 0.2)',
+          'rgba(0, 0, 0, 0.5)',
+          'rgba(0, 0, 0, 0.3)',
         ],
         borderWidth: 1,
         borderColor: '#ffffff'
@@ -178,7 +178,7 @@ initCharts();
  */
 function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsProps): string {
 	return `
-<div class="notion-card bg-white p-6 rounded-xl mb-8">
+<div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white mb-8">
   <h3 class="text-lg font-medium text-gray-800 mb-4">Recent Visits</h3>
   <div class="notion-table-responsive">
     <table class="notion-table min-w-full">

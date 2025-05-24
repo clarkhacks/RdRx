@@ -10,36 +10,38 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
 <!-- Add gradient styles -->
 <style>
   .gradient-text {
-    background: linear-gradient(90deg, #0ea5e9, #ec4899);
+    background: linear-gradient(90deg, #FFC107, #FF8A00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .gradient-bg {
-    background: linear-gradient(90deg, #0ea5e9, #ec4899);
+    background: linear-gradient(135deg, #FFD54F, #FF9800);
   }
   
   .form-card {
     transition: all 0.3s ease;
-    border-top: 4px solid transparent;
-    border-image: linear-gradient(to right, #0ea5e9, #ec4899);
-    border-image-slice: 1;
+    border-radius: 24px;
+    border: 2px solid #FFF;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   }
   
   .input-focus:focus {
     border-color: transparent;
-    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3), 0 0 0 4px rgba(236, 72, 153, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
   }
   
   .btn-gradient {
-    background: linear-gradient(90deg, #0ea5e9, #ec4899);
-    transition: all 0.3s ease;
+    background: #000;
+    color: white;
+    border-radius: 50px;
+    transition: all 0.2s ease;
   }
   
   .btn-gradient:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   }
   
   .success-gradient {
@@ -76,9 +78,9 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
                   <input type="text" id="customCode" name="customCode"
                     ${shortcode ? `value="${shortcode}"` : ''}
                     placeholder="your-custom-path"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-lg input-focus text-gray-900 transition">
+                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
                 </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
+                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
                   onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 6);">
                   Random
                 </button>
@@ -90,7 +92,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
             <label for="codeSnippet" class="block text-sm font-medium text-gray-700 mb-1">Code Snippet</label>
             <div class="relative">
               <textarea id="codeSnippet" name="codeSnippet" rows="10"
-                      class="block w-full px-4 py-3 border border-gray-300 rounded-lg input-focus text-gray-900 font-mono transition bg-gray-50"></textarea>
+                      class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 font-mono transition bg-gray-50"></textarea>
               <div class="absolute top-2 right-2 flex space-x-2">
                 <button type="button" class="text-xs px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 transition" 
                   onclick="document.getElementById('codeSnippet').classList.toggle('bg-gray-900'); document.getElementById('codeSnippet').classList.toggle('text-gray-100'); document.getElementById('codeSnippet').classList.toggle('bg-gray-50');">
@@ -104,7 +106,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
         <!-- Submit Button -->
         <div class="pt-4">
             <button type="submit"
-                    class="w-full btn-gradient text-white font-medium py-3 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300">
+                    class="w-full btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300">
                 Create Code Snippet
             </button>
         </div>
