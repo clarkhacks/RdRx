@@ -10,7 +10,7 @@ layout: base.njk
   <div class="container mx-auto px-4 py-8 max-w-4xl mt-8">
     <h1 class="text-3xl font-bold mb-6">{{ title }}</h1>
     
-    <div class="prose prose-lg max-w-none">
+<div class="prose prose-lg max-w-none prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary-500 prose-ol:list-decimal prose-ol:pl-6 prose-li:pl-2">
       {{ content | safe }}
       
       <p class="mt-8 text-sm text-gray-600">Last updated: {{ lastUpdated or "January 24, 2025" }}</p>
