@@ -58,7 +58,7 @@ export function LoginFormUI(): string {
 				</form>
 				
 				<div class="auth-footer">
-					<p>Don't have an account? <a href="/signup" class="auth-link">Create one</a></p>
+					<p>Don't have an account? <a href="/coming-soon" class="auth-link">Create one</a></p>
 				</div>
 				
 				<div id="login-message" class="message" style="display: none;"></div>

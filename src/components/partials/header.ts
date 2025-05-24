@@ -57,7 +57,7 @@ function renderHeader(): string {
       if (!token) {
           // If not logged in, show login button instead
           if (userMenuButton) {
-            userMenuButton.outerHTML = '<div class="flex items-center gap-3"><a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a><a href="/signup" class="notion-btn notion-btn-primary text-sm">Sign Up</a></div>';
+            userMenuButton.outerHTML = '<div class="flex items-center gap-3"><a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a><a href="/coming-soon" class="notion-btn notion-btn-primary text-sm">Sign Up</a></div>';
           }
         return;
       }

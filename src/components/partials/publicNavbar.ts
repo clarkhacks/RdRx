@@ -8,7 +8,7 @@ function renderPublicNavbar(): string {
         
         <div class="flex items-center gap-4">
             <a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Login</a>
-            <a href="/signup" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Sign Up (Coming Soon)</a>
+            <a href="/coming-soon" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">Sign Up (Coming Soon)</a>
             <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm transition-colors duration-200">
                 <i class="fab fa-github mr-1"></i> GitHub
             </a>
