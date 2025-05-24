@@ -24,6 +24,7 @@
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.5.2",
 		"@cloudflare/workers-types": "^4.20241205.0",
+		"@tailwindcss/typography": "^0.5.16",
 		"autoprefixer": "^10.4.21",
 		"concurrently": "^8.2.2",
 		"postcss": "^8.5.3",
