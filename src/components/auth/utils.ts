@@ -44,7 +44,7 @@ export async function hashPassword(password: string): Promise<string> {
 			hash: 'SHA-256',
 		},
 		keyMaterial,
-		256
+		256,
 	);
 
 	const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -79,7 +79,7 @@ export async function verifyPassword(password: string, storedHash: string): Prom
 				hash: 'SHA-256',
 			},
 			keyMaterial,
-			256
+			256,
 		);
 
 		const hashArray = Array.from(new Uint8Array(hashBuffer));

@@ -72,7 +72,7 @@ async function getAnalyticsData(shortcode: string, env: Env): Promise<AnalyticsD
         WHERE shortcode = ? 
         GROUP BY DATE(timestamp) 
         ORDER BY date DESC
-        LIMIT 30`
+        LIMIT 30`,
 	)
 		.bind(shortcode)
 		.all();
@@ -90,7 +90,7 @@ async function getAnalyticsData(shortcode: string, env: Env): Promise<AnalyticsD
         WHERE shortcode = ? 
         GROUP BY country 
         ORDER BY count DESC
-        LIMIT 10`
+        LIMIT 10`,
 	)
 		.bind(shortcode)
 		.all();
@@ -107,7 +107,7 @@ async function getAnalyticsData(shortcode: string, env: Env): Promise<AnalyticsD
         FROM analytics 
         WHERE shortcode = ? 
         ORDER BY timestamp DESC
-        LIMIT 20`
+        LIMIT 20`,
 	)
 		.bind(shortcode)
 		.all();

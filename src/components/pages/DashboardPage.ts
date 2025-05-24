@@ -317,7 +317,7 @@ function renderRecentLinks(links: any[]): string {
 				</div>
 			</div>
 		</div>
-	`
+	`,
 		)
 		.join('');
 }
@@ -346,7 +346,7 @@ function renderRecentSnippets(snippets: any[]): string {
 				</div>
 			</div>
 		</div>
-	`
+	`,
 		)
 		.join('');
 }
@@ -375,7 +375,7 @@ function renderRecentFiles(files: any[]): string {
 				</div>
 			</div>
 		</div>
-	`
+	`,
 		)
 		.join('');
 }

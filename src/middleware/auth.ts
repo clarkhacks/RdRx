@@ -7,7 +7,7 @@ import { verifySession } from '../components/auth/service';
  */
 export async function authMiddleware(
 	request: Request,
-	env: Env
+	env: Env,
 ): Promise<{ request: Request; user: any | null; isAuthenticated: boolean }> {
 	try {
 		// Verify the session

@@ -17,7 +17,7 @@ export async function initializeTables(env: Env): Promise<void> {
         creator_id TEXT,
         is_snippet BOOLEAN NOT NULL DEFAULT 0,
         is_file BOOLEAN NOT NULL DEFAULT 0
-      )`
+      )`,
 		).run();
 
 		// Create analytics table with minimal fields
@@ -28,7 +28,7 @@ export async function initializeTables(env: Env): Promise<void> {
         target_url TEXT NOT NULL,
         country TEXT,
         timestamp TEXT NOT NULL
-      )`
+      )`,
 		).run();
 
 		// Create deletions table
@@ -39,7 +39,7 @@ export async function initializeTables(env: Env): Promise<void> {
         delete_at INTEGER NOT NULL,
         is_file BOOLEAN NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL
-      )`
+      )`,
 		).run();
 
 		// Initialize users table for custom auth
@@ -65,7 +65,7 @@ export async function saveUrlToDatabase(shortcode: string, url: string, env: Env
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO short_urls 
       (shortcode, target_url, created_at, creator_id, is_snippet, is_file)
-      VALUES (?, ?, ?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(shortcode, url, new Date().toISOString(), creatorId, isSnippet ? 1 : 0, isFile ? 1 : 0)
 			.run();
@@ -111,7 +111,7 @@ export async function saveDeletionEntry(env: Env, shortcode: string, deleteTimes
 		// Insert the deletion entry
 		await env.DB.prepare(
 			`INSERT INTO deletions (shortcode, delete_at, is_file, created_at)
-      VALUES (?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?)`,
 		)
 			.bind(shortcode, deleteTimestamp, isFile ? 1 : 0, new Date().toISOString())
 			.run();
@@ -144,7 +144,7 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
         target_url, 
         country,
         timestamp
-      ) VALUES (?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?)`,
 		)
 			.bind(shortcode, redirectUrl, country, timestamp)
 			.run();

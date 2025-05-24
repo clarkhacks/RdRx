@@ -155,7 +155,7 @@ async function handleAdminOverride(
 	custom_code: string | undefined,
 	delete_after: string | undefined,
 	env: Env,
-	creatorId: string | null
+	creatorId: string | null,
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });

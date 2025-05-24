@@ -363,7 +363,7 @@ async function handleProfilePictureUploadAPI(request: Request, env: Env, corsHea
 				{
 					status: 400,
 					headers: { 'Content-Type': 'application/json', ...corsHeaders },
-				}
+				},
 			);
 		}
 	} catch (error) {
@@ -373,7 +373,7 @@ async function handleProfilePictureUploadAPI(request: Request, env: Env, corsHea
 			{
 				status: 500,
 				headers: { 'Content-Type': 'application/json', ...corsHeaders },
-			}
+			},
 		);
 	}
 }
@@ -408,7 +408,7 @@ async function handleMeAPI(request: Request, env: Env, corsHeaders: Record<strin
 			{
 				status: 200,
 				headers: { 'Content-Type': 'application/json', ...corsHeaders },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Me API error:', error);
@@ -572,7 +572,7 @@ async function handleUpdateProfileAPI(request: Request, env: Env, corsHeaders: R
 				{
 					status: 200,
 					headers: { 'Content-Type': 'application/json', ...corsHeaders },
-				}
+				},
 			);
 		} catch (error) {
 			console.error('Error updating user profile:', error);
@@ -671,7 +671,7 @@ async function handleChangePasswordAPI(request: Request, env: Env, corsHeaders: 
 				{
 					status: 200,
 					headers: { 'Content-Type': 'application/json', ...corsHeaders },
-				}
+				},
 			);
 		} catch (error) {
 			console.error('Error updating user password:', error);

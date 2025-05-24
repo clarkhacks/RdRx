@@ -110,7 +110,11 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
                                             <div class="table-cell">
                                                 <strong>Target:</strong> 
                                                 <div class="max-w-xs truncate">
-                                                    ${url.target_url}
+                                                    ${
+																											url.target_url.includes('[') && url.target_url.includes(']')
+																												? 'File Bin ' + url.shortcode
+																												: url.target_url
+																										}
                                                 </div>
                                             </div>
                                             <div class="table-cell">
@@ -130,7 +134,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
                                                 </a>
                                             </div>
                                         </div>
-                                    `
+                                    `,
 												)
 												.join('')
 										: `

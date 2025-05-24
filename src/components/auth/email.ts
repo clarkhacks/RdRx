@@ -185,7 +185,7 @@ export async function sendEmailVerificationEmail(
 	env: Env,
 	userEmail: string,
 	userName: string,
-	verificationToken: string
+	verificationToken: string,
 ): Promise<boolean> {
 	const verificationUrl = `${env.FRONTEND_URL || 'https://rdrx.app'}/verify-email?token=${verificationToken}`;
 	const subject = 'Verify Your RDRX Email Address';
