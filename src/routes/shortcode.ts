@@ -234,7 +234,7 @@ function renderNotFoundPage(): Response {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex, nofollow">
         <title>RDRX Short URLs</title>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="/assets/built.css" />
         </head>
         <body class="bg-gray-100 min-h-screen flex items-center justify-center">
             <div class="bg-white shadow-lg rounded-lg p-6 md:p-8 w-full max-w-md flex items-center justify-center">
@@ -245,6 +245,6 @@ function renderNotFoundPage(): Response {
 		{
 			headers: { 'Content-Type': 'text/html' },
 			status: 404,
-		},
+		}
 	);
 }
