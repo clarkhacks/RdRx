@@ -28,7 +28,7 @@ interface AnalyticsRecentVisitsProps {
  * Render the analytics overview section
  */
 function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: AnalyticsOverviewProps): string {
-	const isArray = Array.isArray(targetUrl);
+	const isArray = targetUrl.includes('[') && targetUrl.includes(']');
 	const displayUrl = isArray ? `rdrx.co/${shortcode}` : targetUrl;
 	const linkText = isArray ? `File Bin: ${shortcode}` : targetUrl;
 
