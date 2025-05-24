@@ -172,5 +172,5 @@ dist
 .wrangler/
 
 # Keep static/assets/ directory but ignore built.css
-static/assets/built.css
+static/
 
