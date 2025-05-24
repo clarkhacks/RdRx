@@ -124,10 +124,7 @@ API_KEY_ADMIN="your-admin-api-key-here"
 
 # Authentication
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
-MAILGUN_DOMAIN="your-domain.com"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
-FROM_EMAIL="noreply@your-domain.com"
-FRONTEND_URL="http://localhost:8787"
 ```
 
 ### 5. Initialize the Database
