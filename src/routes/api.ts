@@ -124,14 +124,14 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 		// Save the URL to D1
 		if (snippet) {
 			await saveUrlToDatabase(`c-${shortcode}`, snippet, env, creatorId);
-			
+
 			// Add delete key if delete_after is provided for snippets
 			if (delete_after) {
 				await handleDeleteAfter(`c-${shortcode}`, delete_after, env);
 			}
 		} else if (url) {
 			await saveUrlToDatabase(shortcode, url, env, creatorId);
-			
+
 			// Add delete key if delete_after is provided for URLs
 			if (delete_after) {
 				await handleDeleteAfter(shortcode, delete_after, env);
@@ -160,7 +160,7 @@ async function handleAdminOverride(
 	custom_code: string | undefined,
 	delete_after: string | undefined,
 	env: Env,
-	creatorId: string | null,
+	creatorId: string | null
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });
