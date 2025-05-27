@@ -1,5 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      x-init="
+        $watch('darkMode', val => {
+          localStorage.setItem('darkMode', val);
+          if (val) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        });
+        
+        // Initialize on page load
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.documentElement.classList.add('dark');
+        }
+      " 
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,46 +59,212 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    
+    <!-- Alpine.js for all pages -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
         
+        /* Base styles */
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background-color: #FFFFFF;
-            color: #37352F;
+            font-family: 'Poppins', 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
+        /* Light mode (default) */
+        :root {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F8FAFC;
+            --bg-tertiary: #F1F5F9;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-tertiary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            
+            /* Orange accent colors for light mode */
+            --accent-orange: #EA580C;
+            --accent-orange-light: #FB923C;
+            --accent-orange-dark: #C2410C;
+            
+            --primary-50: #FFF7ED;
+            --primary-100: #FFEDD5;
+            --primary-200: #FED7AA;
+            --primary-300: #FDBA74;
+            --primary-400: #FB923C;
+            --primary-500: #F97316;
+            --primary-600: #EA580C;
+            --primary-700: #C2410C;
+            --primary-800: #9A3412;
+            --primary-900: #7C2D12;
+            
+            --secondary-50: #F8FAFC;
+            --secondary-100: #F1F5F9;
+            --secondary-200: #E2E8F0;
+            --secondary-300: #CBD5E1;
+            --secondary-400: #94A3B8;
+            --secondary-500: #64748B;
+            --secondary-600: #475569;
+            --secondary-700: #334155;
+            --secondary-800: #1E293B;
+            --secondary-900: #0F172A;
+        }
+        
+        /* Dark mode */
+        .dark {
+            --bg-primary: #111827;
+            --bg-secondary: #1F2937;
+            --bg-tertiary: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #E5E7EB;
+            --text-tertiary: #D1D5DB;
+            --border-color: #374151;
+            --card-bg: #1F2937;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            
+            --primary-50: #433600;
+            --primary-100: #664D00;
+            --primary-200: #8C6900;
+            --primary-300: #B38600;
+            --primary-400: #D9A200;
+            --primary-500: #FFBF00;
+            --primary-600: #FFCC33;
+            --primary-700: #FFD966;
+            --primary-800: #FFE699;
+            --primary-900: #FFF2CC;
+            
+            --secondary-50: #4A0D2B;
+            --secondary-100: #731342;
+            --secondary-200: #9C1A59;
+            --secondary-300: #C52170;
+            --secondary-400: #E91E63;
+            --secondary-500: #ED4B82;
+            --secondary-600: #F178A1;
+            --secondary-700: #F5A5C0;
+            --secondary-800: #F9D2DF;
+            --secondary-900: #FCE8EF;
+        }
+        
+        /* Common styles */
         .gradient-text {
-            background: linear-gradient(90deg, #FFC107, #E91E63);
+            background: linear-gradient(90deg, var(--accent-orange, var(--primary-500)), var(--secondary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Light mode specific gradient for "Simplify" */
+        :root .gradient-text {
+            background: linear-gradient(90deg, #EA580C, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Dark mode keeps the original gradient */
+        .dark .gradient-text {
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .hero-gradient {
-            background: radial-gradient(circle at 30% 30%, rgba(255, 193, 7, 0.15), transparent 30%),
-                        radial-gradient(circle at 70% 70%, rgba(233, 30, 99, 0.15), transparent 30%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%);
         }
         
+        .dark .hero-gradient {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 191, 0, 0.1), transparent 40%),
+                        radial-gradient(circle at 70% 70%, rgba(237, 75, 130, 0.1), transparent 40%);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-200);
+        }
+        
+        .dark .feature-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-600);
+        }
+        
+        .playful-shadow {
+            box-shadow: 5px 5px 0px var(--secondary-500);
+        }
+        
+        .btn-playful {
+            transition: all 0.2s ease;
+            transform-origin: center;
+        }
+        
+        .btn-playful:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+        
+        .btn-playful:active {
+            transform: scale(0.98);
+        }
+        
+        .logo-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .dark .dark-mode-toggle {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
-<body class="bg-white min-h-screen flex flex-col">
+<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
     
 <!-- Navigation -->
 <nav 
   x-data="{ open: false }"
-  class="bg-white shadow-md py-3 px-6 flex items-center justify-between sticky top-0 z-50 rounded-full mx-4 my-3 card-container"
+  class="bg-[var(--card-bg)] max-w-5xl mx-auto dark:bg-gray-800 shadow-md py-3 px-6 flex items-center justify-between sticky top-0 z-50 rounded-full mx-4 my-3 card-container backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90"
 >
     <a href="/" class="flex items-center gap-2">
         <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
-        <span class="text-xl font-bold text-gray-800">RdRx</span>
+        <span class="text-xl font-bold text-[var(--text-primary)] dark:text-white">RdRx</span>
     </a>
     
     <!-- Mobile menu button -->
     <button 
       @click="open = !open"
-      class="md:hidden ml-auto text-gray-700 hover:text-primary-500 focus:outline-none"
+      class="md:hidden ml-auto text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 focus:outline-none"
       aria-label="Open Menu"
     >
       <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,11 +278,12 @@
     <!-- Desktop & mobile nav links -->
     <div 
       class="flex items-center gap-4"
-      :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-white shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
+      :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-[var(--card-bg)] dark:bg-gray-800 shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
     >
-        <a href="/login" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
-        <a href="/coming-soon" class="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
-        <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful btn-outline text-sm py-2 px-4">
+        <a href="#demo" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Try It</a>
+        <a href="/login" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
+        <a href="/coming-soon" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
+        <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful bg-white dark:bg-gray-700 text-[var(--text-primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg text-sm py-2 px-4">
             <i class="fab fa-github mr-1"></i> GitHub
         </a>
     </div>
@@ -183,5 +366,22 @@
     </div>
 </footer>
 
+    <!-- Dark mode toggle button -->
+    <button 
+        class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300"
+        @click="darkMode = !darkMode"
+        aria-label="Toggle dark mode"
+    >
+        <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+    </button>
+
+    <!-- Force dark mode styles to apply immediately -->
+    <script>
+      // Check if dark mode is enabled in localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        // Apply dark mode class to html element
+        document.documentElement.classList.add('dark');
+      }
+    </script>
 </body>
 </html>

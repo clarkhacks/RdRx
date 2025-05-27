@@ -114,7 +114,7 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                             </div>
                             <button 
                                 @click="createShortUrl" 
-                                class="mt-3 w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-secondary-600 hover:bg-secondary-700 dark:bg-secondary-500 dark:hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 transition-all duration-300 transform hover:-translate-y-1"
+                                class="mt-3 w-full inline-flex justify-center items-center px-4 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300 transform hover:-translate-y-1"
                                 :disabled="isLoading"
                             >
                                 <span x-show="!isLoading">Shorten URL</span>
@@ -156,11 +156,11 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
 </header>
 
 <!-- About Section -->
-<section class="py-20 px-4 sm:px-6 lg:px-8 bg-[var(--bg-secondary)] dark:bg-gray-900 relative">
+<section class="py-20 px-4 sm:px-6 lg:px-8 bg-[var(--bg-primary)] dark:bg-gray-900 relative">
     <div class="max-w-5xl mx-auto">
         <div class="text-center mb-16">
             <h2 class="text-3xl sm:text-4xl font-bold mb-4">What is <span class="gradient-text">RdRx</span>?</h2>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p class="text-lg text-[var(--text-secondary)] dark:text-gray-300 max-w-3xl mx-auto">
                 RdRx (Redirects) is an open-source URL shortener and content sharing platform built with modern cloud technologies.
             </p>
         </div>
@@ -218,7 +218,7 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
 
 
 <!-- Features Section -->
-<section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-[var(--bg-tertiary)] dark:bg-gray-800 relative">
+<section id="features" class="py-20 px-4 sm:px-6 lg:px-8 bg-[var(--bg-primary)] dark:bg-gray-800 relative">
     <div class="max-w-5xl mx-auto">
         <div class="text-center mb-16">
             <h2 class="text-3xl sm:text-4xl font-bold mb-4">Features</h2>
@@ -381,9 +381,9 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                     </p>
                 </div>
                 
-                <div class="feature-card bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-dashed border-gray-300 dark:border-gray-600">
-                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-mobile-alt text-gray-600 dark:text-gray-400 text-xl"></i>
+                <div class="feature-card bg-[var(--bg-secondary)] dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-dashed border-[var(--border-color)] dark:border-gray-600">
+                    <div class="w-12 h-12 bg-[var(--bg-tertiary)] dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-mobile-alt text-[var(--text-tertiary)] dark:text-gray-400 text-xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-2 text-[var(--text-primary)] dark:text-white">Mobile App</h3>
                     <p class="text-[var(--text-secondary)] dark:text-gray-300">

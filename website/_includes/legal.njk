@@ -19,14 +19,4 @@ layout: base.njk
 </main>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-            <div>© 2025 RdRx. All rights reserved.</div>
-            <div class="flex gap-4">
-                <a href="/terms/" class="{% if page.url == '/terms/' %}font-medium text-primary-500 hover:text-primary-600{% else %}hover:text-primary-500{% endif %} transition-colors duration-200">Terms of Service</a>
-                <a href="/privacy/" class="{% if page.url == '/privacy/' %}font-medium text-primary-500 hover:text-primary-600{% else %}hover:text-primary-500{% endif %} transition-colors duration-200">Privacy Policy</a>
-            </div>
-        </div>
-    </div>
-</footer>
+{% include "footer.njk" %}
