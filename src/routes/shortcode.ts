@@ -177,6 +177,16 @@ async function handleFileRequest(request: Request, shortcode: string, env: Env):
  * Handle shortcode redirect
  */
 async function handleShortcodeRedirect(request: Request, shortcode: string, env: Env): Promise<Response> {
+	// First check if this is a temporary URL stored in KV
+	const kvUrl = await env.KV_RDRX.get(`short:${shortcode}`);
+
+	if (kvUrl) {
+		console.log('Found URL in KV:', shortcode);
+		// No need to track views for temporary URLs to save costs
+		return Response.redirect(kvUrl);
+	}
+
+	// If not in KV, try to get from D1
 	const redirectUrl = await fetchUrlByShortcode(shortcode, env);
 
 	// Check if this might be a snippet without the c- prefix

@@ -92,6 +92,7 @@ async function handleFileUpload(request: Request, env: Env, userId: string | nul
 /**
  * Handle create temporary short URL that expires in 2 days
  * This is a public endpoint that doesn't require authentication
+ * Stores URLs in KV instead of D1 to limit costs
  */
 async function handleCreateTempUrl(request: Request, env: Env): Promise<Response> {
 	try {
@@ -113,25 +114,26 @@ async function handleCreateTempUrl(request: Request, env: Env): Promise<Response
 		// Generate random shortcode
 		const shortcode = generateShortcode();
 
-		// Check if shortcode already exists
-		const existingUrl = await checkShortcodeExists(shortcode, env);
+		// Check if shortcode already exists in KV
+		const existingUrl = await env.KV_RDRX.get(`short:${shortcode}`);
 		if (existingUrl) {
-			console.log('Shortcode already exists, generating a new one');
+			console.log('Shortcode already exists in KV, generating a new one');
 			// Try again with a new shortcode
 			return handleCreateTempUrl(request, env);
 		}
 
-		// Save the URL to D1
-		await saveUrlToDatabase(shortcode, url, env, null);
-
 		// Calculate expiration date (2 days from now)
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
+		const expirationTimestamp = expirationDate.getTime();
 
-		// Add delete entry for 2 days from now
-		await saveDeletionEntry(env, shortcode, expirationDate.getTime(), false);
+		// Save the URL to KV with the format short:shortcode -> url
+		await env.KV_RDRX.put(`short:${shortcode}`, url);
 
-		console.log('Temporary URL created with expiration in 2 days');
+		// Save the expiration date to KV with the format delete-short:shortcode -> timestamp
+		await env.KV_RDRX.put(`delete-short:${shortcode}`, expirationTimestamp.toString());
+
+		console.log('Temporary URL created with expiration in 2 days (stored in KV)');
 		return new Response(
 			JSON.stringify({
 				shortcode,
