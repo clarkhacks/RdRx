@@ -1,5 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      x-init="
+        $watch('darkMode', val => {
+          localStorage.setItem('darkMode', val);
+          if (val) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        });
+        
+        // Initialize on page load
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.documentElement.classList.add('dark');
+        }
+      " 
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -215,11 +231,20 @@
     {{ content | safe }}
     <!-- Dark mode toggle button -->
     <button 
-        class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white"
+        class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300"
         @click="darkMode = !darkMode"
         aria-label="Toggle dark mode"
     >
         <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
     </button>
+
+    <!-- Force dark mode styles to apply immediately -->
+    <script>
+      // Check if dark mode is enabled in localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        // Apply dark mode class to html element
+        document.documentElement.classList.add('dark');
+      }
+    </script>
 </body>
 </html>

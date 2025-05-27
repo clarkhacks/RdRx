@@ -4,6 +4,7 @@ module.exports = {
 		'./website/**/*.{njk,md,html,js}', // Scan all relevant files in website/
 		'./static/**/*.html', // Scan static HTML files
 	],
+	darkMode: 'class', // Enable dark mode support
 	theme: {
 		extend: {
 			colors: {
@@ -81,7 +82,5 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [
-		require('@tailwindcss/typography'),
-	],
+	plugins: [require('@tailwindcss/typography')],
 };
