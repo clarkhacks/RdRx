@@ -19,6 +19,9 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
             Simplify your links, share code snippets, and host files with our powerful, cloud-native platform featuring full content management and editing capabilities
         </p>
         <div class="flex flex-wrap justify-center gap-4">
+            <a href="#demo" class="text-gray-800 bg-secondary-600 hover:bg-secondary-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
+                Try It Now
+            </a>
             <a href="#features" class="text-gray-800 bg-primary-600 hover:bg-primary-700 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl">
                 Explore Features
             </a>
@@ -86,6 +89,119 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
             <p class="text-gray-600">
                 We're committed to transparency and community collaboration, and we'll be making the codebase public soon.
             </p>
+        </div>
+    </div>
+</section>
+
+<!-- Demo Section -->
+<section id="demo" class="py-20 px-4 sm:px-6 lg:px-8 bg-white border-t border-gray-200">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">Try It Now</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Create a temporary short URL that expires in 2 days - no account required!
+            </p>
+        </div>
+        
+        <div class="bg-gray-50 p-8 rounded-xl shadow-lg max-w-3xl mx-auto" x-data="{ 
+            url: '', 
+            shortUrl: '', 
+            expiresAt: '',
+            isLoading: false,
+            error: '',
+            success: false,
+            async createShortUrl() {
+                this.isLoading = true;
+                this.error = '';
+                this.success = false;
+                
+                try {
+                    if (!this.url) {
+                        this.error = 'Please enter a URL';
+                        this.isLoading = false;
+                        return;
+                    }
+                    
+                    // Add https:// if not present
+                    if (!this.url.startsWith('http://') && !this.url.startsWith('https://')) {
+                        this.url = 'https://' + this.url;
+                    }
+                    
+                    const response = await fetch('https://rdrx.co/api/temp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ url: this.url })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to create short URL');
+                    }
+                    
+                    const data = await response.json();
+                    this.shortUrl = data.full_url;
+                    this.expiresAt = new Date(data.expires_at).toLocaleString();
+                    this.success = true;
+                } catch (error) {
+                    this.error = error.message || 'An error occurred';
+                } finally {
+                    this.isLoading = false;
+                }
+            },
+            copyToClipboard() {
+                navigator.clipboard.writeText(this.shortUrl);
+                alert('Copied to clipboard!');
+            }
+        }">
+            <div class="mb-6">
+                <label for="url-input" class="block text-sm font-medium text-gray-700 mb-1">Enter a URL to shorten</label>
+                <div class="flex">
+                    <input 
+                        type="text" 
+                        id="url-input" 
+                        x-model="url" 
+                        placeholder="example.com" 
+                        class="flex-1 block w-full rounded-l-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm p-3"
+                        @keyup.enter="createShortUrl"
+                    >
+                    <button 
+                        @click="createShortUrl" 
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        :disabled="isLoading"
+                    >
+                        <span x-show="!isLoading">Shorten</span>
+                        <span x-show="isLoading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </div>
+                <p x-show="error" x-text="error" class="mt-2 text-sm text-red-600"></p>
+            </div>
+            
+            <div x-show="success" class="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                <h3 class="text-lg font-medium text-green-800 mb-2">URL Shortened Successfully!</h3>
+                <div class="flex items-center mb-2">
+                    <input 
+                        type="text" 
+                        x-model="shortUrl" 
+                        readonly 
+                        class="flex-1 block w-full rounded-l-lg border-gray-300 bg-gray-50 p-2 text-sm"
+                    >
+                    <button 
+                        @click="copyToClipboard" 
+                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-r-lg shadow-sm text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500"
+                    >
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-gray-600">
+                    <i class="fas fa-clock text-gray-500 mr-1"></i> Expires: <span x-text="expiresAt"></span>
+                </p>
+                <p class="mt-2 text-sm text-gray-600">
+                    This short URL will automatically expire in 2 days.
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -189,6 +305,16 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                 <h3 class="text-xl font-semibold mb-2">Auto Cleanup</h3>
                 <p class="text-gray-600">
                     Schedule automatic deletion of expired links and files with proper R2 storage cleanup.
+                </p>
+            </div>
+            
+            <div class="feature-card bg-white p-6 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-hourglass-half text-secondary-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Temporary Links</h3>
+                <p class="text-gray-600">
+                    Create short URLs that automatically expire after 2 days - perfect for temporary sharing.
                 </p>
             </div>
         </div>

@@ -66,6 +66,10 @@ export async function router(request: Request, env: Env): Promise<Response> {
 
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
+		// Special case for the temporary URL endpoint which doesn't require auth
+		if (url.pathname === '/api/temp') {
+			return handleApiRoutes(request, env);
+		}
 		return handleApiRoutes(enhancedRequest, env);
 	}
 

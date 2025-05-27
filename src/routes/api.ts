@@ -7,8 +7,14 @@ import { unauthorizedResponseIfNotAuthenticated } from '../middleware/auth';
  * Handle API routes
  * - POST /upload - Handle file upload
  * - POST / - Handle URL or snippet creation
+ * - POST /temp - Create temporary URL that expires in 2 days
  */
 export async function handleApiRoutes(request: Request, env: Env): Promise<Response> {
+	// Handle temporary URL creation (public endpoint, no auth required)
+	if (request.url.endsWith('/temp')) {
+		return handleCreateTempUrl(request, env);
+	}
+
 	// Check if the user is authenticated using the user property attached by the middleware
 	const isAuthenticatedUser = request.user !== undefined && request.user !== null;
 
@@ -81,6 +87,72 @@ async function handleFileUpload(request: Request, env: Env, userId: string | nul
 		status: 200,
 		headers: { 'Content-Type': 'application/json' },
 	});
+}
+
+/**
+ * Handle create temporary short URL that expires in 2 days
+ * This is a public endpoint that doesn't require authentication
+ */
+async function handleCreateTempUrl(request: Request, env: Env): Promise<Response> {
+	try {
+		const body = (await request.json()) as { url?: string };
+		if (typeof body !== 'object' || body === null) {
+			return new Response('Invalid request body', { status: 400 });
+		}
+
+		const { url } = body;
+
+		// Validate URL
+		if (!url) {
+			console.log('Bad Request: Missing or invalid URL');
+			return new Response('Bad Request: Missing or invalid URL', {
+				status: 400,
+			});
+		}
+
+		// Generate random shortcode
+		const shortcode = generateShortcode();
+
+		// Check if shortcode already exists
+		const existingUrl = await checkShortcodeExists(shortcode, env);
+		if (existingUrl) {
+			console.log('Shortcode already exists, generating a new one');
+			// Try again with a new shortcode
+			return handleCreateTempUrl(request, env);
+		}
+
+		// Save the URL to D1
+		await saveUrlToDatabase(shortcode, url, env, null);
+
+		// Calculate expiration date (2 days from now)
+		const expirationDate = new Date();
+		expirationDate.setDate(expirationDate.getDate() + 2);
+
+		// Add delete entry for 2 days from now
+		await saveDeletionEntry(env, shortcode, expirationDate.getTime(), false);
+
+		console.log('Temporary URL created with expiration in 2 days');
+		return new Response(
+			JSON.stringify({
+				shortcode,
+				url,
+				expires_at: expirationDate.toISOString(),
+				full_url: `https://rdrx.co/${shortcode}`,
+			}),
+			{
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'POST, OPTIONS',
+					'Access-Control-Allow-Headers': 'Content-Type',
+				},
+			}
+		);
+	} catch (error) {
+		console.error('Error handling temporary URL creation:', error);
+		return new Response('Internal Server Error', { status: 500 });
+	}
 }
 
 /**
