@@ -2,9 +2,10 @@ interface CreateFormUIProps {
 	shortcode?: string;
 	shortcodeValue?: string;
 	isAdmin?: boolean;
+	shortDomain?: string;
 }
 
-function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false }: CreateFormUIProps = {}): string {
+function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false, shortDomain }: CreateFormUIProps = {}): string {
 	return `
 <!-- Add gradient styles -->
 <style>
@@ -97,7 +98,7 @@ function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false }: Crea
       <div class="flex items-start">
         <div class="relative flex-grow">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
-            rdrx.co/
+            ${shortDomain}/
           </div>
           <input type="text" id="customCode" name="customCode"
             ${shortcode ? `value="${shortcode}"` : ''}
@@ -162,7 +163,7 @@ function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false }: Crea
   `;
 }
 
-function renderCreateFormScripts(): string {
+function renderCreateFormScripts(shortDomain: string): string {
 	return `
   // Load clipboard.js
   const clipboardScript = document.createElement('script');
@@ -272,7 +273,7 @@ function renderCreateFormScripts(): string {
         const data = await response.json();
         
         if (data.message === 'Short URL overwritten') {
-          const shortUrl = 'https://rdrx.co/' + data.shortcode;
+          const shortUrl = 'https://${shortDomain}/' + data.shortcode;
           successMessage.textContent = 'Short URL overwritten: ' + shortUrl;
           successAlert.classList.remove('hidden');
           
@@ -300,7 +301,7 @@ function renderCreateFormScripts(): string {
           
           clearForm();
         } else if (data.shortcode) {
-          const shortUrl = 'https://rdrx.co/' + data.shortcode;
+          const shortUrl = 'https://${shortDomain}/' + data.shortcode;
           successMessage.textContent = 'Short URL created: ' + shortUrl;
           successAlert.classList.remove('hidden');
           

@@ -1,10 +1,11 @@
 interface SnippetFormUIProps {
 	shortcode?: string;
 	shortcodeValue?: string;
+	shortDomain?: string;
 }
 
 function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
-	const { shortcode, shortcodeValue } = props;
+	const { shortcode, shortcodeValue, shortDomain } = props;
 
 	return `
 <!-- Add gradient styles -->
@@ -82,7 +83,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
             <div class="flex items-start">
                 <div class="relative flex-grow">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
-                    rdrx.co/
+                    ${shortDomain}/
                   </div>
                   <input type="text" id="customCode" name="customCode"
                     ${shortcode ? `value="${shortcode}"` : ''}
@@ -149,7 +150,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
     `;
 }
 
-function renderSnippetFormScripts(): string {
+function renderSnippetFormScripts(shortDomain: string): string {
 	return `
     // Load clipboard.js
     const clipboardScript = document.createElement('script');
@@ -237,7 +238,7 @@ function renderSnippetFormScripts(): string {
             const successMessage = document.querySelector('#success-message');
 
             if (response.status === 200) {
-                const shortUrl = 'https://rdrx.co/' + data.shortcode;
+                const shortUrl = 'https://${shortDomain}/' + data.shortcode;
                 successMessage.textContent = 'Code Snippet created: ' + shortUrl;
                 successAlert.classList.remove('hidden');
                 

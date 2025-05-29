@@ -2,9 +2,11 @@ import { Env } from '../types';
 import { verifySession } from '../components/auth/service';
 
 /**
- * Authorized parties for authentication
+ * Get authorized parties for authentication
  */
-const AUTHORIZED_PARTIES = ['http://localhost:8787', 'https://rdrx.co'];
+function getAuthorizedParties(env: Env): string[] {
+	return ['http://localhost:8787', `https://${env.SHORT_DOMAIN}`];
+}
 
 /**
  * Check if a request is authenticated

@@ -8,7 +8,11 @@ export interface Env {
 	MAILGUN_API_KEY: string;
 	FROM_EMAIL?: string;
 	FRONTEND_URL?: string;
+	SHORT_DOMAIN: string;
 	ADMIN_UID?: string;
+
+	// Config
+	R2_URL: string; // Where files are served from
 
 	// Storage
 	R2_RDRX: R2Bucket;

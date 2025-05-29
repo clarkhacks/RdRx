@@ -7,4 +7,6 @@ MAILGUN_DOMAIN="your-domain.com"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
 FROM_EMAIL="noreply@your-domain.com"
 FRONTEND_URL="http://localhost:8787"
+SHORT_DOMAIN="rdrx.co"
 ADMIN_UID="12345678901234567890" # Example UID for admin user
+R2_URL="htps://cdn.rdrx.co"

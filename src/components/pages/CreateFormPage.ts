@@ -14,6 +14,7 @@ declare global {
 
 interface Env {
 	ADMIN_UID?: string;
+	SHORT_DOMAIN: string;
 }
 
 function renderCreateFormPage(request: Request, env: Env, shortcodeValue?: string, shortcode?: string): Response {
@@ -22,14 +23,14 @@ function renderCreateFormPage(request: Request, env: Env, shortcodeValue?: strin
 
 	const pageContent = `
     ${renderSuccessAlert({ message: '' })}
-    ${renderCreateFormUI({ shortcode, shortcodeValue, isAdmin })}
+    ${renderCreateFormUI({ shortcode, shortcodeValue, isAdmin, shortDomain: env.SHORT_DOMAIN })}
   `;
 
 	const html = renderPageLayout({
 		title: 'Create Short URL',
 		activeNavItem: 'create',
 		content: pageContent,
-		scripts: renderCreateFormScripts(),
+		scripts: renderCreateFormScripts(env.SHORT_DOMAIN),
 	});
 
 	return new Response(html, {
