@@ -1,9 +1,10 @@
 interface CreateFormUIProps {
 	shortcode?: string;
 	shortcodeValue?: string;
+	isAdmin?: boolean;
 }
 
-function renderCreateFormUI({ shortcode, shortcodeValue }: CreateFormUIProps = {}): string {
+function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false }: CreateFormUIProps = {}): string {
 	return `
 <!-- Add gradient styles -->
 <style>
@@ -121,13 +122,19 @@ function renderCreateFormUI({ shortcode, shortcodeValue }: CreateFormUIProps = {
         class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
     </div>
 
-    <!-- Admin Override Code -->
+    ${
+			isAdmin
+				? `
+    <!-- Admin Override Code (only shown to admins) -->
     <div>
       <label for="adminOverrideCode" class="block text-sm font-medium text-gray-700 mb-1">Admin Override Code (optional)</label>
       <input type="text" id="adminOverrideCode" name="adminOverrideCode"
         placeholder="Only needed for overwriting existing URLs"
         class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 placeholder-gray-400 transition">
     </div>
+    `
+				: ''
+		}
 
     <!-- Submit Button -->
     <div class="pt-4">
@@ -167,7 +174,8 @@ function renderCreateFormScripts(): string {
     event.preventDefault();
     const customCode = document.querySelector('#customCode').value;
     const longUrl = document.querySelector('#longUrl').value;
-    const adminOverrideCode = document.querySelector('#adminOverrideCode').value;
+    const adminOverrideCodeInput = document.querySelector('#adminOverrideCode');
+    const adminOverrideCode = adminOverrideCodeInput ? adminOverrideCodeInput.value : '';
     const deleteDateCheckbox = document.querySelector('#deleteDate').checked;
     const deleteAfter = document.querySelector('#deleteAfter').value;
 
@@ -177,7 +185,9 @@ function renderCreateFormScripts(): string {
     function clearForm() {
       document.querySelector('#customCode').value = '';
       document.querySelector('#longUrl').value = '';
-      document.querySelector('#adminOverrideCode').value = '';
+      if (document.querySelector('#adminOverrideCode')) {
+        document.querySelector('#adminOverrideCode').value = '';
+      }
       
       // Reset expiry fields to defaults
       document.querySelector('#deleteDate').checked = true;

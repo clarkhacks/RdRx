@@ -2,12 +2,27 @@ import { renderPageLayout } from '../layouts/PageLayout';
 import { renderSuccessAlert } from '../ui/SuccessAlert';
 import { renderCreateFormUI, renderCreateFormScripts } from '../ui/CreateFormUI';
 
-interface Env {}
+// Extend the Request type to include the user property
+declare global {
+	interface Request {
+		user?: {
+			uid: string;
+			[key: string]: any;
+		};
+	}
+}
 
-function renderCreateFormPage(env: Env, shortcodeValue?: string, shortcode?: string): Response {
+interface Env {
+	ADMIN_UID?: string;
+}
+
+function renderCreateFormPage(request: Request, env: Env, shortcodeValue?: string, shortcode?: string): Response {
+	// Check if the user is an admin
+	const isAdmin = request.user?.uid === env.ADMIN_UID;
+
 	const pageContent = `
     ${renderSuccessAlert({ message: '' })}
-    ${renderCreateFormUI({ shortcode, shortcodeValue })}
+    ${renderCreateFormUI({ shortcode, shortcodeValue, isAdmin })}
   `;
 
 	const html = renderPageLayout({

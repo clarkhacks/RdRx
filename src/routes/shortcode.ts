@@ -45,7 +45,7 @@ export async function handleShortcodeRoutes(request: Request, env: Env, shortcod
 	if (searchParams.get('edit') === '1') {
 		const redirectUrl = await fetchUrlByShortcode(shortcode, env);
 		// Convert null to undefined for renderCreateForm
-		return renderCreateForm(env, redirectUrl || undefined, shortcode);
+		return renderCreateForm(request, env, redirectUrl || undefined, shortcode);
 	}
 
 	// Handle regular shortcode redirect
@@ -70,7 +70,7 @@ async function handleProtectedPath(request: Request, env: Env, shortcode: string
 
 	switch (shortcode) {
 		case 'create':
-			return renderCreateForm(env);
+			return renderCreateForm(request, env);
 		case 'snippet':
 			return renderSnippetForm(env);
 		case 'upload':
