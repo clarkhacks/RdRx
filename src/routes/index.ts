@@ -64,6 +64,30 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return renderAdminPage(enhancedRequest, env);
 	}
 
+	// Handle bio page
+	if (url.pathname === '/bio') {
+		const { handleBioFormPage } = await import('./bio');
+		return handleBioFormPage(enhancedRequest, env);
+	}
+
+	// Handle bio API routes
+	if (url.pathname.startsWith('/api/bio/')) {
+		const { handleGetUserBio, handleSaveBio } = await import('./bio');
+		if (url.pathname === '/api/bio/my-bio' && request.method === 'GET') {
+			return handleGetUserBio(enhancedRequest, env);
+		}
+		if (url.pathname === '/api/bio/save' && request.method === 'POST') {
+			return handleSaveBio(enhancedRequest, env);
+		}
+	}
+
+	// Handle bio view routes (for viewing bio pages)
+	if (url.pathname.startsWith('/bio-view/')) {
+		const { handleViewBio } = await import('./bio');
+		const bioShortcode = url.pathname.replace('/bio-view/', '');
+		return handleViewBio(enhancedRequest, env, bioShortcode);
+	}
+
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
 		// Special case for the temporary URL endpoint which doesn't require auth

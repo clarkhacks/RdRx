@@ -17,8 +17,40 @@ export async function initializeTables(env: Env): Promise<void> {
         creator_id TEXT,
         is_snippet BOOLEAN NOT NULL DEFAULT 0,
         is_file BOOLEAN NOT NULL DEFAULT 0,
+        is_bio BOOLEAN NOT NULL DEFAULT 0,
         password_hash TEXT,
         is_password_protected BOOLEAN NOT NULL DEFAULT 0
+      )`
+		).run();
+
+		// Create bio_links table for storing individual links within bio pages
+		await env.DB.prepare(
+			`CREATE TABLE IF NOT EXISTS bio_links (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bio_shortcode TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        url TEXT NOT NULL,
+        icon TEXT,
+        order_index INTEGER NOT NULL DEFAULT 0,
+        is_active BOOLEAN NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (bio_shortcode) REFERENCES short_urls(shortcode)
+      )`
+		).run();
+
+		// Create bio_pages table for storing bio page metadata
+		await env.DB.prepare(
+			`CREATE TABLE IF NOT EXISTS bio_pages (
+        shortcode TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT,
+        profile_picture_url TEXT,
+        theme TEXT DEFAULT 'default',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (shortcode) REFERENCES short_urls(shortcode)
       )`
 		).run();
 
@@ -66,15 +98,16 @@ export async function saveUrlToDatabase(
 	isPasswordProtected: boolean = false
 ): Promise<void> {
 	try {
-		// Determine if it's a snippet or file
+		// Determine if it's a snippet, file, or bio
 		const isSnippet = shortcode.startsWith('c-');
 		const isFile = shortcode.startsWith('f-');
+		const isBio = shortcode.startsWith('b-');
 
 		// Insert into D1
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO short_urls 
-      (shortcode, target_url, created_at, creator_id, is_snippet, is_file, password_hash, is_password_protected)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      (shortcode, target_url, created_at, creator_id, is_snippet, is_file, is_bio, password_hash, is_password_protected)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
 			.bind(
 				shortcode,
@@ -83,6 +116,7 @@ export async function saveUrlToDatabase(
 				creatorId,
 				isSnippet ? 1 : 0,
 				isFile ? 1 : 0,
+				isBio ? 1 : 0,
 				passwordHash,
 				isPasswordProtected ? 1 : 0
 			)
@@ -230,5 +264,172 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
 		console.log(`Analytics tracked for shortcode: ${shortcode}`);
 	} catch (error) {
 		console.error('Error tracking analytics:', error);
+	}
+}
+
+/**
+ * Check if shortcode is available for bio page (not used by another user)
+ */
+export async function isBioShortcodeAvailable(env: Env, shortcode: string, userId: string): Promise<boolean> {
+	try {
+		const result = await env.DB.prepare(
+			`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`
+		).bind(shortcode).first();
+		
+		// Available if doesn't exist or belongs to the same user
+		return !result || result.creator_id === userId;
+	} catch (error) {
+		console.error('Error checking bio shortcode availability:', error);
+		return false;
+	}
+}
+
+/**
+ * Save a bio page to the database
+ */
+export async function saveBioPage(
+	env: Env,
+	userId: string,
+	shortcode: string,
+	title: string,
+	description: string | null = null,
+	profilePictureUrl: string | null = null,
+	theme: string = 'default'
+): Promise<void> {
+	try {
+		const now = new Date().toISOString();
+		
+		// Check if user already has a bio page with different shortcode
+		const existingBio = await env.DB.prepare(
+			`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`
+		).bind(userId).first();
+		
+		if (existingBio && existingBio.shortcode !== shortcode) {
+			// User is changing their shortcode, delete old entries
+			await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
+			await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
+			await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
+		}
+		
+		// Save/update bio page
+		await env.DB.prepare(
+			`INSERT OR REPLACE INTO bio_pages 
+			(shortcode, title, description, profile_picture_url, theme, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?)`
+		)
+			.bind(shortcode, title, description, profilePictureUrl, theme, now, now)
+			.run();
+
+		// Save/update in short_urls table
+		await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+
+		console.log(`Bio page saved: ${shortcode} for user: ${userId}`);
+	} catch (error) {
+		console.error('Error saving bio page:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get bio page by shortcode
+ */
+export async function getBioPage(env: Env, shortcode: string): Promise<any | null> {
+	try {
+		const result = await env.DB.prepare(`SELECT * FROM bio_pages WHERE shortcode = ?`).bind(shortcode).first();
+		return result || null;
+	} catch (error) {
+		console.error('Error getting bio page:', error);
+		return null;
+	}
+}
+
+/**
+ * Get user's bio page (if they have one)
+ */
+export async function getUserBioPage(env: Env, userId: string): Promise<any | null> {
+	try {
+		const result = await env.DB.prepare(
+			`SELECT bp.* FROM bio_pages bp 
+			 JOIN short_urls su ON bp.shortcode = su.shortcode 
+			 WHERE su.creator_id = ? AND su.is_bio = 1`
+		).bind(userId).first();
+		return result || null;
+	} catch (error) {
+		console.error('Error getting user bio page:', error);
+		return null;
+	}
+}
+
+/**
+ * Save a bio link
+ */
+export async function saveBioLink(
+	env: Env,
+	bioShortcode: string,
+	title: string,
+	url: string,
+	description: string | null = null,
+	icon: string | null = null,
+	orderIndex: number = 0
+): Promise<void> {
+	try {
+		const now = new Date().toISOString();
+
+		await env.DB.prepare(
+			`INSERT INTO bio_links 
+			(bio_shortcode, title, description, url, icon, order_index, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+		)
+			.bind(bioShortcode, title, description, url, icon, orderIndex, now, now)
+			.run();
+
+		console.log(`Bio link saved for: ${bioShortcode}`);
+	} catch (error) {
+		console.error('Error saving bio link:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get bio links by shortcode
+ */
+export async function getBioLinks(env: Env, bioShortcode: string): Promise<any[]> {
+	try {
+		const result = await env.DB.prepare(`SELECT * FROM bio_links WHERE bio_shortcode = ? AND is_active = 1 ORDER BY order_index ASC`)
+			.bind(bioShortcode)
+			.all();
+
+		return result.results || [];
+	} catch (error) {
+		console.error('Error getting bio links:', error);
+		return [];
+	}
+}
+
+/**
+ * Delete bio link
+ */
+export async function deleteBioLink(env: Env, linkId: number): Promise<void> {
+	try {
+		await env.DB.prepare(`DELETE FROM bio_links WHERE id = ?`).bind(linkId).run();
+		console.log(`Bio link deleted: ${linkId}`);
+	} catch (error) {
+		console.error('Error deleting bio link:', error);
+		throw error;
+	}
+}
+
+/**
+ * Update bio link order
+ */
+export async function updateBioLinkOrder(env: Env, linkId: number, newOrder: number): Promise<void> {
+	try {
+		const now = new Date().toISOString();
+		await env.DB.prepare(`UPDATE bio_links SET order_index = ?, updated_at = ? WHERE id = ?`).bind(newOrder, now, linkId).run();
+
+		console.log(`Bio link order updated: ${linkId} -> ${newOrder}`);
+	} catch (error) {
+		console.error('Error updating bio link order:', error);
+		throw error;
 	}
 }

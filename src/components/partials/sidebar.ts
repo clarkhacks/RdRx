@@ -95,6 +95,23 @@ function renderSidebar(currentPage: string = ''): string {
           </li>
           <li>
             <a 
+              href="/bio" 
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'bio' ? 'bg-primary-50 text-primary-700 font-medium' : ''
+							}"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${
+									currentPage === 'bio' ? 'text-primary-500' : 'text-gray-500'
+								}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <span class="text-sm">My Bio Page</span>
+            </a>
+          </li>
+          <li>
+            <a 
               id="analytics-link"
               href="/analytics" 
               class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
