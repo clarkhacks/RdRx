@@ -88,6 +88,12 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return handleViewBio(enhancedRequest, env, bioShortcode);
 	}
 
+	// Handle direct bio shortcode access
+	if (shortcode && shortcode.startsWith('b-')) {
+		const { handleViewBio } = await import('./bio');
+		return handleViewBio(enhancedRequest, env, shortcode);
+	}
+
 	// Handle API routes for POST requests
 	if (request.method === 'POST') {
 		// Special case for the temporary URL endpoint which doesn't require auth
