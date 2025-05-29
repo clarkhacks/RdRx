@@ -18,7 +18,7 @@ export async function initializeUsersTable(env: Env): Promise<void> {
 				email_verified BOOLEAN NOT NULL DEFAULT 0,
 				reset_token TEXT,
 				reset_token_expires TEXT
-			)`,
+			)`
 		).run();
 
 		// Create index on email for faster lookups
@@ -50,7 +50,7 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 			`INSERT INTO users (
 				uid, name, email, password_hash, profile_picture_url,
 				created_at, updated_at, email_verified, reset_token, reset_token_expires
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
 			.bind(
 				newUser.uid,
@@ -62,7 +62,7 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 				newUser.updated_at,
 				newUser.email_verified ? 1 : 0,
 				newUser.reset_token || null,
-				newUser.reset_token_expires || null,
+				newUser.reset_token_expires || null
 			)
 			.run();
 

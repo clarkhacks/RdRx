@@ -10,6 +10,7 @@ export interface Env {
 	FRONTEND_URL?: string;
 	SHORT_DOMAIN: string;
 	ADMIN_UID?: string;
+	DISABLE_SIGNUPS?: string;
 
 	// Config
 	R2_URL: string; // Where files are served from

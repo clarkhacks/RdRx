@@ -306,6 +306,9 @@ R2_URL="https://cdn.your-domain.com"
 # Authentication
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
+
+# Optional: Disable user signups (set to "true" to disable)
+DISABLE_SIGNUPS="false"
 ```
 
 **Important Domain Configuration:**

@@ -163,6 +163,14 @@ async function handleAuthAPI(request: Request, env: Env, path: string, method: s
  */
 async function handleSignupAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
 	try {
+		// Check if signups are disabled
+		if (env.DISABLE_SIGNUPS === 'true') {
+			return new Response(JSON.stringify({ success: false, message: 'Signups are disabled' }), {
+				status: 404,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
 		const body = (await request.json()) as SignupRequest;
 		const result = await signupUser(env, body);
 
@@ -423,6 +431,14 @@ async function handleMeAPI(request: Request, env: Env, corsHeaders: Record<strin
  * Handle signup page
  */
 async function handleSignupPage(request: Request, env: Env): Promise<Response> {
+	// Check if signups are disabled
+	if (env.DISABLE_SIGNUPS === 'true') {
+		return new Response('Not Found', {
+			status: 404,
+			headers: { 'Content-Type': 'text/plain' },
+		});
+	}
+
 	const html = `
 		<!DOCTYPE html>
 		<html lang="en">
