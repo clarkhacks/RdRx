@@ -136,6 +136,20 @@ function renderUploadFormUI(): string {
                 class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
         </div>
         
+        <!-- Password Protection -->
+        <div>
+            <div class="flex items-center space-x-2 mb-1">
+                <input type="checkbox" id="passwordProtected" name="passwordProtected"
+                  class="h-4 w-4 text-primary-500 rounded focus:ring-primary-500">
+                <label for="passwordProtected" class="text-sm font-medium text-gray-700">Password protect these files</label>
+            </div>
+            <div id="passwordContainer" class="hidden">
+                <input type="password" id="password" name="password" placeholder="Enter a password"
+                  class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                <p class="text-xs text-gray-500 mt-1">Users will need to enter this password to access the files.</p>
+            </div>
+        </div>
+        
         <!-- Progress Container -->
         <div id="progressContainer" class="space-y-2"></div>
 
@@ -172,6 +186,17 @@ function renderUploadFormScripts(): string {
     const defaultDate = new Date();
     defaultDate.setDate(defaultDate.getDate() + 30);
     document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
+    
+    // Toggle password field visibility
+    document.querySelector('#passwordProtected').addEventListener('change', function() {
+        const passwordContainer = document.querySelector('#passwordContainer');
+        if (this.checked) {
+            passwordContainer.classList.remove('hidden');
+        } else {
+            passwordContainer.classList.add('hidden');
+            document.querySelector('#password').value = '';
+        }
+    });
     
     // File input preview with enhanced styling
     const fileInput = document.getElementById('files');
@@ -259,6 +284,16 @@ function renderUploadFormScripts(): string {
         formData.append('deleteDate', deleteDateCheckbox ? 'true' : 'false');
         if (deleteDateCheckbox && deleteAfter) {
             formData.append('deleteAfter', deleteAfter);
+        }
+        
+        // Add password protection if enabled
+        const passwordProtected = document.querySelector('#passwordProtected').checked;
+        if (passwordProtected) {
+            const password = document.querySelector('#password').value;
+            if (password) {
+                formData.append('password_protected', 'true');
+                formData.append('password', password);
+            }
         }
 
         // Create a single progress bar for all files

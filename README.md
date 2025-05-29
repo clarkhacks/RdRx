@@ -20,6 +20,7 @@
 - **URL Shortening**: Create short, memorable links for any URL
 - **Code Snippets**: Share code snippets with syntax highlighting
 - **File Sharing**: Upload and share files securely
+- **Password Protection**: Secure your links, snippets, and files with password protection
 - **Analytics**: Track visits to your short links with detailed statistics
 - **Content Editing**: Edit URLs, modify snippets, and manage files after creation
 - **File Gallery Management**: Visual file gallery with add/remove capabilities and R2 storage integration
@@ -32,25 +33,30 @@
 ## User Features
 
 ### Content Creation & Management
+
 - **Create Short URLs**: Transform long URLs into short, shareable links
 - **Code Snippet Sharing**: Share formatted code with syntax highlighting
 - **File Upload & Sharing**: Upload multiple files and create shareable file bins
+- **Password Protection**: Add password protection to any content type for enhanced privacy
 - **Edit After Creation**: Modify URLs, update snippet content, and manage files
 - **Delete Content**: Remove unwanted links, snippets, or files with proper cleanup
 
 ### File Management
+
 - **Visual File Gallery**: Browse uploaded files with image thumbnails
 - **Individual File Control**: Add or remove specific files from collections
 - **Storage Integration**: Automatic R2 storage management with proper cleanup
 - **File Type Support**: Support for images, documents, and various file types
 
 ### Analytics & Tracking
+
 - **Detailed Analytics**: View click statistics, geographic data, and visit trends
 - **Real-time Data**: Live tracking of link performance
 - **Export Capabilities**: Download analytics data for external analysis
 - **User-specific Analytics**: Track only your own content performance
 
 ### Account Features
+
 - **Secure Authentication**: JWT-based authentication with HTTP-only cookies
 - **Profile Management**: Update personal information and profile pictures
 - **Password Security**: Secure password hashing with PBKDF2 and salt
@@ -59,18 +65,21 @@
 ## Admin Features
 
 ### User Management
+
 - **User Overview**: View all registered users with search and filtering
 - **Account Control**: Create, edit, verify, and delete user accounts
 - **Bulk Operations**: Manage multiple users efficiently
 - **Security Monitoring**: Track user activity and authentication status
 
 ### Content Administration
+
 - **URL Management**: View, edit, and delete all shortened URLs
 - **Content Moderation**: Monitor and manage user-generated content
 - **File Administration**: Manage uploaded files with R2 storage integration
 - **Bulk Content Operations**: Efficiently manage large amounts of content
 
 ### System Analytics
+
 - **Platform Statistics**: Overall system usage and performance metrics
 - **Storage Monitoring**: R2 storage usage and file management statistics
 - **User Analytics**: Platform-wide user engagement and activity data
@@ -198,7 +207,9 @@ CREATE TABLE IF NOT EXISTS short_urls (
   created_at TEXT NOT NULL,
   creator_id TEXT,
   is_snippet BOOLEAN NOT NULL DEFAULT 0,
-  is_file BOOLEAN NOT NULL DEFAULT 0
+  is_file BOOLEAN NOT NULL DEFAULT 0,
+  password_hash TEXT,
+  is_password_protected BOOLEAN NOT NULL DEFAULT 0
 );
 
 -- Create analytics table
@@ -283,19 +294,22 @@ To access the admin panel:
 1. Create your user account through the normal registration process
 2. Note your user ID (UID) from the account page or database
 3. Set the `ADMIN_UID` environment variable to your user ID:
+
    ```bash
    # For local development
    echo "ADMIN_UID=your-user-id-here" >> .dev.vars
-   
+
    # For production
    npx wrangler secret put ADMIN_UID
    ```
+
 4. Restart your application
 5. The admin panel link will appear in your sidebar navigation
 
 ## API Endpoints
 
 ### User Content Management
+
 - `PUT /api/user/url/{shortcode}` - Update URL target
 - `GET /api/user/snippet/{shortcode}` - Get snippet content
 - `PUT /api/user/snippet/{shortcode}` - Update snippet content
@@ -305,6 +319,7 @@ To access the admin panel:
 - `DELETE /api/user/delete/{shortcode}` - Delete entire item
 
 ### Admin API
+
 - `GET /api/admin/users` - List all users
 - `POST /api/admin/users` - Create new user
 - `DELETE /api/admin/users/{id}` - Delete user

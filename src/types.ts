@@ -56,6 +56,8 @@ export interface CreateShortUrlRequest {
 	delete_after?: string;
 	snippet?: string;
 	userId?: string;
+	password_protected?: boolean;
+	password?: string;
 }
 
 /**

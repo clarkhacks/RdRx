@@ -1,5 +1,5 @@
 import { Env, CreateShortUrlRequest } from '../types';
-import { saveUrlToDatabase, saveDeletionEntry } from '../utils/database';
+import { saveUrlToDatabase, saveDeletionEntry, hashPassword } from '../utils/database';
 import { generateShortcode } from '../utils/shortcode';
 import { unauthorizedResponseIfNotAuthenticated } from '../middleware/auth';
 
@@ -47,9 +47,12 @@ async function handleFileUpload(request: Request, env: Env, userId: string | nul
 	const apiKey = formData.get('apiKey') as string;
 	const deleteDate = formData.get('deleteAfter') as string;
 	const deleteDateCheckbox = formData.has('deleteDate');
+	const passwordProtected = formData.get('password_protected') === 'true';
+	const password = formData.get('password') as string;
 
 	console.log('Delete date checkbox:', deleteDateCheckbox);
 	console.log('Delete date:', deleteDate);
+	console.log('Password protected:', passwordProtected);
 
 	const urls = [];
 	const shortcode = `f-${customCode}`;
@@ -75,9 +78,17 @@ async function handleFileUpload(request: Request, env: Env, userId: string | nul
 		urls.push(url);
 	}
 
+	// Handle password protection
+	let passwordHash = null;
+	const isPasswordProtected = passwordProtected && typeof password === 'string' && password.length > 0;
+
+	if (isPasswordProtected && typeof password === 'string') {
+		passwordHash = await hashPassword(password);
+	}
+
 	// Save to D1
 	try {
-		await saveUrlToDatabase(`f-${customCode}`, JSON.stringify(urls), env, userId);
+		await saveUrlToDatabase(`f-${customCode}`, JSON.stringify(urls), env, userId, passwordHash, isPasswordProtected);
 	} catch (error) {
 		console.error('Error saving file URLs to D1:', error);
 		throw error;
@@ -167,14 +178,32 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 			return new Response('Invalid request body', { status: 400 });
 		}
 
-		const { url, custom, custom_code, admin_override_code, delete_after, snippet, userId: frontendUserId } = body as CreateShortUrlRequest;
+		const {
+			url,
+			custom,
+			custom_code,
+			admin_override_code,
+			delete_after,
+			snippet,
+			userId: frontendUserId,
+			password_protected,
+			password,
+		} = body as CreateShortUrlRequest;
 
 		// Use userId from the request body if provided, otherwise use the one from authentication
 		const creatorId = frontendUserId || userId;
 
+		// Handle password protection
+		let passwordHash = null;
+		const isPasswordProtected = password_protected === true && typeof password === 'string' && password.length > 0;
+
+		if (isPasswordProtected && typeof password === 'string') {
+			passwordHash = await hashPassword(password);
+		}
+
 		// Check for admin override
 		if (admin_override_code && env.API_KEY_ADMIN === admin_override_code) {
-			return handleAdminOverride(url, custom_code, delete_after, env, creatorId);
+			return handleAdminOverride(url, custom_code, delete_after, env, creatorId, passwordHash, isPasswordProtected);
 		}
 
 		// Validate URL
@@ -197,14 +226,14 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 
 		// Save the URL to D1
 		if (snippet) {
-			await saveUrlToDatabase(`c-${shortcode}`, snippet, env, creatorId);
+			await saveUrlToDatabase(`c-${shortcode}`, snippet, env, creatorId, passwordHash, isPasswordProtected);
 
 			// Add delete key if delete_after is provided for snippets
 			if (delete_after) {
 				await handleDeleteAfter(`c-${shortcode}`, delete_after, env);
 			}
 		} else if (url) {
-			await saveUrlToDatabase(shortcode, url, env, creatorId);
+			await saveUrlToDatabase(shortcode, url, env, creatorId, passwordHash, isPasswordProtected);
 
 			// Add delete key if delete_after is provided for URLs
 			if (delete_after) {
@@ -234,14 +263,16 @@ async function handleAdminOverride(
 	custom_code: string | undefined,
 	delete_after: string | undefined,
 	env: Env,
-	creatorId: string | null
+	creatorId: string | null,
+	passwordHash: string | null = null,
+	isPasswordProtected: boolean = false
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });
 	}
 
 	// url is guaranteed to be a string at this point
-	await saveUrlToDatabase(custom_code, url, env, creatorId);
+	await saveUrlToDatabase(custom_code, url, env, creatorId, passwordHash, isPasswordProtected);
 
 	// Add delete entry if delete_after is provided
 	if (delete_after) {
