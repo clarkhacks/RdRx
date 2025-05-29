@@ -22,38 +22,38 @@
   <p>RdRx provides a modern, user-friendly experience for all your URL shortening and content sharing needs.</p>
 </div>
 
-<table align="center">
-  <tr>
-    <td align="center" width="80%">
+<table align="center" style="border: none; border-collapse: collapse;">
+  <tr style="border: none;">
+    <td align="center" width="80%" style="border: none; padding: 10px;">
       <h4>🏠 Landing Page</h4>
       <img src="website/photos/lander.jpg" alt="RdRx Landing Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Clean, modern landing page with intuitive navigation</em></p>
     </td>
-    <td align="center" width="20%">
+    <td align="center" width="20%" style="border: none; padding: 10px;">
       <h4>🔐 Secure Authentication</h4>
       <img src="website/photos/login.jpg" alt="RdRx Login Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Secure login with JWT-based authentication</em></p>
     </td>
   </tr>
-  <tr>
-    <td align="center" width="50%">
+  <tr style="border: none;">
+    <td align="center" width="50%" style="border: none; padding: 10px;">
       <h4>📊 User Dashboard</h4>
       <img src="website/photos/dashboard.jpg" alt="RdRx Dashboard" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Comprehensive dashboard with analytics and content management</em></p>
     </td>
-    <td align="center" width="50%">
+    <td align="center" width="50%" style="border: none; padding: 10px;">
       <h4>👤 Profile Management</h4>
       <img src="website/photos/profile.jpg" alt="RdRx Profile Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Easy profile management with customizable settings</em></p>
     </td>
   </tr>
-  <tr>
-    <td align="center" width="50%">
+  <tr style="border: none;">
+    <td align="center" width="50%" style="border: none; padding: 10px;">
       <h4>🔗 URL Creation</h4>
       <img src="website/photos/short_create.jpg" alt="RdRx URL Creation" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Simple and powerful URL shortening with custom options</em></p>
     </td>
-    <td align="center" width="50%">
+    <td align="center" width="50%" style="border: none; padding: 10px;">
       <h4>📁 File Upload</h4>
       <img src="website/photos/upload.jpg" alt="RdRx File Upload" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
       <p><em>Drag-and-drop file sharing with gallery management</em></p>
