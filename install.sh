@@ -229,11 +229,47 @@ fi
 # Check if user is logged in to Cloudflare
 print_status "Checking Cloudflare authentication..."
 if ! wrangler whoami >/dev/null 2>&1; then
-    print_warning "You need to log in to Cloudflare first."
-    print_status "Opening browser for Cloudflare login..."
-    wrangler login
+    print_warning "You need to authenticate with Cloudflare first."
+    echo
+    print_status "Since this script is running in a non-interactive environment,"
+    print_status "you have two options:"
+    echo
+    echo "Option 1 (Recommended): Use API Token"
+    echo "  1. Go to: https://developers.cloudflare.com/fundamentals/api/get-started/create-token/"
+    echo "  2. Create a Custom Token with these permissions:"
+    echo "     - Zone:Zone:Read, Account:Cloudflare Workers:Edit"
+    echo "     - Zone:Zone Settings:Read, Zone:Zone:Read"
+    echo "     - Account:D1:Edit, Account:R2:Edit"
+    echo "     - Account:Workers KV Storage:Edit"
+    echo "  3. Set the token as an environment variable:"
+    echo "     export CLOUDFLARE_API_TOKEN=your_token_here"
+    echo "  4. Re-run this script"
+    echo
+    echo "Option 2: Run script locally"
+    echo "  1. Download the script: wget https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh"
+    echo "  2. Make it executable: chmod +x install.sh"
+    echo "  3. Run it: ./install.sh"
+    echo "  4. This will allow interactive browser login"
+    echo
+    read -p "Do you have a CLOUDFLARE_API_TOKEN set? (y/N): " has_token
+    if [[ $has_token =~ ^[Yy]$ ]]; then
+        if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            print_error "CLOUDFLARE_API_TOKEN environment variable is not set."
+            print_error "Please set it and try again: export CLOUDFLARE_API_TOKEN=your_token"
+            exit 1
+        fi
+        print_status "Using API token for authentication..."
+        # Test the token
+        if ! wrangler whoami >/dev/null 2>&1; then
+            print_error "API token authentication failed. Please check your token."
+            exit 1
+        fi
+    else
+        print_error "Please set up authentication and try again."
+        exit 1
+    fi
 else
-    print_success "Already logged in to Cloudflare!"
+    print_success "Already authenticated with Cloudflare!"
 fi
 
 # Get installation directory
@@ -282,7 +318,9 @@ print_success "Generated secure API keys and JWT secret"
 # Secure configuration
 echo
 print_status "🔐 Secure Configuration"
-prompt_secure "Mailgun API Key (get from https://app.mailgun.com/app/sending/domains)" MAILGUN_API_KEY
+echo "You can get your Mailgun API Key from: https://app.mailgun.com/app/sending/domains"
+echo "If you don't have Mailgun set up yet, you can press Enter to skip and configure it later."
+prompt_with_default "Mailgun API Key (optional)" "" MAILGUN_API_KEY
 
 # Create Cloudflare resources
 echo
@@ -290,11 +328,24 @@ print_status "☁️  Creating Cloudflare Resources"
 
 # Create D1 database
 print_status "Creating D1 database..."
+set +e  # Temporarily disable exit on error
 D1_OUTPUT=$(wrangler d1 create "$PROJECT_NAME-db" 2>&1)
+D1_EXIT_CODE=$?
+set -e  # Re-enable exit on error
+
+if [ $D1_EXIT_CODE -ne 0 ]; then
+    print_error "Failed to create D1 database."
+    echo "Error output: $D1_OUTPUT"
+    print_error "Please check your Cloudflare authentication and try again."
+    exit 1
+fi
+
 DATABASE_ID=$(echo "$D1_OUTPUT" | grep -o 'database_id = "[^"]*"' | cut -d'"' -f2)
 
 if [ -z "$DATABASE_ID" ]; then
-    print_error "Failed to create D1 database. Output: $D1_OUTPUT"
+    print_error "Could not extract database ID from output."
+    echo "Full output: $D1_OUTPUT"
+    print_error "Please check the output above and try again."
     exit 1
 fi
 print_success "D1 database created: $DATABASE_ID"

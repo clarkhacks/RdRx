@@ -36,9 +36,33 @@ This script will:
 - ✅ Provide you with all the information you need to get started
 
 **Prerequisites for one-click install:**
-- Node.js (v16+)
-- Git
+- Node.js (v16+) - *will be installed automatically if missing*
+- Git - *will be installed automatically if missing*
 - A Cloudflare account (free tier works!)
+- Cloudflare API Token (for non-interactive installation)
+
+**Authentication Setup:**
+Since the one-click install runs in a non-interactive environment, you'll need a Cloudflare API Token:
+
+1. Go to [Cloudflare API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)
+2. Create a **Custom Token** with these permissions:
+   - `Zone:Zone:Read` + `Account:Cloudflare Workers:Edit`
+   - `Zone:Zone Settings:Read` + `Zone:Zone:Read`
+   - `Account:D1:Edit` + `Account:R2:Edit`
+   - `Account:Workers KV Storage:Edit`
+3. Set the token as an environment variable:
+   ```bash
+   export CLOUDFLARE_API_TOKEN=your_token_here
+   ```
+4. Run the installation script
+
+**Alternative: Local Installation**
+If you prefer interactive browser login:
+```bash
+wget https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh
+chmod +x install.sh
+./install.sh
+```
 
 ### Manual Installation
 
