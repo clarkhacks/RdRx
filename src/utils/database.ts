@@ -16,8 +16,10 @@ export async function initializeTables(env: Env): Promise<void> {
         created_at TEXT NOT NULL,
         creator_id TEXT,
         is_snippet BOOLEAN NOT NULL DEFAULT 0,
-        is_file BOOLEAN NOT NULL DEFAULT 0
-      )`,
+        is_file BOOLEAN NOT NULL DEFAULT 0,
+        password_hash TEXT,
+        is_password_protected BOOLEAN NOT NULL DEFAULT 0
+      )`
 		).run();
 
 		// Create analytics table with minimal fields
@@ -28,7 +30,7 @@ export async function initializeTables(env: Env): Promise<void> {
         target_url TEXT NOT NULL,
         country TEXT,
         timestamp TEXT NOT NULL
-      )`,
+      )`
 		).run();
 
 		// Create deletions table
@@ -39,7 +41,7 @@ export async function initializeTables(env: Env): Promise<void> {
         delete_at INTEGER NOT NULL,
         is_file BOOLEAN NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL
-      )`,
+      )`
 		).run();
 
 		// Initialize users table for custom auth
@@ -55,7 +57,14 @@ export async function initializeTables(env: Env): Promise<void> {
 /**
  * Save a URL to the D1 database
  */
-export async function saveUrlToDatabase(shortcode: string, url: string, env: Env, creatorId: string | null = null): Promise<void> {
+export async function saveUrlToDatabase(
+	shortcode: string,
+	url: string,
+	env: Env,
+	creatorId: string | null = null,
+	passwordHash: string | null = null,
+	isPasswordProtected: boolean = false
+): Promise<void> {
 	try {
 		// Determine if it's a snippet or file
 		const isSnippet = shortcode.startsWith('c-');
@@ -64,13 +73,22 @@ export async function saveUrlToDatabase(shortcode: string, url: string, env: Env
 		// Insert into D1
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO short_urls 
-      (shortcode, target_url, created_at, creator_id, is_snippet, is_file)
-      VALUES (?, ?, ?, ?, ?, ?)`,
+      (shortcode, target_url, created_at, creator_id, is_snippet, is_file, password_hash, is_password_protected)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 		)
-			.bind(shortcode, url, new Date().toISOString(), creatorId, isSnippet ? 1 : 0, isFile ? 1 : 0)
+			.bind(
+				shortcode,
+				url,
+				new Date().toISOString(),
+				creatorId,
+				isSnippet ? 1 : 0,
+				isFile ? 1 : 0,
+				passwordHash,
+				isPasswordProtected ? 1 : 0
+			)
 			.run();
 
-		console.log(`Saved URL to database: ${shortcode}`);
+		console.log(`Saved URL to database: ${shortcode}${isPasswordProtected ? ' (password protected)' : ''}`);
 	} catch (error) {
 		console.error('Error saving to D1:', error);
 		throw error; // Re-throw the error to be handled by the caller
@@ -111,7 +129,7 @@ export async function saveDeletionEntry(env: Env, shortcode: string, deleteTimes
 		// Insert the deletion entry
 		await env.DB.prepare(
 			`INSERT INTO deletions (shortcode, delete_at, is_file, created_at)
-      VALUES (?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?)`
 		)
 			.bind(shortcode, deleteTimestamp, isFile ? 1 : 0, new Date().toISOString())
 			.run();
@@ -121,6 +139,66 @@ export async function saveDeletionEntry(env: Env, shortcode: string, deleteTimes
 		console.error('Error saving deletion entry:', error);
 		throw error;
 	}
+}
+
+/**
+ * Check if a shortcode is password protected
+ */
+export async function isShortcodePasswordProtected(shortcode: string, env: Env): Promise<boolean> {
+	try {
+		const result = await env.DB.prepare(`SELECT is_password_protected FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+
+		if (result && typeof result === 'object' && 'is_password_protected' in result) {
+			return result.is_password_protected === 1;
+		}
+
+		return false;
+	} catch (error) {
+		console.error('Error checking if shortcode is password protected:', error);
+		return false;
+	}
+}
+
+/**
+ * Verify a password for a shortcode
+ */
+export async function verifyShortcodePassword(shortcode: string, password: string, env: Env): Promise<boolean> {
+	try {
+		const result = await env.DB.prepare(`SELECT password_hash FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+
+		if (result && typeof result === 'object' && 'password_hash' in result && result.password_hash) {
+			// Compare the provided password with the stored hash
+			// In a real implementation, you would use a proper password hashing library
+			// For simplicity, we're just comparing the hashed values directly
+			const hashedPassword = await hashPassword(password);
+			return hashedPassword === result.password_hash;
+		}
+
+		return false;
+	} catch (error) {
+		console.error('Error verifying shortcode password:', error);
+		return false;
+	}
+}
+
+/**
+ * Hash a password
+ * In a real implementation, you would use a proper password hashing library
+ * For simplicity, we're just using a basic hash function
+ */
+export async function hashPassword(password: string): Promise<string> {
+	// Convert the password string to an array of bytes
+	const encoder = new TextEncoder();
+	const data = encoder.encode(password);
+
+	// Hash the password using SHA-256
+	const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+	// Convert the hash to a hex string
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+
+	return hashHex;
 }
 
 /**
@@ -144,7 +222,7 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
         target_url, 
         country,
         timestamp
-      ) VALUES (?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?)`
 		)
 			.bind(shortcode, redirectUrl, country, timestamp)
 			.run();

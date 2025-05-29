@@ -3,7 +3,7 @@ import { renderCreateFormPage as renderCreateForm } from '../components/pages/Cr
 import { renderSnippetFormPage as renderSnippetForm } from '../components/pages/SnippetFormPage';
 import { renderUploadFormPage as renderUploadForm } from '../components/pages/UploadFormPage';
 import { renderViewFiles } from '../components/viewFiles';
-import { fetchUrlByShortcode, trackView } from '../utils/database';
+import { fetchUrlByShortcode, trackView, isShortcodePasswordProtected, verifyShortcodePassword } from '../utils/database';
 import { isSnippetShortcode, isFileShortcode, getContentTypeForExtension } from '../utils/shortcode';
 import { redirectToLoginIfNotAuthenticated } from '../middleware/auth';
 
@@ -177,6 +177,9 @@ async function handleFileRequest(request: Request, shortcode: string, env: Env):
  * Handle shortcode redirect
  */
 async function handleShortcodeRedirect(request: Request, shortcode: string, env: Env): Promise<Response> {
+	const url = new URL(request.url);
+	const searchParams = url.searchParams;
+
 	// First check if this is a temporary URL stored in KV
 	const kvUrl = await env.KV_RDRX.get(`short:${shortcode}`);
 
@@ -184,6 +187,29 @@ async function handleShortcodeRedirect(request: Request, shortcode: string, env:
 		console.log('Found URL in KV:', shortcode);
 		// No need to track views for temporary URLs to save costs
 		return Response.redirect(kvUrl);
+	}
+
+	// Check if the shortcode is password protected
+	const isPasswordProtected = await isShortcodePasswordProtected(shortcode, env);
+
+	if (isPasswordProtected) {
+		// Check if a password was provided in the URL
+		const providedPassword = searchParams.get('password');
+
+		if (!providedPassword) {
+			// No password provided, show password prompt
+			return renderPasswordPrompt(shortcode);
+		}
+
+		// Verify the password
+		const isPasswordValid = await verifyShortcodePassword(shortcode, providedPassword, env);
+
+		if (!isPasswordValid) {
+			// Invalid password, show error
+			return renderPasswordPrompt(shortcode, true);
+		}
+
+		// Password is valid, continue with redirect
 	}
 
 	// If not in KV, try to get from D1
@@ -199,6 +225,63 @@ async function handleShortcodeRedirect(request: Request, shortcode: string, env:
 
 	// Redirect to the found URL
 	return Response.redirect(redirectUrl);
+}
+
+/**
+ * Render password prompt page
+ */
+function renderPasswordPrompt(shortcode: string, isError: boolean = false): Response {
+	return new Response(
+		`<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
+        <title>Password Protected - RdRx</title>
+        <link rel="stylesheet" href="/assets/built.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
+    <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
+                    <i class="fas fa-lock text-primary-600 text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Password Protected</h1>
+                <p class="text-gray-600 mt-2">This content is protected. Please enter the password to continue.</p>
+            </div>
+            
+            ${
+							isError
+								? `<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                <p>Incorrect password. Please try again.</p>
+            </div>`
+								: ''
+						}
+            
+            <form method="GET" action="/${shortcode}">
+                <div class="mb-6">
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="password" name="password" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300">
+                    Continue
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <a href="/" class="text-primary-600 hover:text-primary-800 text-sm">Return to Home</a>
+            </div>
+        </div>
+    </body>
+    </html>`,
+		{
+			headers: { 'Content-Type': 'text/html' },
+		}
+	);
 }
 
 /**
