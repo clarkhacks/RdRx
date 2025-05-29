@@ -463,14 +463,26 @@ function renderBioFormScripts(shortDomain: string): string {
             const successAlert = document.querySelector('#success-alert');
             const successMessage = document.querySelector('#success-message');
 
-            // Always check response.ok first (HTTP status code)
-            if (!response.ok) {
-                alert('Error saving bio page: HTTP ' + response.status);
-                return;
-            }
-            
-            // Then check data.success (application-level success)
-            if (data && data.success) {
+            try {
+                // Always check response.ok first (HTTP status code)
+                if (!response.ok) {
+                    console.error('HTTP error:', response.status);
+                    throw new Error('HTTP ' + response.status);
+                }
+                
+                // Parse the response data
+                if (!data) {
+                    console.error('No data returned from server');
+                    throw new Error('No data returned from server');
+                }
+                
+                // Check for application-level success
+                if (!data.success) {
+                    console.error('API error:', data.message);
+                    throw new Error(data.message || 'Unknown error');
+                }
+                
+                // Success path
                 const shortUrl = 'https://' + shortDomain + '/' + data.shortcode;
                 successMessage.textContent = (isEditing ? 'Bio page updated: ' : 'Bio page created: ') + shortUrl;
                 successAlert.classList.remove('hidden');
@@ -505,9 +517,12 @@ function renderBioFormScripts(shortDomain: string): string {
                 
                 // Scroll to top to show success message
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                // Only show error if data.success is explicitly false
-                alert('Error saving bio page: ' + (data && data.message ? data.message : 'Unknown error'));
+            } catch (error) {
+                console.error('Error in bio save:', error);
+                // Only show alert in case of actual errors, not when the bio was created successfully
+                if (!data || !data.success) {
+                    alert('Error saving bio page: ' + (error.message || 'Unknown error'));
+                }
             }
         } catch (error) {
             console.error('Error saving bio page:', error);
