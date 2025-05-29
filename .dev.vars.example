@@ -12,4 +12,4 @@ ADMIN_UID="12345678901234567890" # Example UID for admin user
 R2_URL="htps://cdn.rdrx.co"
 
 # Optional: Disable user signups (set to "true" to disable)
-DISABLE_SIGNUPS="false"
+DISABLE_SIGNUPS="true"

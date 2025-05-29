@@ -13,6 +13,12 @@
   <a href="https://github.com/clarkhacks/RdRx/issues">🛠 Open Issue</a>
 </div>
 
+<div align="center">
+  <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/clarkhacks/RdRx">
+    <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare Workers" />
+  </a>
+</div>
+
 > **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
 
 ## 📸 Visual Features Showcase
@@ -307,7 +313,7 @@ R2_URL="https://cdn.your-domain.com"
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
 
-# Optional: Disable user signups (set to "true" to disable)
+# Optional: Disable user signups (set to "true" to disable) THIS IS SET TO TRUE FOR THE RDRX.CO VERSION IN THIS REPO
 DISABLE_SIGNUPS="false"
 ```
 
