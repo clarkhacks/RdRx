@@ -15,6 +15,52 @@
 
 > **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
 
+## 📸 Visual Features Showcase
+
+<div align="center">
+  <h3>🎯 Beautiful & Intuitive Interface</h3>
+  <p>RdRx provides a modern, user-friendly experience for all your URL shortening and content sharing needs.</p>
+</div>
+
+<table align="center">
+  <tr>
+    <td align="center" width="80%">
+      <h4>🏠 Landing Page</h4>
+      <img src="website/photos/lander.jpg" alt="RdRx Landing Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Clean, modern landing page with intuitive navigation</em></p>
+    </td>
+    <td align="center" width="20%">
+      <h4>🔐 Secure Authentication</h4>
+      <img src="website/photos/login.jpg" alt="RdRx Login Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Secure login with JWT-based authentication</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <h4>📊 User Dashboard</h4>
+      <img src="website/photos/dashboard.jpg" alt="RdRx Dashboard" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Comprehensive dashboard with analytics and content management</em></p>
+    </td>
+    <td align="center" width="50%">
+      <h4>👤 Profile Management</h4>
+      <img src="website/photos/profile.jpg" alt="RdRx Profile Page" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Easy profile management with customizable settings</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <h4>🔗 URL Creation</h4>
+      <img src="website/photos/short_create.jpg" alt="RdRx URL Creation" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Simple and powerful URL shortening with custom options</em></p>
+    </td>
+    <td align="center" width="50%">
+      <h4>📁 File Upload</h4>
+      <img src="website/photos/upload.jpg" alt="RdRx File Upload" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" width="100%">
+      <p><em>Drag-and-drop file sharing with gallery management</em></p>
+    </td>
+  </tr>
+</table>
+
 ## 🚀 Quick Installation
 
 ### One-Click Install (Recommended)
