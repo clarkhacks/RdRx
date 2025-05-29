@@ -22,10 +22,15 @@
 Get RdRx up and running in minutes with our automated installation script:
 
 ```bash
+# Set API token (if not already set)
+export CLOUDFLARE_API_TOKEN=your_token_here
+
+# Run one-click installation
 curl -sSL https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh | bash
 ```
 
 This script will:
+
 - ✅ Check prerequisites (Node.js, Git, Wrangler CLI)
 - ✅ Clone the repository
 - ✅ Prompt for your configuration (domain, email settings, etc.)
@@ -36,8 +41,9 @@ This script will:
 - ✅ Provide you with all the information you need to get started
 
 **Prerequisites for one-click install:**
-- Node.js (v16+) - *will be installed automatically if missing*
-- Git - *will be installed automatically if missing*
+
+- Node.js (v16+) - _will be installed automatically if missing_
+- Git - _will be installed automatically if missing_
 - A Cloudflare account (free tier works!)
 - Cloudflare API Token (for non-interactive installation)
 
@@ -58,6 +64,7 @@ Since the one-click install runs in a non-interactive environment, you'll need a
 
 **Alternative: Local Installation**
 If you prefer interactive browser login:
+
 ```bash
 wget https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh
 chmod +x install.sh
@@ -254,6 +261,7 @@ MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
 ```
 
 **Important Domain Configuration:**
+
 - `SHORT_DOMAIN`: The domain used for your shortened URLs (e.g., "example.com" will create links like "https://example.com/abc123")
 - `R2_URL`: The URL where your R2 bucket serves static files (logos, favicons, uploaded files)
 - These variables make the application fully configurable for your own domain instead of being hardcoded to "rdrx.co"

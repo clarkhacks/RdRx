@@ -254,15 +254,83 @@ if ! wrangler whoami >/dev/null 2>&1; then
     read -p "Do you have a CLOUDFLARE_API_TOKEN set? (y/N): " has_token
     if [[ $has_token =~ ^[Yy]$ ]]; then
         if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            print_error "CLOUDFLARE_API_TOKEN environment variable is not set."
-            print_error "Please set it and try again: export CLOUDFLARE_API_TOKEN=your_token"
-            exit 1
+            print_warning "CLOUDFLARE_API_TOKEN environment variable is not set in this session."
+            print_status "Please enter your Cloudflare API token:"
+            read -s -p "API Token: " user_token
+            echo
+            export CLOUDFLARE_API_TOKEN="$user_token"
         fi
-        print_status "Using API token for authentication..."
-        # Test the token
-        if ! wrangler whoami >/dev/null 2>&1; then
-            print_error "API token authentication failed. Please check your token."
-            exit 1
+        print_status "Testing API token authentication..."
+        # Test the token and check for account selection issues
+        WHOAMI_OUTPUT=$(wrangler whoami 2>&1)
+        WHOAMI_EXIT_CODE=$?
+        
+        if [ $WHOAMI_EXIT_CODE -ne 0 ]; then
+            if echo "$WHOAMI_OUTPUT" | grep -q "More than one account available"; then
+                print_warning "Multiple Cloudflare accounts detected!"
+                echo
+                echo "Available accounts:"
+                echo "$WHOAMI_OUTPUT" | grep -A 10 "Available accounts are"
+                echo
+                print_status "Please select which account to use:"
+                
+                # Extract account IDs and names
+                # Parse the format: `Account Name`: `account_id`
+                ACCOUNTS_RAW=$(echo "$WHOAMI_OUTPUT" | grep -oE '`[^`]+`: `[^`]+`')
+                
+                # Create numbered list
+                i=1
+                declare -a ACCOUNT_IDS
+                declare -a ACCOUNT_NAMES
+                
+                while IFS= read -r line; do
+                    if [ -n "$line" ]; then
+                        # Extract name and ID using more precise regex
+                        name=$(echo "$line" | sed -n 's/^`\([^`]*\)`: `[^`]*`$/\1/p')
+                        id=$(echo "$line" | sed -n 's/^`[^`]*`: `\([^`]*\)`$/\1/p')
+                        
+                        # Skip template placeholders and only add valid entries
+                        if [ -n "$name" ] && [ -n "$id" ] && [ "$name" != "<name>" ] && [ "$id" != "<account_id>" ]; then
+                            echo "$i) $name (ID: $id)"
+                            ACCOUNT_NAMES[$i]="$name"
+                            ACCOUNT_IDS[$i]="$id"
+                            ((i++))
+                        fi
+                    fi
+                done <<< "$ACCOUNTS_RAW"
+                
+                echo
+                read -p "Enter the number of the account you want to use: " account_choice
+                
+                if [[ "$account_choice" =~ ^[0-9]+$ ]] && [ "$account_choice" -ge 1 ] && [ "$account_choice" -lt "$i" ]; then
+                    SELECTED_ACCOUNT_ID="${ACCOUNT_IDS[$account_choice]}"
+                    SELECTED_ACCOUNT_NAME="${ACCOUNT_NAMES[$account_choice]}"
+                    
+                    print_success "Selected account: $SELECTED_ACCOUNT_NAME ($SELECTED_ACCOUNT_ID)"
+                    export CLOUDFLARE_ACCOUNT_ID="$SELECTED_ACCOUNT_ID"
+                    
+                    # Test again with account ID
+                    if ! wrangler whoami >/dev/null 2>&1; then
+                        print_error "Authentication still failed after setting account ID."
+                        exit 1
+                    fi
+                    print_success "API token authentication successful!"
+                else
+                    print_error "Invalid selection. Please run the script again."
+                    exit 1
+                fi
+            else
+                print_error "API token authentication failed."
+                echo "Error output: $WHOAMI_OUTPUT"
+                print_error "Please check that your token has the correct permissions:"
+                print_error "- Zone:Zone:Read + Account:Cloudflare Workers:Edit"
+                print_error "- Zone:Zone Settings:Read + Zone:Zone:Read"
+                print_error "- Account:D1:Edit + Account:R2:Edit"
+                print_error "- Account:Workers KV Storage:Edit"
+                exit 1
+            fi
+        else
+            print_success "API token authentication successful!"
         fi
     else
         print_error "Please set up authentication and try again."
@@ -329,8 +397,63 @@ print_status "☁️  Creating Cloudflare Resources"
 # Create D1 database
 print_status "Creating D1 database..."
 set +e  # Temporarily disable exit on error
+
+# Check if we need to handle account selection again
 D1_OUTPUT=$(wrangler d1 create "$PROJECT_NAME-db" 2>&1)
 D1_EXIT_CODE=$?
+
+if [ $D1_EXIT_CODE -ne 0 ] && echo "$D1_OUTPUT" | grep -q "More than one account available"; then
+    print_warning "Account selection needed for D1 database creation."
+    
+    if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+        print_status "Please select which account to use for resource creation:"
+        
+        # Extract account IDs and names from the error output
+        # Parse the format: `Account Name`: `account_id`
+        ACCOUNTS_RAW=$(echo "$D1_OUTPUT" | grep -oE '`[^`]+`: `[^`]+`')
+        
+        # Create numbered list
+        i=1
+        declare -a ACCOUNT_IDS
+        declare -a ACCOUNT_NAMES
+        
+        while IFS= read -r line; do
+            if [ -n "$line" ]; then
+                # Extract name and ID using more precise regex
+                name=$(echo "$line" | sed -n 's/^`\([^`]*\)`: `[^`]*`$/\1/p')
+                id=$(echo "$line" | sed -n 's/^`[^`]*`: `\([^`]*\)`$/\1/p')
+                
+                # Skip template placeholders and only add valid entries
+                if [ -n "$name" ] && [ -n "$id" ] && [ "$name" != "<name>" ] && [ "$id" != "<account_id>" ]; then
+                    echo "$i) $name (ID: $id)"
+                    ACCOUNT_NAMES[$i]="$name"
+                    ACCOUNT_IDS[$i]="$id"
+                    ((i++))
+                fi
+            fi
+        done <<< "$ACCOUNTS_RAW"
+        
+        echo
+        read -p "Enter the number of the account you want to use: " account_choice
+        
+        if [[ "$account_choice" =~ ^[0-9]+$ ]] && [ "$account_choice" -ge 1 ] && [ "$account_choice" -lt "$i" ]; then
+            SELECTED_ACCOUNT_ID="${ACCOUNT_IDS[$account_choice]}"
+            SELECTED_ACCOUNT_NAME="${ACCOUNT_NAMES[$account_choice]}"
+            
+            print_success "Selected account: $SELECTED_ACCOUNT_NAME ($SELECTED_ACCOUNT_ID)"
+            export CLOUDFLARE_ACCOUNT_ID="$SELECTED_ACCOUNT_ID"
+        else
+            print_error "Invalid selection. Please run the script again."
+            exit 1
+        fi
+    fi
+    
+    # Try creating D1 database again with account ID
+    print_status "Retrying D1 database creation with selected account..."
+    D1_OUTPUT=$(wrangler d1 create "$PROJECT_NAME-db" 2>&1)
+    D1_EXIT_CODE=$?
+fi
+
 set -e  # Re-enable exit on error
 
 if [ $D1_EXIT_CODE -ne 0 ]; then
@@ -360,16 +483,44 @@ fi
 
 # Create KV namespaces
 print_status "Creating KV namespaces..."
-KV_OUTPUT=$(wrangler kv:namespace create "KV_RDRX" 2>&1)
-KV_ID=$(echo "$KV_OUTPUT" | grep -o 'id = "[^"]*"' | cut -d'"' -f2)
+set +e  # Temporarily disable exit on error
 
-KV_PREVIEW_OUTPUT=$(wrangler kv:namespace create "KV_RDRX" --preview 2>&1)
-KV_PREVIEW_ID=$(echo "$KV_PREVIEW_OUTPUT" | grep -o 'preview_id = "[^"]*"' | cut -d'"' -f2)
+KV_OUTPUT=$(wrangler kv namespace create "KV_RDRX" 2>&1)
+KV_EXIT_CODE=$?
 
-if [ -z "$KV_ID" ] || [ -z "$KV_PREVIEW_ID" ]; then
-    print_error "Failed to create KV namespaces"
+if [ $KV_EXIT_CODE -ne 0 ]; then
+    print_error "Failed to create KV namespace."
+    echo "Error output: $KV_OUTPUT"
     exit 1
 fi
+
+KV_ID=$(echo "$KV_OUTPUT" | grep -o 'id = "[^"]*"' | cut -d'"' -f2)
+
+if [ -z "$KV_ID" ]; then
+    print_error "Could not extract KV namespace ID from output."
+    echo "Full output: $KV_OUTPUT"
+    exit 1
+fi
+
+print_status "Creating KV preview namespace..."
+KV_PREVIEW_OUTPUT=$(wrangler kv namespace create "KV_RDRX" --preview 2>&1)
+KV_PREVIEW_EXIT_CODE=$?
+
+if [ $KV_PREVIEW_EXIT_CODE -ne 0 ]; then
+    print_error "Failed to create KV preview namespace."
+    echo "Error output: $KV_PREVIEW_OUTPUT"
+    exit 1
+fi
+
+KV_PREVIEW_ID=$(echo "$KV_PREVIEW_OUTPUT" | grep -o 'id = "[^"]*"' | cut -d'"' -f2)
+
+if [ -z "$KV_PREVIEW_ID" ]; then
+    print_error "Could not extract KV preview namespace ID from output."
+    echo "Full output: $KV_PREVIEW_OUTPUT"
+    exit 1
+fi
+
+set -e  # Re-enable exit on error
 print_success "KV namespaces created: $KV_ID (preview: $KV_PREVIEW_ID)"
 
 # Update wrangler.toml
@@ -509,6 +660,117 @@ print_status "🚀 Deploying to Cloudflare..."
 npm run deploy
 
 print_success "Deployment completed!"
+
+# Configure custom domains and DNS
+echo
+print_status "🌐 Configuring Custom Domains and DNS"
+
+# Get the worker URL for reference
+WORKER_URL="https://$PROJECT_NAME.$(wrangler whoami | grep 'Account ID' | awk '{print $3}').workers.dev"
+
+# Check if the domain is already in Cloudflare
+print_status "Checking if $SHORT_DOMAIN is managed by Cloudflare..."
+ZONE_CHECK=$(wrangler zone list 2>/dev/null | grep "$SHORT_DOMAIN" || echo "")
+
+if [ -n "$ZONE_CHECK" ]; then
+    print_success "Domain $SHORT_DOMAIN found in your Cloudflare account!"
+    
+    # Extract zone ID
+    ZONE_ID=$(echo "$ZONE_CHECK" | awk '{print $1}')
+    print_status "Zone ID: $ZONE_ID"
+    
+    # Configure custom domain for the worker
+    print_status "Setting up custom domain for your worker..."
+    if wrangler custom-domains add "$SHORT_DOMAIN" >/dev/null 2>&1; then
+        print_success "Custom domain $SHORT_DOMAIN configured for your worker!"
+    else
+        print_warning "Custom domain setup failed. You may need to configure it manually."
+    fi
+    
+    # Configure DNS records for CDN if different from main domain
+    if [ "$R2_URL" != "https://$SHORT_DOMAIN" ]; then
+        CDN_DOMAIN=$(echo "$R2_URL" | sed 's|https://||' | sed 's|http://||')
+        
+        if [ "$CDN_DOMAIN" != "$SHORT_DOMAIN" ]; then
+            print_status "Setting up DNS for CDN domain: $CDN_DOMAIN"
+            
+            # Check if CDN domain is a subdomain of the main domain
+            if echo "$CDN_DOMAIN" | grep -q "$SHORT_DOMAIN"; then
+                print_status "Creating CNAME record for $CDN_DOMAIN..."
+                
+                # Create CNAME record pointing to R2 bucket
+                R2_BUCKET_URL="$PROJECT_NAME-files.r2.cloudflarestorage.com"
+                
+                # Use wrangler to create DNS record
+                if wrangler dns create "$SHORT_DOMAIN" CNAME "$CDN_DOMAIN" "$R2_BUCKET_URL" >/dev/null 2>&1; then
+                    print_success "DNS record created: $CDN_DOMAIN -> $R2_BUCKET_URL"
+                else
+                    print_warning "DNS record creation failed. You may need to create it manually."
+                    echo "  Create a CNAME record: $CDN_DOMAIN -> $R2_BUCKET_URL"
+                fi
+            else
+                print_warning "CDN domain $CDN_DOMAIN is not a subdomain of $SHORT_DOMAIN"
+                print_status "You'll need to configure DNS for $CDN_DOMAIN manually"
+            fi
+        fi
+    fi
+    
+    # Configure R2 bucket for public access
+    print_status "Configuring R2 bucket for public access..."
+    
+    # Create R2 bucket custom domain if CDN domain is specified
+    if [ "$R2_URL" != "https://$SHORT_DOMAIN" ]; then
+        CDN_DOMAIN=$(echo "$R2_URL" | sed 's|https://||' | sed 's|http://||')
+        
+        # Configure R2 custom domain
+        if wrangler r2 bucket domain add "$PROJECT_NAME-files" "$CDN_DOMAIN" >/dev/null 2>&1; then
+            print_success "R2 custom domain configured: $CDN_DOMAIN"
+        else
+            print_warning "R2 custom domain setup failed. You may need to configure it manually."
+        fi
+    fi
+    
+else
+    print_warning "Domain $SHORT_DOMAIN not found in your Cloudflare account."
+    echo
+    print_status "To complete the setup, you have two options:"
+    echo
+    echo "Option 1: Add domain to Cloudflare (Recommended)"
+    echo "  1. Go to https://dash.cloudflare.com"
+    echo "  2. Click 'Add a Site' and enter: $SHORT_DOMAIN"
+    echo "  3. Follow the setup process and update your nameservers"
+    echo "  4. Once added, run this command to configure the custom domain:"
+    echo "     wrangler custom-domains add $SHORT_DOMAIN"
+    echo
+    echo "Option 2: Manual DNS Configuration"
+    echo "  1. Create a CNAME record in your DNS provider:"
+    echo "     Name: @ (or your subdomain)"
+    echo "     Value: $WORKER_URL"
+    echo "  2. If using a CDN domain, create another CNAME:"
+    echo "     Name: $(echo "$R2_URL" | sed 's|https://||' | sed 's|http://||' | sed "s|\.$SHORT_DOMAIN||")"
+    echo "     Value: $PROJECT_NAME-files.r2.cloudflarestorage.com"
+    echo
+fi
+
+# Verify deployment
+print_status "🔍 Verifying deployment..."
+sleep 5  # Give DNS a moment to propagate
+
+# Test the worker URL
+if curl -s --head "$WORKER_URL" | head -n 1 | grep -q "200 OK"; then
+    print_success "Worker is responding at: $WORKER_URL"
+else
+    print_warning "Worker may still be starting up. Check $WORKER_URL in a few minutes."
+fi
+
+# Test custom domain if configured
+if [ -n "$ZONE_CHECK" ]; then
+    if curl -s --head "https://$SHORT_DOMAIN" | head -n 1 | grep -q "200 OK"; then
+        print_success "Custom domain is working: https://$SHORT_DOMAIN"
+    else
+        print_warning "Custom domain may still be propagating. Check https://$SHORT_DOMAIN in a few minutes."
+    fi
+fi
 
 # Final instructions
 echo
