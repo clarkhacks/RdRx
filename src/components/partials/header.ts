@@ -1,6 +1,6 @@
 function renderHeader(): string {
 	return `
-  <header class="bg-white shadow-md py-3 px-6 flex justify-between items-center sticky top-0 z-50 rounded-full max-w-5xl mx-auto my-3 card-container">
+  <header class="bg-white shadow-md py-3 px-6 flex justify-between items-center sticky top-0 z-50 rounded-full max-w-5xl mx-auto w-full my-3 card-container">
     <a href="/" class="flex items-center gap-2">
       <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
       <span class="text-xl font-medium text-gray-800">RdRx</span>
