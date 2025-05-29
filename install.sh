@@ -34,6 +34,99 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to detect OS
+detect_os() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if command_exists apt-get; then
+            echo "ubuntu"
+        elif command_exists yum; then
+            echo "centos"
+        elif command_exists pacman; then
+            echo "arch"
+        else
+            echo "linux"
+        fi
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+        echo "windows"
+    else
+        echo "unknown"
+    fi
+}
+
+# Function to install Git
+install_git() {
+    local os=$(detect_os)
+    print_status "Installing Git..."
+    
+    case $os in
+        "ubuntu")
+            sudo apt-get update && sudo apt-get install -y git
+            ;;
+        "centos")
+            sudo yum install -y git
+            ;;
+        "arch")
+            sudo pacman -S --noconfirm git
+            ;;
+        "macos")
+            if command_exists brew; then
+                brew install git
+            else
+                print_error "Please install Homebrew first: https://brew.sh"
+                print_error "Then run: brew install git"
+                exit 1
+            fi
+            ;;
+        "windows")
+            print_error "Please install Git from: https://git-scm.com/download/win"
+            exit 1
+            ;;
+        *)
+            print_error "Unsupported OS. Please install Git manually."
+            exit 1
+            ;;
+    esac
+}
+
+# Function to install Node.js
+install_nodejs() {
+    local os=$(detect_os)
+    print_status "Installing Node.js..."
+    
+    case $os in
+        "ubuntu")
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            ;;
+        "centos")
+            curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -
+            sudo yum install -y nodejs npm
+            ;;
+        "arch")
+            sudo pacman -S --noconfirm nodejs npm
+            ;;
+        "macos")
+            if command_exists brew; then
+                brew install node
+            else
+                print_error "Please install Homebrew first: https://brew.sh"
+                print_error "Then run: brew install node"
+                exit 1
+            fi
+            ;;
+        "windows")
+            print_error "Please install Node.js from: https://nodejs.org/en/download/"
+            exit 1
+            ;;
+        *)
+            print_error "Unsupported OS. Please install Node.js manually from: https://nodejs.org"
+            exit 1
+            ;;
+    esac
+}
+
 # Function to generate random string
 generate_random() {
     openssl rand -base64 32 | tr -d "=+/" | cut -c1-${1:-32}
@@ -76,18 +169,49 @@ echo
 # Check prerequisites
 print_status "Checking prerequisites..."
 
+# Check Git
 if ! command_exists git; then
-    print_error "Git is not installed. Please install Git and try again."
-    exit 1
+    print_warning "Git is not installed."
+    read -p "Would you like to install Git now? (y/N): " install_git_confirm
+    if [[ $install_git_confirm =~ ^[Yy]$ ]]; then
+        install_git
+        if ! command_exists git; then
+            print_error "Git installation failed. Please install Git manually and try again."
+            exit 1
+        fi
+        print_success "Git installed successfully!"
+    else
+        print_error "Git is required. Please install Git and try again."
+        exit 1
+    fi
 fi
 
+# Check Node.js
 if ! command_exists node; then
-    print_error "Node.js is not installed. Please install Node.js (v16+) and try again."
-    exit 1
+    print_warning "Node.js is not installed."
+    read -p "Would you like to install Node.js now? (y/N): " install_node_confirm
+    if [[ $install_node_confirm =~ ^[Yy]$ ]]; then
+        install_nodejs
+        if ! command_exists node; then
+            print_error "Node.js installation failed. Please install Node.js manually and try again."
+            exit 1
+        fi
+        print_success "Node.js installed successfully!"
+    else
+        print_error "Node.js is required. Please install Node.js (v16+) and try again."
+        exit 1
+    fi
 fi
 
+# Check npm (should come with Node.js)
 if ! command_exists npm; then
-    print_error "npm is not installed. Please install npm and try again."
+    print_warning "npm is not installed."
+    if command_exists node; then
+        print_error "Node.js is installed but npm is missing. This is unusual."
+        print_error "Please reinstall Node.js from https://nodejs.org"
+    else
+        print_error "npm requires Node.js. Please install Node.js first."
+    fi
     exit 1
 fi
 
