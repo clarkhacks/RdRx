@@ -463,6 +463,10 @@ function renderBioFormScripts(shortDomain: string): string {
             const successAlert = document.querySelector('#success-alert');
             const successMessage = document.querySelector('#success-message');
 
+            // Get the shortDomain from the form
+            const domainPrefix = document.querySelector('.absolute.inset-y-0.left-0.pl-3').textContent.trim();
+            const domain = domainPrefix.replace('/', '');
+            
             try {
                 // Always check response.ok first (HTTP status code)
                 if (!response.ok) {
@@ -483,7 +487,7 @@ function renderBioFormScripts(shortDomain: string): string {
                 }
                 
                 // Success path
-                const shortUrl = 'https://' + shortDomain + '/' + data.shortcode;
+                const shortUrl = 'https://' + domain + '/' + data.shortcode;
                 successMessage.textContent = (isEditing ? 'Bio page updated: ' : 'Bio page created: ') + shortUrl;
                 successAlert.classList.remove('hidden');
                 
