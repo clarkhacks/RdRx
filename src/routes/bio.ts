@@ -187,8 +187,29 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 
 		const links = await getBioLinks(env, shortcode);
 
+		// Get the creator's profile picture if available
+		let creatorProfilePicture = null;
+		try {
+			// Get the creator ID from the short_urls table
+			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+
+			if (shortUrlInfo && shortUrlInfo.creator_id) {
+				// Get the user's profile picture
+				const userInfo = await env.DB.prepare(`SELECT profile_picture_url FROM users WHERE uid = ?`).bind(shortUrlInfo.creator_id).first();
+				if (userInfo && userInfo.profile_picture_url) {
+					creatorProfilePicture = userInfo.profile_picture_url;
+				}
+			}
+		} catch (error) {
+			console.error('Error fetching creator profile picture:', error);
+			// Continue without the profile picture if there's an error
+		}
+
+		// Use the creator's profile picture if available, otherwise use the one from the bio page
+		const profilePictureUrl = creatorProfilePicture || bioPage.profile_picture_url;
+
 		// Render bio page view
-		const html = renderBioView(bioPage, links, env.SHORT_DOMAIN);
+		const html = renderBioView(bioPage, links, env.SHORT_DOMAIN, profilePictureUrl);
 
 		return new Response(html, {
 			headers: { 'Content-Type': 'text/html' },
@@ -203,7 +224,7 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 /**
  * Render bio page view
  */
-function renderBioView(bioPage: any, links: any[], shortDomain: string): string {
+function renderBioView(bioPage: any, links: any[], shortDomain: string, profilePictureUrl: string | null = null): string {
 	return `
 <!DOCTYPE html>
 <html lang="en">
@@ -211,20 +232,31 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string): string 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${bioPage.title}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta property="og:title" content="${bioPage.title} | Bio Page">
+    <meta property="og:description" content="${bioPage.description || 'Check out my bio page'}">
+    <meta property="og:image" content="${profilePictureUrl || 'https://cdn.rdrx.co/banner.jpg'}">
+    <meta property="og:url" content="https://${shortDomain}/${bioPage.shortcode}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RdRx">
+    <meta property="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/built.css">
     <style>
         body {
+            font-family: 'Inter', system-ui, sans-serif;
             background: linear-gradient(to bottom, #e2d9c2 0%, #65635a 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            margin: 0;
         }
         .container {
             background: white;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px, rgba(15, 15, 15, 0.1) 0px 8px 16px;
             width: 100%;
             max-width: 600px;
             padding: 40px;
@@ -241,6 +273,12 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string): string 
             border-radius: 50%;
             overflow: hidden;
             margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .username {
             font-size: 1.5rem;
@@ -269,7 +307,7 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string): string 
         }
         .link-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px, rgba(15, 15, 15, 0.05) 0px 8px 16px;
         }
         .link-icon {
             width: 48px;
@@ -282,6 +320,7 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string): string 
             font-size: 24px;
             margin-right: 16px;
             flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
         .link-content {
             flex-grow: 1;
@@ -322,13 +361,49 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string): string 
             font-size: 0.75rem;
             color: #999;
         }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(to bottom, #2d2c2a 0%, #1a1a1a 100%);
+            }
+            .container {
+                background: #222;
+                box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px, rgba(0, 0, 0, 0.3) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 8px 16px;
+            }
+            .username {
+                color: #fff;
+            }
+            .bio {
+                color: #aaa;
+            }
+            .link-card {
+                background: #333;
+                color: #eee;
+            }
+            .link-icon {
+                background: #444;
+            }
+            .link-description {
+                color: #aaa;
+            }
+            .social-icon {
+                color: #ddd;
+            }
+            .footer {
+                color: #777;
+            }
+            .footer a {
+                color: #999 !important;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="profile">
             <div class="avatar">
-                <img src="${bioPage.profile_picture_url || 'https://via.placeholder.com/80'}" alt="${
+                <img src="${profilePictureUrl || 'https://via.placeholder.com/80'}" alt="${
 		bioPage.title
 	}" onerror="this.src='https://via.placeholder.com/80?text=👤'">
             </div>
