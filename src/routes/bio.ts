@@ -25,7 +25,8 @@ export async function handleBioFormPage(request: Request, env: Env): Promise<Res
 		return renderBioFormPage(env);
 	} catch (error) {
 		console.error('Error rendering bio form page:', error);
-		return new Response('Internal Server Error', { status: 500 });
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response('Internal Server Error: ' + errorMessage, { status: 500 });
 	}
 }
 
@@ -71,7 +72,8 @@ export async function handleGetUserBio(request: Request, env: Env): Promise<Resp
 		);
 	} catch (error) {
 		console.error('Error getting user bio:', error);
-		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error' }), {
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error: ' + errorMessage }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' },
 		});
@@ -130,18 +132,27 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			});
 		}
 
-		// Save bio page
-		await saveBioPage(env, userId, shortcode, title, description);
+		try {
+			// Save bio page
+			await saveBioPage(env, userId, shortcode, title, description);
 
-		// Delete existing links for this bio page
-		const existingLinks = await getBioLinks(env, shortcode);
-		for (const link of existingLinks) {
-			await deleteBioLink(env, link.id);
-		}
+			// Delete existing links for this bio page
+			const existingLinks = await getBioLinks(env, shortcode);
+			for (const link of existingLinks) {
+				await deleteBioLink(env, link.id);
+			}
 
-		// Save new links
-		for (const link of links) {
-			await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
+			// Save new links
+			for (const link of links) {
+				await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
+			}
+		} catch (error) {
+			console.error('Error in bio save operations:', error);
+			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+			return new Response(JSON.stringify({ success: false, message: 'Error saving bio data: ' + errorMessage }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json' },
+			});
 		}
 
 		return new Response(
@@ -156,7 +167,8 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		);
 	} catch (error) {
 		console.error('Error saving bio page:', error);
-		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error' }), {
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error: ' + errorMessage }), {
 			status: 500,
 			headers: { 'Content-Type': 'application/json' },
 		});
@@ -183,7 +195,8 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 		});
 	} catch (error) {
 		console.error('Error viewing bio page:', error);
-		return new Response('Internal Server Error', { status: 500 });
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response('Internal Server Error: ' + errorMessage, { status: 500 });
 	}
 }
 
