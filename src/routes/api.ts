@@ -193,9 +193,17 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 		// Use userId from the request body if provided, otherwise use the one from authentication
 		const creatorId = frontendUserId || userId;
 
+		// Handle password protection
+		let passwordHash = null;
+		const isPasswordProtected = password_protected === true && typeof password === 'string' && password.length > 0;
+
+		if (isPasswordProtected && typeof password === 'string') {
+			passwordHash = await hashPassword(password);
+		}
+
 		// Check for admin override
 		if (admin_override_code && env.API_KEY_ADMIN === admin_override_code) {
-			return handleAdminOverride(url, custom_code, delete_after, env, creatorId);
+			return handleAdminOverride(url, custom_code, delete_after, env, creatorId, passwordHash, isPasswordProtected);
 		}
 
 		// Validate URL
@@ -214,14 +222,6 @@ async function handleCreateShortUrl(request: Request, env: Env, userId: string |
 		if (existingUrl) {
 			console.log('Shortcode already exists');
 			return new Response(JSON.stringify({ message: 'Shortcode already exists' }), { status: 409 });
-		}
-
-		// Handle password protection
-		let passwordHash = null;
-		const isPasswordProtected = password_protected === true && typeof password === 'string' && password.length > 0;
-
-		if (isPasswordProtected && typeof password === 'string') {
-			passwordHash = await hashPassword(password);
 		}
 
 		// Save the URL to D1
@@ -263,14 +263,16 @@ async function handleAdminOverride(
 	custom_code: string | undefined,
 	delete_after: string | undefined,
 	env: Env,
-	creatorId: string | null
+	creatorId: string | null,
+	passwordHash: string | null = null,
+	isPasswordProtected: boolean = false
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });
 	}
 
 	// url is guaranteed to be a string at this point
-	await saveUrlToDatabase(custom_code, url, env, creatorId);
+	await saveUrlToDatabase(custom_code, url, env, creatorId, passwordHash, isPasswordProtected);
 
 	// Add delete entry if delete_after is provided
 	if (delete_after) {
