@@ -464,7 +464,7 @@ function renderBioFormScripts(shortDomain: string): string {
             const successMessage = document.querySelector('#success-message');
 
             if (response.ok && data.success) {
-                const shortUrl = `https://${shortDomain}/${data.shortcode}`;
+                const shortUrl = 'https://' + shortDomain + '/' + data.shortcode;
                 successMessage.textContent = (isEditing ? 'Bio page updated: ' : 'Bio page created: ') + shortUrl;
                 successAlert.classList.remove('hidden');
                 
