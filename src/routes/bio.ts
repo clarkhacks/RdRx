@@ -133,25 +133,19 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		}
 
 		try {
-			// First, check if we need to add the 'b-' prefix to the shortcode
-			const bioShortcode = shortcode.startsWith('b-') ? shortcode : `b-${shortcode}`;
-
-			// Save bio page with the proper shortcode format
-			await saveBioPage(env, userId, bioShortcode, title, description);
+			// Save bio page with the user-provided shortcode
+			await saveBioPage(env, userId, shortcode, title, description);
 
 			// Delete existing links for this bio page
-			const existingLinks = await getBioLinks(env, bioShortcode);
+			const existingLinks = await getBioLinks(env, shortcode);
 			for (const link of existingLinks) {
 				await deleteBioLink(env, link.id);
 			}
 
 			// Save new links
 			for (const link of links) {
-				await saveBioLink(env, bioShortcode, link.title, link.url, link.description, link.icon, link.order_index);
+				await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
 			}
-
-			// Update shortcode to use the proper format
-			shortcode = bioShortcode;
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
 			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';

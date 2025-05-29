@@ -272,10 +272,7 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
  */
 export async function isBioShortcodeAvailable(env: Env, shortcode: string, userId: string): Promise<boolean> {
 	try {
-		// Ensure the shortcode has the 'b-' prefix for checking
-		const bioShortcode = shortcode.startsWith('b-') ? shortcode : `b-${shortcode}`;
-
-		const result = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(bioShortcode).first();
+		const result = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
 		// Available if doesn't exist or belongs to the same user
 		return !result || result.creator_id === userId;

@@ -10,6 +10,7 @@ import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { renderAdminPage } from '../components/pages/AdminPage';
 import { authMiddleware } from '../middleware/auth';
+import { getBioPage } from '../utils/database';
 
 /**
  * Main router that delegates to specific route handlers based on the request
@@ -88,10 +89,13 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return handleViewBio(enhancedRequest, env, bioShortcode);
 	}
 
-	// Handle direct bio shortcode access
-	if (shortcode && shortcode.startsWith('b-')) {
-		const { handleViewBio } = await import('./bio');
-		return handleViewBio(enhancedRequest, env, shortcode);
+	// Check if this shortcode is a bio page
+	if (shortcode) {
+		const bioPage = await getBioPage(env, shortcode);
+		if (bioPage) {
+			const { handleViewBio } = await import('./bio');
+			return handleViewBio(enhancedRequest, env, shortcode);
+		}
 	}
 
 	// Handle API routes for POST requests
