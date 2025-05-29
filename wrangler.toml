@@ -12,8 +12,10 @@ binding = "STATIC"
 # Vars
 [vars]
 FRONTEND_URL = "https://rdrx.co"
+SHORT_DOMAIN = "rdrx.co"
 MAILGUN_DOMAIN = "go.rdrx.co"
 FROM_EMAIL = "no-reply@go.rdrx.co"
+R2_URL = "https://cdn.rdrx.co"
 
 # Workers Logs
 # Docs: https://developers.cloudflare.com/workers/observability/logs/workers-logs/

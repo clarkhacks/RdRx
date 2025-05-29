@@ -194,7 +194,7 @@ async function handleDeleteUser(request: Request, env: Env, path: string): Promi
 		const user = await env.DB.prepare('SELECT profile_picture_url FROM users WHERE uid = ?').bind(userId).first();
 		
 		// Delete user's profile picture from R2 if exists
-		if (user?.profile_picture_url && (user.profile_picture_url as string).includes('r2.rdrx.co')) {
+		if (user?.profile_picture_url && (user.profile_picture_url as string).includes(env.R2_URL)) {
 			try {
 				const key = (user.profile_picture_url as string).split('/').pop();
 				if (key) {

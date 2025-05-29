@@ -156,8 +156,10 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 FRONTEND_URL = "http://localhost:8787"
+SHORT_DOMAIN = "your-domain.com"
 MAILGUN_DOMAIN = "your-domain.com"
 FROM_EMAIL = "no-reply@your-domain.com"
+R2_URL = "https://cdn.your-domain.com"
 
 [observability]
 enabled = true
@@ -189,10 +191,19 @@ API_KEY="your-api-key-here"
 API_KEY_ADMIN="your-admin-api-key-here"
 ADMIN_UID="your-admin-user-id-here"
 
+# Domain Configuration
+SHORT_DOMAIN="your-domain.com"
+R2_URL="https://cdn.your-domain.com"
+
 # Authentication
 JWT_SECRET="your-super-secret-jwt-key-here-make-it-long-and-random"
 MAILGUN_API_KEY="key-1234567890abcdef1234567890abcdef"
 ```
+
+**Important Domain Configuration:**
+- `SHORT_DOMAIN`: The domain used for your shortened URLs (e.g., "example.com" will create links like "https://example.com/abc123")
+- `R2_URL`: The URL where your R2 bucket serves static files (logos, favicons, uploaded files)
+- These variables make the application fully configurable for your own domain instead of being hardcoded to "rdrx.co"
 
 ### 5. Initialize the Database
 

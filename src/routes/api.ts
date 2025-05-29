@@ -74,7 +74,7 @@ async function handleFileUpload(request: Request, env: Env, userId: string | nul
 			}
 		}
 
-		const url = `https://cdn.rdrx.co/${key}`;
+		const url = `${env.R2_URL}/${key}`;
 		urls.push(url);
 	}
 
@@ -150,7 +150,7 @@ async function handleCreateTempUrl(request: Request, env: Env): Promise<Response
 				shortcode,
 				url,
 				expires_at: expirationDate.toISOString(),
-				full_url: `https://rdrx.co/${shortcode}`,
+				full_url: `https://${env.SHORT_DOMAIN}/${shortcode}`,
 			}),
 			{
 				status: 200,
