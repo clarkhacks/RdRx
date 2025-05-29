@@ -15,6 +15,35 @@
 
 > **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
 
+## 🚀 Quick Installation
+
+### One-Click Install (Recommended)
+
+Get RdRx up and running in minutes with our automated installation script:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh | bash
+```
+
+This script will:
+- ✅ Check prerequisites (Node.js, Git, Wrangler CLI)
+- ✅ Clone the repository
+- ✅ Prompt for your configuration (domain, email settings, etc.)
+- ✅ Create all Cloudflare resources (D1 database, R2 bucket, KV namespace)
+- ✅ Generate secure API keys and secrets
+- ✅ Configure environment variables
+- ✅ Deploy to Cloudflare Workers
+- ✅ Provide you with all the information you need to get started
+
+**Prerequisites for one-click install:**
+- Node.js (v16+)
+- Git
+- A Cloudflare account (free tier works!)
+
+### Manual Installation
+
+If you prefer to install manually or want more control over the process, follow the detailed instructions below.
+
 ## Features
 
 - **URL Shortening**: Create short, memorable links for any URL
