@@ -272,10 +272,11 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
  */
 export async function isBioShortcodeAvailable(env: Env, shortcode: string, userId: string): Promise<boolean> {
 	try {
-		const result = await env.DB.prepare(
-			`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`
-		).bind(shortcode).first();
-		
+		// Ensure the shortcode has the 'b-' prefix for checking
+		const bioShortcode = shortcode.startsWith('b-') ? shortcode : `b-${shortcode}`;
+
+		const result = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(bioShortcode).first();
+
 		// Available if doesn't exist or belongs to the same user
 		return !result || result.creator_id === userId;
 	} catch (error) {
@@ -298,19 +299,17 @@ export async function saveBioPage(
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
-		
+
 		// Check if user already has a bio page with different shortcode
-		const existingBio = await env.DB.prepare(
-			`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`
-		).bind(userId).first();
-		
+		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).first();
+
 		if (existingBio && existingBio.shortcode !== shortcode) {
 			// User is changing their shortcode, delete old entries
 			await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
 			await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
 			await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
 		}
-		
+
 		// Save/update bio page
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO bio_pages 
@@ -352,7 +351,9 @@ export async function getUserBioPage(env: Env, userId: string): Promise<any | nu
 			`SELECT bp.* FROM bio_pages bp 
 			 JOIN short_urls su ON bp.shortcode = su.shortcode 
 			 WHERE su.creator_id = ? AND su.is_bio = 1`
-		).bind(userId).first();
+		)
+			.bind(userId)
+			.first();
 		return result || null;
 	} catch (error) {
 		console.error('Error getting user bio page:', error);
