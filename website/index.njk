@@ -155,6 +155,145 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
     <div class="w-full h-16 mt-12"></div>
 </header>
 
+<!-- Installation Section -->
+<section class="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-gray-800 dark:to-gray-900 relative">
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4">
+                <span class="gradient-text">Deploy Your Own</span> RdRx Instance
+            </h2>
+            <p class="text-lg text-[var(--text-secondary)] dark:text-gray-300 max-w-3xl mx-auto mb-6">
+                Get RdRx up and running in minutes with our automated one-click installation script.
+            </p>
+            <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 max-w-4xl mx-auto">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-xl mr-3 mt-1"></i>
+                    <div class="text-left">
+                        <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-2">Development Status</h3>
+                        <p class="text-yellow-700 dark:text-yellow-300 text-sm mb-2">
+                            <strong>RdRx is currently in active development.</strong> The installation script and application are functional but still being refined. Some manual configuration may be required:
+                        </p>
+                        <ul class="text-yellow-700 dark:text-yellow-300 text-sm list-disc list-inside space-y-1">
+                            <li>User registration is currently disabled during development</li>
+                            <li>You'll need to manually create an admin account and set the ADMIN_UID</li>
+                            <li>Some features may require additional configuration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- One-Click Installation -->
+            <div class="bg-[var(--card-bg)] dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-rocket text-primary-600 dark:text-primary-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold">One-Click Installation</h3>
+                </div>
+                
+                <p class="text-[var(--text-secondary)] dark:text-gray-300 mb-6">
+                    Deploy RdRx to Cloudflare Workers with a single command. The script handles everything automatically.
+                </p>
+                
+                <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-sm">Terminal</span>
+                        <button onclick="copyInstallCommand()" class="text-gray-400 hover:text-white text-sm">
+                            <i class="fas fa-copy mr-1"></i> Copy
+                        </button>
+                    </div>
+                    <code id="install-command" class="text-green-400 text-sm font-mono">
+                        curl -sSL https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh | bash
+                    </code>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Installs dependencies automatically</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Creates Cloudflare resources (D1, R2, KV)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Configures custom domains and DNS</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-2"></i>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Deploys to global edge network</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prerequisites -->
+            <div class="bg-[var(--card-bg)] dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/50 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-list-check text-secondary-600 dark:text-secondary-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold">Prerequisites</h3>
+                </div>
+                
+                <p class="text-[var(--text-secondary)] dark:text-gray-300 mb-6">
+                    Before running the installation script, you'll need:
+                </p>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-cloud text-blue-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold mb-1">Cloudflare Account</h4>
+                            <p class="text-[var(--text-secondary)] dark:text-gray-300 text-sm">
+                                Free tier works perfectly. You'll need an API token with appropriate permissions.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <i class="fas fa-globe text-green-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold mb-1">Domain Name</h4>
+                            <p class="text-[var(--text-secondary)] dark:text-gray-300 text-sm">
+                                Your own domain for the URL shortener (can be managed by Cloudflare or external DNS).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <i class="fas fa-terminal text-purple-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold mb-1">Command Line Access</h4>
+                            <p class="text-[var(--text-secondary)] dark:text-gray-300 text-sm">
+                                Linux, macOS, or WSL on Windows. The script will install Node.js and Git if needed.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>Post-Installation Setup
+                    </h4>
+                    <p class="text-blue-700 dark:text-blue-300 text-sm">
+                        After installation, you'll need to manually create an admin account and set your ADMIN_UID secret to access admin features.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+            <a href="https://github.com/clarkhacks/RdRx#installation" target="_blank" class="inline-flex items-center bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <i class="fab fa-github mr-2"></i>
+                View Installation Guide
+            </a>
+        </div>
+    </div>
+</section>
+
 <!-- About Section -->
 <section class="py-20 px-4 sm:px-6 lg:px-8 bg-[var(--bg-primary)] dark:bg-gray-900 relative">
     <div class="max-w-5xl mx-auto">

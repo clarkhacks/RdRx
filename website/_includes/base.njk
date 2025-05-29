@@ -268,6 +268,26 @@
         // Apply dark mode class to html element
         document.documentElement.classList.add('dark');
       }
+      
+      // Function to copy install command
+      function copyInstallCommand() {
+        const command = document.getElementById('install-command').textContent.trim();
+        navigator.clipboard.writeText(command).then(function() {
+          // Show success feedback
+          const button = event.target.closest('button');
+          const originalText = button.innerHTML;
+          button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+          button.classList.add('text-green-400');
+          
+          setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('text-green-400');
+          }, 2000);
+        }).catch(function(err) {
+          console.error('Failed to copy: ', err);
+          alert('Failed to copy to clipboard');
+        });
+      }
     </script>
 </body>
 </html>
