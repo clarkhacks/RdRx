@@ -310,7 +310,10 @@ export async function saveBioPage(
 			await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
 		}
 
-		// Save/update bio page
+		// First, save/update in short_urls table to satisfy the foreign key constraint
+		await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+
+		// Then save/update bio page
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO bio_pages 
 			(shortcode, title, description, profile_picture_url, theme, created_at, updated_at)
@@ -318,9 +321,6 @@ export async function saveBioPage(
 		)
 			.bind(shortcode, title, description, profilePictureUrl, theme, now, now)
 			.run();
-
-		// Save/update in short_urls table
-		await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
 
 		console.log(`Bio page saved: ${shortcode} for user: ${userId}`);
 	} catch (error) {
