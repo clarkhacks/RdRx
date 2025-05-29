@@ -84,13 +84,39 @@ async function handleProtectedPath(request: Request, env: Env, shortcode: string
  * Handle snippet request
  */
 async function handleSnippetRequest(request: Request, shortcode: string, env: Env): Promise<Response> {
+	const url = new URL(request.url);
+	const searchParams = url.searchParams;
 	const lookUp = shortcode.replace('c-', '').split('.');
+	const actualShortcode = `c-${lookUp[0]}`;
+
+	// Check if the snippet is password protected
+	const isPasswordProtected = await isShortcodePasswordProtected(actualShortcode, env);
+
+	if (isPasswordProtected) {
+		// Check if a password was provided in the URL
+		const providedPassword = searchParams.get('password');
+
+		if (!providedPassword) {
+			// No password provided, show password prompt
+			return renderPasswordPrompt(shortcode);
+		}
+
+		// Verify the password
+		const isPasswordValid = await verifyShortcodePassword(actualShortcode, providedPassword, env);
+
+		if (!isPasswordValid) {
+			// Invalid password, show error
+			return renderPasswordPrompt(shortcode, true);
+		}
+
+		// Password is valid, continue with snippet display
+	}
 
 	// Try to get from D1
 	let codeSnippet = null;
 	let targetUrl = null;
 	try {
-		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(lookUp[0]).first();
+		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(actualShortcode).first();
 
 		if (result && typeof result === 'object' && 'target_url' in result) {
 			codeSnippet = result.target_url as string;
@@ -131,6 +157,32 @@ async function handleSnippetRequest(request: Request, shortcode: string, env: En
  * Handle file request
  */
 async function handleFileRequest(request: Request, shortcode: string, env: Env): Promise<Response> {
+	const url = new URL(request.url);
+	const searchParams = url.searchParams;
+
+	// Check if the file is password protected
+	const isPasswordProtected = await isShortcodePasswordProtected(shortcode, env);
+
+	if (isPasswordProtected) {
+		// Check if a password was provided in the URL
+		const providedPassword = searchParams.get('password');
+
+		if (!providedPassword) {
+			// No password provided, show password prompt
+			return renderPasswordPrompt(shortcode);
+		}
+
+		// Verify the password
+		const isPasswordValid = await verifyShortcodePassword(shortcode, providedPassword, env);
+
+		if (!isPasswordValid) {
+			// Invalid password, show error
+			return renderPasswordPrompt(shortcode, true);
+		}
+
+		// Password is valid, continue with file display
+	}
+
 	// Try to get from D1
 	let fileUrls = null;
 	let targetUrl = null;
@@ -217,7 +269,7 @@ async function handleShortcodeRedirect(request: Request, shortcode: string, env:
 
 	// Check if this might be a snippet without the c- prefix
 	if (!redirectUrl) {
-		return handlePossibleSnippetWithoutPrefix(shortcode, env);
+		return handlePossibleSnippetWithoutPrefix(shortcode, env, request);
 	}
 
 	// Track the view in D1
@@ -287,11 +339,38 @@ function renderPasswordPrompt(shortcode: string, isError: boolean = false): Resp
 /**
  * Handle possible snippet without c- prefix
  */
-async function handlePossibleSnippetWithoutPrefix(shortcode: string, env: Env): Promise<Response> {
+async function handlePossibleSnippetWithoutPrefix(shortcode: string, env: Env, request: Request): Promise<Response> {
+	const url = new URL(request.url);
+	const searchParams = url.searchParams;
+	const snippetShortcode = `c-${shortcode}`;
+
+	// Check if the snippet is password protected
+	const isPasswordProtected = await isShortcodePasswordProtected(snippetShortcode, env);
+
+	if (isPasswordProtected) {
+		// Check if a password was provided in the URL
+		const providedPassword = searchParams.get('password');
+
+		if (!providedPassword) {
+			// No password provided, show password prompt
+			return renderPasswordPrompt(shortcode);
+		}
+
+		// Verify the password
+		const isPasswordValid = await verifyShortcodePassword(snippetShortcode, providedPassword, env);
+
+		if (!isPasswordValid) {
+			// Invalid password, show error
+			return renderPasswordPrompt(shortcode, true);
+		}
+
+		// Password is valid, continue with snippet display
+	}
+
 	// Try to find a snippet with c- prefix in D1
 	let snippetContent = null;
 	try {
-		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(`c-${shortcode}`).first();
+		const result = await env.DB.prepare(`SELECT target_url FROM short_urls WHERE shortcode = ?`).bind(snippetShortcode).first();
 
 		if (result && typeof result === 'object' && 'target_url' in result) {
 			snippetContent = result.target_url as string;
