@@ -463,7 +463,14 @@ function renderBioFormScripts(shortDomain: string): string {
             const successAlert = document.querySelector('#success-alert');
             const successMessage = document.querySelector('#success-message');
 
-            if (response.ok && data.success) {
+            // Always check response.ok first (HTTP status code)
+            if (!response.ok) {
+                alert('Error saving bio page: HTTP ' + response.status);
+                return;
+            }
+            
+            // Then check data.success (application-level success)
+            if (data && data.success) {
                 const shortUrl = 'https://' + shortDomain + '/' + data.shortcode;
                 successMessage.textContent = (isEditing ? 'Bio page updated: ' : 'Bio page created: ') + shortUrl;
                 successAlert.classList.remove('hidden');
@@ -499,7 +506,8 @@ function renderBioFormScripts(shortDomain: string): string {
                 // Scroll to top to show success message
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                alert('Error saving bio page: ' + (data.message || 'Unknown error'));
+                // Only show error if data.success is explicitly false
+                alert('Error saving bio page: ' + (data && data.message ? data.message : 'Unknown error'));
             }
         } catch (error) {
             console.error('Error saving bio page:', error);
