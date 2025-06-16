@@ -2,6 +2,7 @@ import { Env } from '../../types';
 import { User } from '../auth/types';
 import { renderDocumentHead } from '../layouts/DocumentHead';
 import { renderPageLayout } from '../layouts/PageLayout';
+import { renderBioFormUI, renderBioFormScripts } from '../ui/BioFormUI';
 
 /**
  * Render the account page
@@ -17,7 +18,9 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 		});
 	}
 
-	const user = request.user;
+	// Cast request.user to User type with required properties
+	const user = request.user as User;
+
 	const html = `
 		<!DOCTYPE html>
 		<html lang="en">
@@ -25,7 +28,7 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 		<body class="bg-gray-50">
 			${renderPageLayout({
 				title: 'My Account - RDRX',
-				content: renderAccountContent(user),
+				content: renderAccountContent(user, env.SHORT_DOMAIN),
 				activeNavItem: 'account',
 			})}
 			<script>
@@ -214,6 +217,9 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 						document.getElementById('password-status').textContent = 'Update failed: ' + error.message;
 					}
 				});
+				
+				// Bio page scripts
+				${renderBioFormScripts(env.SHORT_DOMAIN)}
 			</script>
 		</body>
 		</html>
@@ -227,7 +233,7 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 /**
  * Render the account content
  */
-function renderAccountContent(user: User): string {
+function renderAccountContent(user: User, shortDomain: string): string {
 	const profilePicture = user.profile_picture_url || 'https://via.placeholder.com/150';
 
 	return `
@@ -393,6 +399,14 @@ function renderAccountContent(user: User): string {
                             <p id="password-status" class="text-sm text-gray-600"></p>
                         </div>
                     </form>
+                </div>
+                
+                <!-- Bio Page Section -->
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card lg:col-span-3 mt-8">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">My Bio Page</h2>
+                    <p class="text-gray-600 mb-6">Create and manage your link-in-bio style page. Share all your important links in one place.</p>
+                    
+                    ${renderBioFormUI({ shortDomain })}
                 </div>
             </div>
         </div>

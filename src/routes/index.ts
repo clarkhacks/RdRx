@@ -10,6 +10,7 @@ import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { renderAdminPage } from '../components/pages/AdminPage';
 import { authMiddleware } from '../middleware/auth';
+import { getBioPage } from '../utils/database';
 
 /**
  * Main router that delegates to specific route handlers based on the request
@@ -62,6 +63,43 @@ export async function router(request: Request, env: Env): Promise<Response> {
 	// Handle admin page
 	if (url.pathname === '/admin') {
 		return renderAdminPage(enhancedRequest, env);
+	}
+
+	// Handle bio page - redirect to account page
+	if (url.pathname === '/bio') {
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: '/account',
+			},
+		});
+	}
+
+	// Handle bio API routes
+	if (url.pathname.startsWith('/api/bio/')) {
+		const { handleGetUserBio, handleSaveBio } = await import('./bio');
+		if (url.pathname === '/api/bio/my-bio' && request.method === 'GET') {
+			return handleGetUserBio(enhancedRequest, env);
+		}
+		if (url.pathname === '/api/bio/save' && request.method === 'POST') {
+			return handleSaveBio(enhancedRequest, env);
+		}
+	}
+
+	// Handle bio view routes (for viewing bio pages)
+	if (url.pathname.startsWith('/bio-view/')) {
+		const { handleViewBio } = await import('./bio');
+		const bioShortcode = url.pathname.replace('/bio-view/', '');
+		return handleViewBio(enhancedRequest, env, bioShortcode);
+	}
+
+	// Check if this shortcode is a bio page
+	if (shortcode) {
+		const bioPage = await getBioPage(env, shortcode);
+		if (bioPage) {
+			const { handleViewBio } = await import('./bio');
+			return handleViewBio(enhancedRequest, env, shortcode);
+		}
 	}
 
 	// Handle API routes for POST requests

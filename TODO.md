@@ -49,6 +49,7 @@ This document outlines the tasks, improvements, and exciting features planned fo
   - Let users group short links/snippets/files into bio pages (like Linktree)
   - Add themes, logos, contact buttons, and analytics
   - Custom branding and personalization options
+  - CURRENTLY: The user is able to create these, however they are not able to edit them.
 
 ### 🔐 Encrypted Pastebin / FileVault
 

@@ -275,8 +275,31 @@ async function handleShortcodeRedirect(request: Request, shortcode: string, env:
 	// Track the view in D1
 	await trackView(request, env, shortcode, redirectUrl);
 
+	// Check if this is a bio page redirect (redirectUrl starts with /bio-view/)
+	if (redirectUrl.startsWith('/bio-view/')) {
+		console.log('Handling bio page view for shortcode:', shortcode);
+		// Instead of redirecting, directly handle the bio view
+		const { handleViewBio } = await import('./bio');
+		const bioShortcode = redirectUrl.replace('/bio-view/', '');
+		return handleViewBio(request, env, bioShortcode);
+	}
+
+	// For external URLs, make sure they have a protocol
+	if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://') && !redirectUrl.startsWith('/')) {
+		// Add https:// if it's missing
+		const fullUrl = 'https://' + redirectUrl;
+		return Response.redirect(fullUrl);
+	}
+
 	// Redirect to the found URL
-	return Response.redirect(redirectUrl);
+	try {
+		return Response.redirect(redirectUrl);
+	} catch (error) {
+		console.error('Error redirecting to URL:', error);
+		return new Response(`Error redirecting to URL: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+			status: 500,
+		});
+	}
 }
 
 /**
