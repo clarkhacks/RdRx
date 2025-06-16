@@ -65,10 +65,14 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return renderAdminPage(enhancedRequest, env);
 	}
 
-	// Handle bio page
+	// Handle bio page - redirect to account page
 	if (url.pathname === '/bio') {
-		const { handleBioFormPage } = await import('./bio');
-		return handleBioFormPage(enhancedRequest, env);
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: '/account',
+			},
+		});
 	}
 
 	// Handle bio API routes
