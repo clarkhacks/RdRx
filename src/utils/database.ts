@@ -272,10 +272,20 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
  */
 export async function isBioShortcodeAvailable(env: Env, shortcode: string, userId: string): Promise<boolean> {
 	try {
-		const result = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+		const result = await env.DB.prepare(`SELECT creator_id, is_bio FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
 		// Available if doesn't exist or belongs to the same user
-		return !result || result.creator_id === userId;
+		// For bio pages, we need to ensure the shortcode is not used for other types of content
+		if (!result) {
+			return true; // Shortcode doesn't exist, so it's available
+		}
+
+		if (result.creator_id === userId) {
+			// If it belongs to the same user, make sure it's a bio page
+			return result.is_bio === 1;
+		}
+
+		return false; // Belongs to another user, so it's not available
 	} catch (error) {
 		console.error('Error checking bio shortcode availability:', error);
 		return false;
@@ -297,18 +307,27 @@ export async function saveBioPage(
 	try {
 		const now = new Date().toISOString();
 
-		// Check if user already has a bio page with different shortcode
+		// Check if user already has a bio page
 		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).first();
 
-		if (existingBio && existingBio.shortcode !== shortcode) {
-			// User is changing their shortcode, delete old entries
-			await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-			await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
-			await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-		}
+		if (existingBio) {
+			if (existingBio.shortcode !== shortcode) {
+				// User is changing their shortcode, delete old entries
+				await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
+				await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
+				await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
 
-		// First, save/update in short_urls table to satisfy the foreign key constraint
-		await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+				// Create new entry in short_urls table
+				await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+			} else {
+				// User is updating their existing bio page with the same shortcode
+				// Update the target_url in case it changed
+				await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${shortcode}`, shortcode).run();
+			}
+		} else {
+			// User doesn't have a bio page yet, create a new one
+			await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+		}
 
 		// Then save/update bio page
 		await env.DB.prepare(

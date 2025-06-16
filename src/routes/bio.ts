@@ -123,13 +123,20 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			});
 		}
 
-		// Check if shortcode is available
-		const isAvailable = await isBioShortcodeAvailable(env, shortcode, userId);
-		if (!isAvailable) {
-			return new Response(JSON.stringify({ success: false, message: 'This shortcode is already taken by another user' }), {
-				status: 400,
-				headers: { 'Content-Type': 'application/json' },
-			});
+		// Get the user's existing bio page if they have one
+		const existingBioPage = await getUserBioPage(env, userId);
+		const isEditing = existingBioPage !== null;
+
+		// If the user is editing their bio page and changing the shortcode,
+		// or if they're creating a new bio page, check if the shortcode is available
+		if (!isEditing || (isEditing && existingBioPage.shortcode !== shortcode)) {
+			const isAvailable = await isBioShortcodeAvailable(env, shortcode, userId);
+			if (!isAvailable) {
+				return new Response(JSON.stringify({ success: false, message: 'This shortcode is already taken by another user' }), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
 		}
 
 		try {
@@ -159,7 +166,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			JSON.stringify({
 				success: true,
 				shortcode,
-				message: 'Bio page saved successfully',
+				message: isEditing ? 'Bio page updated successfully' : 'Bio page created successfully',
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
