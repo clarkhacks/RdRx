@@ -187,12 +187,32 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
  */
 export async function handleViewBio(request: Request, env: Env, shortcode: string): Promise<Response> {
 	try {
+		console.log(`Handling view bio request for shortcode: ${shortcode}`);
+
+		// Validate shortcode
+		if (!shortcode || typeof shortcode !== 'string') {
+			console.error('Invalid shortcode:', shortcode);
+			return new Response('Invalid shortcode', { status: 400 });
+		}
+
+		// Get bio page data
 		const bioPage = await getBioPage(env, shortcode);
 		if (!bioPage) {
+			console.error('Bio page not found for shortcode:', shortcode);
 			return new Response('Bio page not found', { status: 404 });
 		}
 
-		const links = await getBioLinks(env, shortcode);
+		console.log('Bio page found:', bioPage);
+
+		// Get bio links
+		let links = [];
+		try {
+			links = await getBioLinks(env, shortcode);
+			console.log(`Found ${links.length} links for bio page`);
+		} catch (linkError) {
+			console.error('Error fetching bio links:', linkError);
+			// Continue with empty links array
+		}
 
 		// Get the creator's profile picture if available
 		let creatorProfilePicture = null;
@@ -201,10 +221,12 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
 			if (shortUrlInfo && shortUrlInfo.creator_id) {
+				console.log('Found creator ID:', shortUrlInfo.creator_id);
 				// Get the user's profile picture
 				const userInfo = await env.DB.prepare(`SELECT profile_picture_url FROM users WHERE uid = ?`).bind(shortUrlInfo.creator_id).first();
 				if (userInfo && userInfo.profile_picture_url) {
 					creatorProfilePicture = userInfo.profile_picture_url;
+					console.log('Found creator profile picture');
 				}
 			}
 		} catch (error) {
@@ -213,14 +235,27 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 		}
 
 		// Use the creator's profile picture if available, otherwise use the one from the bio page
-		const profilePictureUrl = creatorProfilePicture || bioPage.profile_picture_url;
+		const profilePictureUrl = creatorProfilePicture || bioPage.profile_picture_url || null;
+		console.log('Using profile picture URL:', profilePictureUrl);
+
+		// Ensure SHORT_DOMAIN is available
+		if (!env.SHORT_DOMAIN) {
+			console.error('SHORT_DOMAIN is not defined in environment');
+			env.SHORT_DOMAIN = 'rdrx.co'; // Fallback to default domain
+		}
 
 		// Render bio page view
-		const html = renderBioView(bioPage, links, env.SHORT_DOMAIN, profilePictureUrl);
-
-		return new Response(html, {
-			headers: { 'Content-Type': 'text/html' },
-		});
+		try {
+			const html = renderBioView(bioPage, links || [], env.SHORT_DOMAIN, profilePictureUrl);
+			return new Response(html, {
+				headers: { 'Content-Type': 'text/html' },
+			});
+		} catch (renderError) {
+			console.error('Error rendering bio view:', renderError);
+			return new Response('Error rendering bio page: ' + (renderError instanceof Error ? renderError.message : 'Unknown error'), {
+				status: 500,
+			});
+		}
 	} catch (error) {
 		console.error('Error viewing bio page:', error);
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -232,17 +267,25 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
  * Render bio page view
  */
 function renderBioView(bioPage: any, links: any[], shortDomain: string, profilePictureUrl: string | null = null): string {
+	// Ensure bioPage has all required properties
+	const title = bioPage && bioPage.title ? bioPage.title : 'Bio Page';
+	const description = bioPage && bioPage.description ? bioPage.description : 'Check out my bio page';
+	const shortcode = bioPage && bioPage.shortcode ? bioPage.shortcode : '';
+
+	// Ensure links is an array
+	const safeLinks = Array.isArray(links) ? links : [];
+
 	return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${bioPage.title}</title>
-    <meta property="og:title" content="${bioPage.title} | Bio Page">
-    <meta property="og:description" content="${bioPage.description || 'Check out my bio page'}">
+    <title>${title}</title>
+    <meta property="og:title" content="${title} | Bio Page">
+    <meta property="og:description" content="${description}">
     <meta property="og:image" content="${profilePictureUrl || 'https://cdn.rdrx.co/banner.jpg'}">
-    <meta property="og:url" content="https://${shortDomain}/${bioPage.shortcode}">
+    <meta property="og:url" content="https://${shortDomain}/${shortcode}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="RdRx">
     <meta property="twitter:card" content="summary_large_image">
@@ -410,24 +453,23 @@ function renderBioView(bioPage: any, links: any[], shortDomain: string, profileP
     <div class="container">
         <div class="profile">
             <div class="avatar">
-                <img src="${profilePictureUrl || 'https://via.placeholder.com/80'}" alt="${
-		bioPage.title
-	}" onerror="this.src='https://via.placeholder.com/80?text=👤'">
+                <img src="${profilePictureUrl || 'https://via.placeholder.com/80'}" alt="${title}" 
+                     onerror="this.src='https://via.placeholder.com/80?text=👤'">
             </div>
-            <h1 class="username">${bioPage.title}</h1>
-            ${bioPage.description ? `<p class="bio">${bioPage.description}</p>` : ''}
+            <h1 class="username">${title}</h1>
+            ${description ? `<p class="bio">${description}</p>` : ''}
         </div>
 
         <div class="links">
-            ${links
+            ${safeLinks
 							.map(
 								(link) => `
-                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-card">
+                    <a href="${link.url || '#'}" target="_blank" rel="noopener noreferrer" class="link-card">
                         <div class="link-icon">
                             ${link.icon || '🔗'}
                         </div>
                         <div class="link-content">
-                            <h3 class="link-title">${link.title}</h3>
+                            <h3 class="link-title">${link.title || 'Link'}</h3>
                             ${link.description ? `<p class="link-description">${link.description}</p>` : ''}
                         </div>
                     </a>
