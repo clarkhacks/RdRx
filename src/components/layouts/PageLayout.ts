@@ -54,39 +54,54 @@ ${renderDocumentHead({ title, additionalScripts: additionalHeadScripts })}
   </footer>
 
   <script>
-    // Dark mode toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const themeToggle = document.getElementById('theme-toggle');
-      const darkIcon = document.getElementById('theme-toggle-dark-icon');
-      const lightIcon = document.getElementById('theme-toggle-light-icon');
-      
+    // Dark mode toggle functionality - run immediately
+    (function() {
       // Check for saved theme preference or default to 'light' mode
       const currentTheme = localStorage.getItem('theme') || 'light';
       
-      function updateTheme(theme) {
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
-          darkIcon.classList.add('hidden');
-          lightIcon.classList.remove('hidden');
-        } else {
-          document.documentElement.classList.remove('dark');
-          lightIcon.classList.add('hidden');
-          darkIcon.classList.remove('hidden');
-        }
+      // Apply theme immediately to prevent flash
+      if (currentTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
       
-      // Set initial theme
-      updateTheme(currentTheme);
-      
-      // Toggle theme on button click
-      themeToggle.addEventListener('click', function() {
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      // Wait for DOM to be ready for interactive elements
+      document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
         
-        localStorage.setItem('theme', newTheme);
-        updateTheme(newTheme);
+        if (!themeToggle || !darkIcon || !lightIcon) {
+          console.error('Theme toggle elements not found');
+          return;
+        }
+        
+        function updateTheme(theme) {
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            darkIcon.classList.add('hidden');
+            lightIcon.classList.remove('hidden');
+          } else {
+            document.documentElement.classList.remove('dark');
+            lightIcon.classList.add('hidden');
+            darkIcon.classList.remove('hidden');
+          }
+        }
+        
+        // Set initial theme icons
+        updateTheme(currentTheme);
+        
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', function() {
+          const currentTheme = localStorage.getItem('theme') || 'light';
+          const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+          
+          localStorage.setItem('theme', newTheme);
+          updateTheme(newTheme);
+        });
       });
-    });
+    })();
     
     ${scripts}
   </script>

@@ -47,109 +47,31 @@ export async function renderAdminPage(request: Request, env: Env): Promise<Respo
  */
 function renderAdminContent(): string {
 	return `
-        <!-- Add gradient styles to match other forms -->
-        <style>
-          .gradient-text {
-            background: linear-gradient(90deg, #FFC107, #FF8A00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-          }
-          
-          .form-card {
-            transition: all 0.3s ease;
-            border-radius: 24px;
-            border: 2px solid #FFF;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-          }
-          
-          .input-focus:focus {
-            border-color: transparent;
-            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
-          }
-          
-          .btn-gradient {
-            background: #000;
-            color: white;
-            border-radius: 50px;
-            transition: all 0.2s ease;
-          }
-          
-          .btn-gradient:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-          }
-          
-          .btn-danger {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border-radius: 50px;
-            transition: all 0.2s ease;
-          }
-          
-          .btn-danger:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
-          }
-          
-          .btn-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            border-radius: 50px;
-            transition: all 0.2s ease;
-          }
-          
-          .btn-success:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
-          }
-          
-          .success-gradient {
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-            border: none;
-            border-left: 4px solid #10b981;
-          }
-          
-          .admin-tab {
-            cursor: pointer;
-            transition: all 0.3s ease;
-          }
-          
-          .admin-tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-          }
-          
-          .admin-tab:hover:not(.active) {
-            background-color: rgba(102, 126, 234, 0.1);
-          }
-        </style>
-
         <div class="max-w-7xl mx-auto py-8 px-4">
             <!-- Header Section -->
-            <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 mb-8 form-card">
+            <div class="bg-white dark:bg-dark-800 shadow-github-md dark:shadow-github-dark rounded-github-lg p-6 md:p-8 mb-8 border border-gray-200 dark:border-dark-600">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h1 class="text-4xl font-bold mb-2 gradient-text">Admin Panel</h1>
-                        <p class="text-gray-500">Manage users, URLs, and system settings</p>
+                        <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-dark-100">Admin Panel</h1>
+                        <p class="text-gray-600 dark:text-dark-300">Manage users, URLs, and system settings</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm text-gray-500">Total Users: <span id="total-users">Loading...</span></p>
-                        <p class="text-sm text-gray-500">Total URLs: <span id="total-urls">Loading...</span></p>
+                        <p class="text-sm text-gray-500 dark:text-dark-400">Total Users: <span id="total-users">Loading...</span></p>
+                        <p class="text-sm text-gray-500 dark:text-dark-400">Total URLs: <span id="total-urls">Loading...</span></p>
                     </div>
                 </div>
             </div>
             
             <!-- Navigation Tabs -->
-            <div class="bg-white shadow-xl rounded-xl p-6 mb-8 form-card">
+            <div class="bg-white dark:bg-dark-800 shadow-github-md dark:shadow-github-dark rounded-github-lg p-6 mb-8 border border-gray-200 dark:border-dark-600">
                 <div class="flex space-x-4">
-                    <button class="admin-tab active px-6 py-3 rounded-full font-medium transition duration-300" data-tab="users">
+                    <button class="admin-tab active px-6 py-3 rounded-github font-semibold transition-all duration-200 bg-blue-500 text-white" data-tab="users">
                         Users Management
                     </button>
-                    <button class="admin-tab px-6 py-3 rounded-full font-medium transition duration-300" data-tab="urls">
+                    <button class="admin-tab px-6 py-3 rounded-github font-semibold transition-all duration-200 text-gray-700 dark:text-dark-300 hover:bg-gray-100 dark:hover:bg-dark-700" data-tab="urls">
                         URLs Management
                     </button>
-                    <button class="admin-tab px-6 py-3 rounded-full font-medium transition duration-300" data-tab="analytics">
+                    <button class="admin-tab px-6 py-3 rounded-github font-semibold transition-all duration-200 text-gray-700 dark:text-dark-300 hover:bg-gray-100 dark:hover:bg-dark-700" data-tab="analytics">
                         System Analytics
                     </button>
                 </div>
