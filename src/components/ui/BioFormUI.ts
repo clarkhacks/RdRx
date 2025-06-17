@@ -97,13 +97,13 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
   }
 </style>
 
-<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-4xl mx-auto form-card">
+<div class="bg-white shadow-xl rounded-github-md p-6 md:p-8 max-w-4xl mx-auto form-card">
     <div class="mb-8">
       <h1 class="text-4xl font-bold mb-2 gradient-text">My Bio Page</h1>
       <p class="text-gray-500">Create and manage your link-in-bio style page</p>
     </div>
     
-    <div class="success-gradient rounded-lg p-4 mb-6 hidden" id="success-alert">
+    <div class="success-gradient rounded-github-md p-4 mb-6 hidden" id="success-alert">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -111,7 +111,7 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
           </svg>
           <span id="success-message" class="text-green-700 font-medium"></span>
         </div>
-        <button id="copy-button" class="ml-4 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-sm rounded-md transition-colors duration-200 flex items-center gap-1" style="display: none;">
+        <button id="copy-button" class="ml-4 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-sm rounded-github transition-colors duration-200 flex items-center gap-1" style="display: none;">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
             <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
@@ -138,9 +138,9 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
                   </div>
                   <input type="text" id="customCode" name="customCode"
                     placeholder="your-bio-page"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
                 </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
+                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-github hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
                   onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 8);">
                   Random
                 </button>
@@ -153,12 +153,12 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             <div>
                 <label for="bioTitle" class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
                 <input type="text" id="bioTitle" name="bioTitle" placeholder="Your Name or Brand"
-                    class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    class="block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
             </div>
             <div>
                 <label for="bioDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <input type="text" id="bioDescription" name="bioDescription" placeholder="What you do or your tagline"
-                    class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    class="block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
             </div>
         </div>
 
@@ -166,7 +166,7 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
         <div>
             <div class="flex items-center justify-between mb-4">
                 <label class="block text-sm font-medium text-gray-700">Links</label>
-                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-blue-500 text-white rounded-github-md hover:bg-blue-600 transition">
                     + Add Link
                 </button>
             </div>
@@ -190,20 +190,20 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     <div class="link-item" data-link-index="">
         <div class="flex items-start gap-4">
             <div class="flex-shrink-0">
-                <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer link-icon" onclick="openIconPicker(this)">
+                <div class="w-12 h-12 bg-gray-200 rounded-github-md flex items-center justify-center cursor-pointer link-icon" onclick="openIconPicker(this)">
                     <span class="text-2xl">🔗</span>
                 </div>
                 <input type="hidden" class="link-icon-value" value="🔗">
             </div>
             <div class="flex-grow space-y-3">
                 <div>
-                    <input type="text" placeholder="Link Title" class="link-title w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Link Title" class="link-title w-full px-3 py-2 border border-gray-300 rounded-github-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 <div>
-                    <input type="url" placeholder="https://example.com" class="link-url w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="url" placeholder="https://example.com" class="link-url w-full px-3 py-2 border border-gray-300 rounded-github-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 <div>
-                    <input type="text" placeholder="Optional description" class="link-description w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="text" placeholder="Optional description" class="link-description w-full px-3 py-2 border border-gray-300 rounded-github-md focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
             </div>
             <div class="flex-shrink-0 flex flex-col gap-2">
@@ -229,7 +229,7 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
 
 <!-- Icon Picker Modal -->
 <div id="iconPickerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+    <div class="bg-white rounded-github-md p-6 max-w-md w-full mx-4">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">Choose an Icon</h3>
             <button onclick="closeIconPicker()" class="text-gray-400 hover:text-gray-600">

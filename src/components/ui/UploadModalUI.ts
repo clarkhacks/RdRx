@@ -46,7 +46,7 @@ function renderUploadModalUI(): string {
 
 <!-- Custom Modal -->
 <div id="customModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center hidden transition-opacity duration-300">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 modal-card">
+    <div class="bg-white rounded-github-md p-6 max-w-md w-full mx-4 modal-card">
         <div class="flex justify-between items-start mb-4">
             <h3 id="modalTitle" class="text-2xl font-bold gradient-text"></h3>
             <button id="closeModal" class="text-gray-400 hover:text-gray-600 transition p-1 rounded-full hover:bg-gray-100">
@@ -57,10 +57,10 @@ function renderUploadModalUI(): string {
         </div>
         <div id="modalContent" class="mb-6 text-gray-600"></div>
         <div id="modalActions" class="flex justify-end space-x-3">
-            <a id="modalLink" href="#" target="_blank" class="btn-gradient text-white px-5 py-2 rounded-lg transition hidden">
+            <a id="modalLink" href="#" target="_blank" class="btn-gradient text-white px-5 py-2 rounded-github-md transition hidden">
                 Open Link
             </a>
-            <button id="modalDismiss" class="bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 hover:shadow-md transition">
+            <button id="modalDismiss" class="bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-github-md hover:bg-gray-50 hover:shadow-md transition">
                 Dismiss
             </button>
         </div>

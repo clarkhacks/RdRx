@@ -191,11 +191,11 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 					<input type="hidden" id="editUrlShortcode" />
 					<div class="mb-4">
 						<label class="block text-sm font-medium text-gray-700 mb-2">Target URL</label>
-						<input type="url" id="editUrlTarget" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500" required />
+						<input type="url" id="editUrlTarget" class="w-full px-3 py-2 border border-gray-300 rounded-github focus:outline-none focus:ring-2 focus:ring-amber-500" required />
 					</div>
 					<div class="flex justify-end space-x-2">
-						<button type="button" onclick="closeModal('editUrlModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
-						<button type="submit" class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">Save Changes</button>
+						<button type="button" onclick="closeModal('editUrlModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-github hover:bg-gray-50">Cancel</button>
+						<button type="submit" class="px-4 py-2 bg-amber-500 text-white rounded-github hover:bg-amber-600">Save Changes</button>
 					</div>
 				</form>
 			</div>
@@ -210,11 +210,11 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 					<input type="hidden" id="editSnippetShortcode" />
 					<div class="mb-4">
 						<label class="block text-sm font-medium text-gray-700 mb-2">Code Content</label>
-						<textarea id="editSnippetContent" rows="10" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono" required></textarea>
+						<textarea id="editSnippetContent" rows="10" class="w-full px-3 py-2 border border-gray-300 rounded-github focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono" required></textarea>
 					</div>
 					<div class="flex justify-end space-x-2">
-						<button type="button" onclick="closeModal('editSnippetModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
-						<button type="submit" class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">Save Changes</button>
+						<button type="button" onclick="closeModal('editSnippetModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-github hover:bg-gray-50">Cancel</button>
+						<button type="submit" class="px-4 py-2 bg-amber-500 text-white rounded-github hover:bg-amber-600">Save Changes</button>
 					</div>
 				</form>
 			</div>
@@ -229,11 +229,11 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 				<div id="fileGallery" class="file-gallery"></div>
 				<div class="mt-4">
 					<label class="block text-sm font-medium text-gray-700 mb-2">Add New Files</label>
-					<input type="file" id="newFiles" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md" />
-					<button type="button" onclick="uploadNewFiles()" class="mt-2 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">Upload Files</button>
+					<input type="file" id="newFiles" multiple class="w-full px-3 py-2 border border-gray-300 rounded-github" />
+					<button type="button" onclick="uploadNewFiles()" class="mt-2 px-4 py-2 bg-amber-500 text-white rounded-github hover:bg-amber-600">Upload Files</button>
 				</div>
 				<div class="flex justify-end mt-4">
-					<button type="button" onclick="closeModal('editFilesModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">Close</button>
+					<button type="button" onclick="closeModal('editFilesModal')" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-github hover:bg-gray-50">Close</button>
 				</div>
 			</div>
 		</div>
@@ -410,7 +410,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 	`;
 
 	return `${styles}
-<div class="bg-white shadow-md rounded-2xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
+<div class="bg-white shadow-md rounded-github p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
 	<h1 class="text-3xl font-bold mb-6 gradient-text">Your Analytics</h1>
 	<p class="text-gray-600 mb-8">View analytics for all your shortened URLs, snippets, and file uploads.</p>
 
@@ -419,7 +419,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 		<div class="mb-4 md:mb-0">
 			<label for="perPage" class="text-sm font-medium text-gray-700 mr-2">Items per page:</label>
 			<select id="perPage"
-				class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+				class="rounded-github border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
 				onchange="window.location.href='?page=1&perPage='+this.value">
 				<option value="10" ${sanitizedPerPage === 10 ? 'selected' : ''}>10</option>
 				<option value="20" ${sanitizedPerPage === 20 ? 'selected' : ''}>20</option>
@@ -578,7 +578,7 @@ function renderPagination(currentPage: number, totalPages: number, itemsPerPage:
 
 	let paginationHtml = `
 		<div class="flex justify-center mt-6">
-			<nav class="inline-flex rounded-md shadow">
+			<nav class="inline-flex rounded-github shadow">
 	`;
 
 	// Previous button

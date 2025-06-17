@@ -55,7 +55,7 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                     <div class="table-cell">
                         <div class="flex items-center gap-4">
                             <a href="${url}" class="flex items-center w-12 h-12 overflow-hidden">
-                                <img class="w-full h-auto rounded-lg" src="${iconUrl}" alt="${fileName}" />
+                                <img class="w-full h-auto rounded-github-md" src="${iconUrl}" alt="${fileName}" />
                             </a>
                             <span class="text-gray-800 truncate hidden sm:inline">
                                 ${fileName.length >= 20 ? `${fileName.slice(0, 15)}...${fileName.slice(-3)}` : fileName}
@@ -68,7 +68,7 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                             ${
 															isViewable
 																? `
-                                <a href="${url}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-md hover:from-blue-600 hover:to-blue-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                <a href="${url}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-github hover:from-blue-600 hover:to-blue-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -78,7 +78,7 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
                             `
 																: ''
 														}
-                            <a href="${url}" download class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-sm font-medium rounded-md hover:from-pink-600 hover:to-pink-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                            <a href="${url}" download class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-sm font-medium rounded-github hover:from-pink-600 hover:to-pink-700 transition duration-150 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
@@ -131,7 +131,7 @@ function renderFileListUI(fileUrls: string[], shortcode: string): string {
 
 	return `
         ${styles}
-        <section class="bg-white shadow-md rounded-2xl p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
+        <section class="bg-white shadow-md rounded-github p-6 md:p-8 mb-8 max-w-6xl mx-auto form-card">
             <h2 class="text-3xl font-bold mb-6 gradient-text">File List: ${shortcode}</h2>
             <p class="mb-6 text-gray-600">Contains ${fileUrls.length} file${fileUrls.length !== 1 ? 's' : ''}</p>
             <div class="table-container">

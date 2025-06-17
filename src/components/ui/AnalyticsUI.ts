@@ -49,17 +49,17 @@ function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: Analyt
 
 <!-- Overview Stats -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
+  <div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Total Visits</h3>
     <p class="text-3xl font-medium text-gray-800">${analyticsData.visits}</p>
   </div>
-  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
+  <div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Avg. Daily Visits</h3>
     <p class="text-3xl font-medium text-gray-800">
       ${analyticsData.views_by_date.length > 0 ? Math.round(analyticsData.visits / analyticsData.views_by_date.length) : 0}
     </p>
   </div>
-  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
+  <div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white">
     <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Last Visit</h3>
     <p class="text-3xl font-medium text-gray-800">
       ${analyticsData.recent_visits.length > 0 ? new Date(analyticsData.recent_visits[0].timestamp).toLocaleDateString() : 'N/A'}
@@ -75,11 +75,11 @@ function renderAnalyticsOverview({ analyticsData, shortcode, targetUrl }: Analyt
 function renderAnalyticsCharts({ analyticsData }: AnalyticsChartsProps): string {
 	return `
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
+  <div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white">
     <h3 class="text-lg font-medium text-gray-800 mb-4">Visits Over Time</h3>
     <canvas id="visitsChart" width="400" height="300"></canvas>
   </div>
-  <div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white">
+  <div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white">
     <h3 class="text-lg font-medium text-gray-800 mb-4">Top Countries</h3>
     <canvas id="countriesChart" width="400" height="300"></canvas>
   </div>
@@ -191,7 +191,7 @@ initCharts();
  */
 function renderAnalyticsRecentVisits({ analyticsData }: AnalyticsRecentVisitsProps): string {
 	return `
-<div class="notion-card bg-white p-6 rounded-2xl shadow-md border-2 border-white mb-8">
+<div class="notion-card bg-white p-6 rounded-github shadow-md border-2 border-white mb-8">
   <h3 class="text-lg font-medium text-gray-800 mb-4">Recent Visits</h3>
   <style>
     .notion-table {

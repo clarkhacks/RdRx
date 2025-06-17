@@ -145,8 +145,8 @@ function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false, shortD
 						? `
         <!-- Admin Override Code (only shown to admins) -->
         <div class="border-t border-gray-200 dark:border-dark-600 pt-6">
-          <label for="adminOverrideCode" class="block text-sm font-semibold text-orange-700 dark:text-orange-400 mb-2">
-            <svg class="w-4 h-4 inline mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <label for="adminOverrideCode" class="block text-sm font-semibold text-red-700 dark:text-red-400 mb-2">
+            <svg class="w-4 h-4 inline mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
             Admin Override Code (optional)
@@ -156,7 +156,7 @@ function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false, shortD
             id="adminOverrideCode" 
             name="adminOverrideCode"
             placeholder="Only needed for overwriting existing URLs"
-            class="w-full px-3 py-2 border border-orange-300 dark:border-orange-700 rounded-github bg-orange-50 dark:bg-orange-900/20 text-gray-900 dark:text-dark-100 placeholder-orange-400 dark:placeholder-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
+            class="w-full px-3 py-2 border border-red-300 dark:border-red-700 rounded-github bg-red-50 dark:bg-red-900/20 text-gray-900 dark:text-dark-100 placeholder-red-400 dark:placeholder-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-colors duration-200"
           >
         </div>
         `

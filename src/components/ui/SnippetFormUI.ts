@@ -52,13 +52,13 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
   }
 </style>
 
-<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-3xl mx-auto form-card">
+<div class="bg-white shadow-xl rounded-github-md p-6 md:p-8 max-w-3xl mx-auto form-card">
     <div class="mb-8">
       <h1 class="text-4xl font-bold mb-2 gradient-text">Create Code Snippet</h1>
       <p class="text-gray-500">Create and share code snippets easily</p>
     </div>
     
-    <div class="success-gradient rounded-lg p-4 mb-6 hidden" id="success-alert">
+    <div class="success-gradient rounded-github-md p-4 mb-6 hidden" id="success-alert">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -66,7 +66,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
           </svg>
           <span id="success-message" class="text-green-700 font-medium"></span>
         </div>
-        <button id="copy-button" class="ml-4 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-sm rounded-md transition-colors duration-200 flex items-center gap-1" style="display: none;">
+        <button id="copy-button" class="ml-4 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-sm rounded-github transition-colors duration-200 flex items-center gap-1" style="display: none;">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
             <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
@@ -88,9 +88,9 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
                   <input type="text" id="customCode" name="customCode"
                     ${shortcode ? `value="${shortcode}"` : ''}
                     placeholder="your-custom-path"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
                 </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
+                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-github hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
                   onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 6);">
                   Random
                 </button>
@@ -102,7 +102,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
             <label for="codeSnippet" class="block text-sm font-medium text-gray-700 mb-1">Code Snippet</label>
             <div class="relative">
               <textarea id="codeSnippet" name="codeSnippet" rows="10"
-                      class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 font-mono transition bg-gray-50"></textarea>
+                      class="block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 font-mono transition bg-gray-50"></textarea>
               <div class="absolute top-2 right-2 flex space-x-2">
                 <button type="button" class="text-xs px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700 transition" 
                   onclick="document.getElementById('codeSnippet').classList.toggle('bg-gray-900'); document.getElementById('codeSnippet').classList.toggle('text-gray-100'); document.getElementById('codeSnippet').classList.toggle('bg-gray-50');">
@@ -121,7 +121,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
                 <label for="deleteDate" class="text-sm font-medium text-gray-700">Set expiration date (default: 30 days)</label>
             </div>
             <input type="date" id="deleteAfter" name="deleteAfter"
-                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
         </div>
         
         <!-- Password Protection -->
@@ -133,7 +133,7 @@ function renderSnippetFormUI(props: SnippetFormUIProps = {}): string {
             </div>
             <div id="passwordContainer" class="hidden">
                 <input type="password" id="password" name="password" placeholder="Enter a password"
-                  class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                  class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-github input-focus text-gray-900 transition">
                 <p class="text-xs text-gray-500 mt-1">Users will need to enter this password to view the snippet.</p>
             </div>
         </div>

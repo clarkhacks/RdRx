@@ -241,7 +241,7 @@ function renderUploadFormScripts(): string {
             for (let i = 0; i < Math.min(files.length, 5); i++) {
                 const file = files[i];
                 const fileItem = document.createElement('div');
-                fileItem.className = 'flex items-center mt-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition';
+                fileItem.className = 'flex items-center mt-2 p-2 bg-gray-50 rounded-github-md hover:bg-gray-100 transition';
                 fileItem.innerHTML = \`
                     <svg class="w-4 h-4 mr-2 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
@@ -296,7 +296,7 @@ function renderUploadFormScripts(): string {
 
         // Create a single progress bar for all files
         const progressWrapper = document.createElement('div');
-        progressWrapper.className = 'w-full bg-white p-4 rounded-lg shadow-sm border border-gray-100';
+        progressWrapper.className = 'w-full bg-white p-4 rounded-github-md shadow-sm border border-gray-100';
 
         const label = document.createElement('p');
         label.textContent = 'Uploading ' + files.length + ' file' + (files.length > 1 ? 's' : '');
