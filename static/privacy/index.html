@@ -249,7 +249,8 @@
         }
     </style>
 </head>
-<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+<!-- forcing dark mode until fixed. -->
+<body class="dark bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
     
 <!-- Navigation -->
 <nav 
@@ -280,7 +281,6 @@
       class="flex items-center gap-4"
       :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-[var(--card-bg)] dark:bg-gray-800 shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
     >
-        <a href="#demo" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Try It</a>
         <a href="/login" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
         <a href="/coming-soon" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
         <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful bg-white dark:bg-gray-700 text-[var(--text-primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg text-sm py-2 px-4">
@@ -373,17 +373,33 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
-    <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-center items-center gap-4">
-            <div>© 2025 RdRx. All rights reserved.</div>
-            <div class="flex gap-4">
-                <a href="/terms/" class="hover:text-primary-500 transition-colors duration-200">Terms of Service</a>
-                <a href="/privacy/" class="font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200">Privacy Policy</a>
+<footer class="bg-gray-900 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-8 md:mb-0">
+                <div class="flex items-center">
+                    <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-10 h-10 mr-3">
+                    <span class="text-2xl font-bold gradient-text">RdRx</span>
+                </div>
+                <p class="text-gray-400 dark:text-gray-300 mt-2">Modern URL shortening & content sharing</p>
+            </div>
+            
+            <div class="flex flex-col items-end">
+                <div class="flex gap-4 mb-3">
+                    <a href="/terms/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Terms of Service</a>
+                    <a href="/privacy/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Privacy Policy</a>
+                </div>
+                <p class="text-gray-400 dark:text-gray-300 mb-2">
+                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">GPL-3.0</a>
+                </p>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    &copy; 2025 RdRx. All rights reserved.
+                </p>
             </div>
         </div>
     </div>
 </footer>
+
 
     <!-- Dark mode toggle button -->
     <button 
@@ -400,6 +416,26 @@
       if (localStorage.getItem('darkMode') === 'true') {
         // Apply dark mode class to html element
         document.documentElement.classList.add('dark');
+      }
+      
+      // Function to copy install command
+      function copyInstallCommand() {
+        const command = document.getElementById('install-command').textContent.trim();
+        navigator.clipboard.writeText(command).then(function() {
+          // Show success feedback
+          const button = event.target.closest('button');
+          const originalText = button.innerHTML;
+          button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+          button.classList.add('text-green-400');
+          
+          setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('text-green-400');
+          }, 2000);
+        }).catch(function(err) {
+          console.error('Failed to copy: ', err);
+          alert('Failed to copy to clipboard');
+        });
       }
     </script>
 </body>

@@ -1,166 +1,164 @@
 function renderUploadFormUI(): string {
 	return `
-<!-- Add gradient styles -->
-<style>
-  .gradient-text {
-    background: linear-gradient(90deg, #FFC107, #FF8A00);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .gradient-bg {
-    background: linear-gradient(135deg, #FFD54F, #FF9800);
-  }
-  
-  .form-card {
-    transition: all 0.3s ease;
-    border-radius: 24px;
-    border: 2px solid #FFF;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  }
-  
-  .input-focus:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
-  }
-  
-  .btn-gradient {
-    background: #000;
-    color: white;
-    border-radius: 50px;
-    transition: all 0.2s ease;
-  }
-  
-  .btn-gradient:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  }
-  
-  .success-gradient {
-    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-    border: none;
-    border-left: 4px solid #10b981;
-  }
-  
-  .dropzone {
-    transition: all 0.3s ease;
-    border: 2px dashed rgba(255, 193, 7, 0.4);
-  }
-  
-  .dropzone:hover {
-    border-color: #FFC107;
-    background-color: rgba(255, 193, 7, 0.05);
-  }
-  
-  .progress-gradient {
-    background: linear-gradient(90deg, #FFC107, #FF8A00);
-  }
-</style>
+<div class="max-w-4xl mx-auto">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-dark-100 mb-2">Upload Files</h1>
+    <p class="text-gray-600 dark:text-dark-300">Share files easily with a custom short link</p>
+  </div>
 
-<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-3xl mx-auto form-card">
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2 gradient-text">Upload Files</h1>
-      <p class="text-gray-500">Share files easily with a custom short link</p>
-    </div>
-    
-    <div class="success-gradient rounded-lg p-4 mb-6 hidden" id="success-alert">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-          </svg>
-          <span id="success-message" class="text-green-700 font-medium"></span>
-        </div>
-        <button id="copy-button" class="ml-4 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 text-sm rounded-md transition-colors duration-200 flex items-center gap-1" style="display: none;">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
-            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
-          </svg>
-          Copy
-        </button>
+  <!-- Success Alert -->
+  <div class="bg-accent-50 dark:bg-accent-900/20 border border-accent-200 dark:border-accent-800 rounded-github-md p-4 mb-6 hidden" id="success-alert">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-accent-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        <span id="success-message" class="text-accent-700 dark:text-accent-300 font-medium"></span>
       </div>
+      <button id="copy-button" class="ml-4 px-3 py-1.5 bg-accent-100 dark:bg-accent-800 hover:bg-accent-200 dark:hover:bg-accent-700 text-accent-700 dark:text-accent-300 text-sm rounded-github transition-colors duration-200 flex items-center gap-2" style="display: none;">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
+          <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
+        </svg>
+        Copy
+      </button>
     </div>
+  </div>
+
+  <!-- Main Form Card -->
+  <div class="bg-white dark:bg-dark-800 border border-gray-200 dark:border-dark-600 rounded-github-lg shadow-github-md dark:shadow-github-dark">
+    <div class="p-6">
     
-    <form id="uploadForm" class="space-y-6" enctype="multipart/form-data">
-        <!-- File Input -->
+      <form id="uploadForm" class="space-y-6" enctype="multipart/form-data">
+        <!-- File Upload Area -->
         <div>
-            <label for="files" class="block text-sm font-medium text-gray-700 mb-1">Select Files</label>
-            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 dropzone rounded-xl hover:shadow-md transition">
-              <div class="space-y-1 text-center">
-                <svg class="mx-auto h-12 w-12 text-primary-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <div class="flex text-sm text-gray-600 justify-center">
-                  <label for="files" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-500 hover:text-primary-600 focus-within:outline-none transition">
-                    <span>Upload files</span>
-                    <input id="files" name="files" type="file" class="sr-only" multiple required>
-                  </label>
-                  <p class="pl-1">or drag and drop</p>
-                </div>
-                <p class="text-xs text-gray-500">
-                  Any file type up to 10MB
-                </p>
+          <label for="files" class="block text-sm font-semibold text-gray-900 dark:text-dark-100 mb-2">
+            <svg class="w-4 h-4 inline mr-2 text-gray-500 dark:text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            Select Files
+          </label>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-dark-600 border-dashed rounded-github-lg hover:border-blue-400 dark:hover:border-blue-500 bg-gray-50 dark:bg-dark-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 dropzone">
+            <div class="space-y-1 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-dark-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="flex text-sm text-gray-600 dark:text-dark-300 justify-center">
+                <label for="files" class="relative cursor-pointer bg-white dark:bg-dark-800 rounded-github font-medium text-blue-500 hover:text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 px-2 py-1 transition-colors duration-200">
+                  <span>Upload files</span>
+                  <input id="files" name="files" type="file" class="sr-only" multiple required>
+                </label>
+                <p class="pl-1">or drag and drop</p>
               </div>
+              <p class="text-xs text-gray-500 dark:text-dark-400">
+                Any file type up to 10MB each
+              </p>
             </div>
-            <div id="fileList" class="mt-3 text-sm text-gray-600"></div>
+          </div>
+          <div id="fileList" class="mt-3 text-sm text-gray-600 dark:text-dark-300"></div>
         </div>
 
-        <!-- Custom Code -->
+        <!-- Custom Path Input -->
         <div>
-            <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Custom Path</label>
-            <div class="flex items-start">
-                <div class="relative flex-grow">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
-                    rdrx.co/
-                  </div>
-                  <input type="text" id="customCode" name="customCode"
-                    placeholder="your-custom-path"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
-                </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
-                  onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 6);">
-                  Random
-                </button>
+          <label for="customCode" class="block text-sm font-semibold text-gray-900 dark:text-dark-100 mb-2">
+            <svg class="w-4 h-4 inline mr-2 text-gray-500 dark:text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+            </svg>
+            Custom Path (optional)
+          </label>
+          <div class="flex">
+            <div class="flex items-center px-3 py-2 bg-gray-50 dark:bg-dark-600 border border-r-0 border-gray-300 dark:border-dark-600 rounded-l-github text-gray-600 dark:text-dark-300 text-sm font-mono">
+              rdrx.co/
             </div>
+            <input 
+              type="text" 
+              id="customCode" 
+              name="customCode"
+              placeholder="my-files"
+              class="flex-1 px-3 py-2 border border-gray-300 dark:border-dark-600 bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100 placeholder-gray-500 dark:placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+            >
+            <button 
+              type="button" 
+              class="px-4 py-2 bg-gray-100 dark:bg-dark-600 hover:bg-gray-200 dark:hover:bg-dark-500 border border-l-0 border-gray-300 dark:border-dark-600 rounded-r-github text-gray-700 dark:text-dark-300 text-sm font-medium transition-colors duration-200"
+              onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 8);"
+            >
+              Random
+            </button>
+          </div>
         </div>
 
-        <!-- Delete After Date -->
+        <!-- Expiration Date -->
         <div>
-            <div class="flex items-center space-x-2 mb-1">
-                <input type="checkbox" id="deleteDate" name="deleteDate" checked
-                  class="h-4 w-4 text-primary-500 rounded focus:ring-primary-500">
-                <label for="deleteDate" class="text-sm font-medium text-gray-700">Set expiration date (default: 30 days)</label>
-            </div>
-            <input type="date" id="deleteAfter" name="deleteAfter"
-                class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+          <div class="flex items-center mb-2">
+            <input 
+              type="checkbox" 
+              id="deleteDate" 
+              name="deleteDate" 
+              checked
+              class="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 dark:border-dark-600 rounded"
+            >
+            <label for="deleteDate" class="ml-2 text-sm font-semibold text-gray-900 dark:text-dark-100">
+              <svg class="w-4 h-4 inline mr-1 text-gray-500 dark:text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Set expiration date (default: 30 days)
+            </label>
+          </div>
+          <input 
+            type="date" 
+            id="deleteAfter" 
+            name="deleteAfter"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-github bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+          >
         </div>
         
         <!-- Password Protection -->
         <div>
-            <div class="flex items-center space-x-2 mb-1">
-                <input type="checkbox" id="passwordProtected" name="passwordProtected"
-                  class="h-4 w-4 text-primary-500 rounded focus:ring-primary-500">
-                <label for="passwordProtected" class="text-sm font-medium text-gray-700">Password protect these files</label>
-            </div>
-            <div id="passwordContainer" class="hidden">
-                <input type="password" id="password" name="password" placeholder="Enter a password"
-                  class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
-                <p class="text-xs text-gray-500 mt-1">Users will need to enter this password to access the files.</p>
-            </div>
+          <div class="flex items-center mb-2">
+            <input 
+              type="checkbox" 
+              id="passwordProtected" 
+              name="passwordProtected"
+              class="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 dark:border-dark-600 rounded"
+            >
+            <label for="passwordProtected" class="ml-2 text-sm font-semibold text-gray-900 dark:text-dark-100">
+              <svg class="w-4 h-4 inline mr-1 text-gray-500 dark:text-dark-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              Password protect these files
+            </label>
+          </div>
+          <div id="passwordContainer" class="hidden">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Enter a secure password"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-github bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100 placeholder-gray-500 dark:placeholder-dark-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+            >
+            <p class="text-xs text-gray-500 dark:text-dark-400 mt-1">Users will need to enter this password to access the files.</p>
+          </div>
         </div>
         
         <!-- Progress Container -->
         <div id="progressContainer" class="space-y-2"></div>
 
         <!-- Submit Button -->
-        <div class="pt-4">
-            <button type="submit"
-                    class="w-full btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300">
-                Upload Files
-            </button>
+        <div class="pt-6">
+          <button 
+            type="submit"
+            class="w-full bg-accent-500 hover:bg-accent-600 text-white font-semibold py-3 px-6 rounded-github shadow-github hover:shadow-github-md focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-dark-800 transition-all duration-200 flex items-center justify-center"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            Upload Files
+          </button>
         </div>
-    </form>
+      </form>
+    </div>
+  </div>
 </div>
     `;
 }

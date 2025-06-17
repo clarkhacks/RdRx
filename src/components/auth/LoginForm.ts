@@ -1,307 +1,133 @@
 export function LoginFormUI(): string {
 	return `
-		<div class="auth-container">
-			<div class="auth-card">
-				<div class="auth-header">
-					<h1>Welcome Back</h1>
-					<p>Sign in to your RDRX account</p>
+		<div class="min-h-screen bg-gray-50 dark:bg-dark-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-200">
+			<div class="sm:mx-auto sm:w-full sm:max-w-md">
+				<div class="flex justify-center">
+					<div class="w-12 h-12 bg-gray-900 dark:bg-white rounded-github flex items-center justify-center">
+						<svg class="w-8 h-8 text-white dark:text-gray-900" fill="currentColor" viewBox="0 0 24 24">
+							<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+						</svg>
+					</div>
 				</div>
-				
-				<form id="login-form" class="auth-form">
-					<div class="form-group">
-						<label for="email">Email Address</label>
-						<input 
-							type="email" 
-							id="email" 
-							name="email" 
-							required 
-							placeholder="Enter your email"
-							autocomplete="email"
-						>
-						<div class="error-message" id="email-error"></div>
+				<h2 class="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-dark-100">
+					Welcome back
+				</h2>
+				<p class="mt-2 text-center text-sm text-gray-600 dark:text-dark-300">
+					Sign in to your RdRx account
+				</p>
+			</div>
+
+			<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+				<div class="bg-white dark:bg-dark-800 py-8 px-4 shadow-github-md dark:shadow-github-dark sm:rounded-github-lg sm:px-10 border border-gray-200 dark:border-dark-600">
+					<form id="login-form" class="space-y-6">
+						<div>
+							<label for="email" class="block text-sm font-semibold text-gray-900 dark:text-dark-100">
+								Email address
+							</label>
+							<div class="mt-1">
+								<input 
+									id="email" 
+									name="email" 
+									type="email" 
+									autocomplete="email" 
+									required 
+									placeholder="Enter your email"
+									class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-github placeholder-gray-400 dark:placeholder-dark-400 bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+								>
+								<div class="error-message text-orange-500 text-sm mt-1 min-h-[20px]" id="email-error"></div>
+							</div>
+						</div>
+
+						<div>
+							<label for="password" class="block text-sm font-semibold text-gray-900 dark:text-dark-100">
+								Password
+							</label>
+							<div class="mt-1">
+								<input 
+									id="password" 
+									name="password" 
+									type="password" 
+									autocomplete="current-password" 
+									required 
+									placeholder="Enter your password"
+									class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-dark-600 rounded-github placeholder-gray-400 dark:placeholder-dark-400 bg-white dark:bg-dark-700 text-gray-900 dark:text-dark-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+								>
+								<div class="error-message text-orange-500 text-sm mt-1 min-h-[20px]" id="password-error"></div>
+							</div>
+						</div>
+
+						<div class="flex items-center justify-between">
+							<div class="flex items-center">
+								<input 
+									id="remember" 
+									name="remember" 
+									type="checkbox" 
+									class="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 dark:border-dark-600 rounded"
+								>
+								<label for="remember" class="ml-2 block text-sm text-gray-900 dark:text-dark-100">
+									Remember me
+								</label>
+							</div>
+
+							<div class="text-sm">
+								<a href="/forgot-password" class="font-medium text-blue-500 hover:text-blue-400 transition-colors duration-200">
+									Forgot your password?
+								</a>
+							</div>
+						</div>
+
+						<div>
+							<button 
+								type="submit" 
+								id="login-button"
+								class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-semibold rounded-github text-white bg-accent-500 hover:bg-accent-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500 dark:focus:ring-offset-dark-800 shadow-github hover:shadow-github-md transition-all duration-200"
+							>
+								<span class="button-text flex items-center">
+									<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+									</svg>
+									Sign in
+								</span>
+								<span class="button-loading hidden items-center">
+									<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+									</svg>
+									Signing in...
+								</span>
+							</button>
+						</div>
+					</form>
+
+					<div class="mt-6">
+						<div class="relative">
+							<div class="absolute inset-0 flex items-center">
+								<div class="w-full border-t border-gray-300 dark:border-dark-600" />
+							</div>
+							<div class="relative flex justify-center text-sm">
+								<span class="px-2 bg-white dark:bg-dark-800 text-gray-500 dark:text-dark-400">
+									Don't have an account?
+								</span>
+							</div>
+						</div>
+
+						<div class="mt-6">
+							<a 
+								href="/coming-soon" 
+								class="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-dark-600 rounded-github shadow-github text-sm font-medium text-gray-700 dark:text-dark-300 bg-white dark:bg-dark-700 hover:bg-gray-50 dark:hover:bg-dark-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-800 transition-colors duration-200"
+							>
+								<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+								</svg>
+								Create account
+							</a>
+						</div>
 					</div>
-					
-					<div class="form-group">
-						<label for="password">Password</label>
-						<input 
-							type="password" 
-							id="password" 
-							name="password" 
-							required 
-							placeholder="Enter your password"
-							autocomplete="current-password"
-						>
-						<div class="error-message" id="password-error"></div>
-					</div>
-					
-					<div class="form-options">
-						<label class="checkbox-container">
-							<input type="checkbox" id="remember" name="remember">
-							<span class="checkmark"></span>
-							Remember me
-						</label>
-						<a href="/forgot-password" class="forgot-link">Forgot password?</a>
-					</div>
-					
-					<button type="submit" class="auth-button" id="login-button">
-						<span class="button-text">Sign In</span>
-						<span class="button-loading" style="display: none;">
-							<svg class="spinner" viewBox="0 0 24 24">
-								<circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="31.416" stroke-dashoffset="31.416">
-									<animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
-									<animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
-								</circle>
-							</svg>
-							Signing In...
-						</span>
-					</button>
-				</form>
-				
-				<div class="auth-footer">
-					<p>Don't have an account? <a href="/coming-soon" class="auth-link">Create one</a></p>
+
+					<div id="login-message" class="mt-4 hidden"></div>
 				</div>
-				
-				<div id="login-message" class="message" style="display: none;"></div>
 			</div>
 		</div>
-		
-		<style>
-			.auth-container {
-				min-height: 100vh;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				background: linear-gradient(135deg, #FFD54F, #FF9800);
-				padding: 20px;
-			}
-			
-			.auth-card {
-				background: white;
-				border-radius: 24px;
-				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-				padding: 40px;
-				width: 100%;
-				max-width: 400px;
-				border: 2px solid #FFF;
-			}
-			
-			.auth-header {
-				text-align: center;
-				margin-bottom: 30px;
-			}
-			
-			.auth-header h1 {
-				color: #333;
-				font-size: 28px;
-				font-weight: 600;
-				margin: 0 0 10px 0;
-			}
-			
-			.auth-header p {
-				color: #666;
-				font-size: 16px;
-				margin: 0;
-			}
-			
-			.auth-form {
-				display: flex;
-				flex-direction: column;
-				gap: 20px;
-			}
-			
-			.form-group {
-				display: flex;
-				flex-direction: column;
-			}
-			
-			.form-group label {
-				color: #333;
-				font-weight: 500;
-				margin-bottom: 8px;
-				font-size: 14px;
-			}
-			
-			.form-group input {
-				padding: 12px 16px;
-				border: 2px solid #e1e5e9;
-				border-radius: 16px;
-				font-size: 16px;
-				transition: border-color 0.2s ease;
-				background: #fff;
-			}
-			
-			.form-group input:focus {
-				outline: none;
-				border-color: #FFC107;
-				box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.1);
-			}
-			
-			.form-group input.error {
-				border-color: #e74c3c;
-			}
-			
-			.form-options {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				margin: 10px 0;
-			}
-			
-			.checkbox-container {
-				display: flex;
-				align-items: center;
-				cursor: pointer;
-				font-size: 14px;
-				color: #666;
-				user-select: none;
-			}
-			
-			.checkbox-container input[type="checkbox"] {
-				display: none;
-			}
-			
-			.checkmark {
-				width: 18px;
-				height: 18px;
-				border: 2px solid #e1e5e9;
-				border-radius: 4px;
-				margin-right: 8px;
-				position: relative;
-				transition: all 0.2s ease;
-			}
-			
-			.checkbox-container input[type="checkbox"]:checked + .checkmark {
-				background: #FFC107;
-				border-color: #FFC107;
-			}
-			
-			.checkbox-container input[type="checkbox"]:checked + .checkmark::after {
-				content: "✓";
-				position: absolute;
-				top: -2px;
-				left: 2px;
-				color: white;
-				font-size: 12px;
-				font-weight: bold;
-			}
-			
-			.forgot-link {
-				color: #FF9800;
-				text-decoration: none;
-				font-size: 14px;
-				font-weight: 500;
-			}
-			
-			.forgot-link:hover {
-				text-decoration: underline;
-			}
-			
-			.error-message {
-				color: #e74c3c;
-				font-size: 13px;
-				margin-top: 6px;
-				min-height: 18px;
-			}
-			
-			.auth-button {
-				background: #000;
-				color: white;
-				border: none;
-				padding: 14px 24px;
-				border-radius: 50px;
-				font-size: 16px;
-				font-weight: 600;
-				cursor: pointer;
-				transition: all 0.2s ease;
-				position: relative;
-				overflow: hidden;
-			}
-			
-			.auth-button:hover:not(:disabled) {
-				transform: scale(1.05);
-				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-			}
-			
-			.auth-button:disabled {
-				opacity: 0.7;
-				cursor: not-allowed;
-				transform: none;
-			}
-			
-			.button-loading {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				gap: 8px;
-			}
-			
-			.spinner {
-				width: 20px;
-				height: 20px;
-			}
-			
-			.auth-footer {
-				text-align: center;
-				margin-top: 30px;
-				padding-top: 20px;
-				border-top: 1px solid #e1e5e9;
-			}
-			
-			.auth-footer p {
-				color: #666;
-				margin: 0;
-			}
-			
-			.auth-link {
-				color: #FF9800;
-				text-decoration: none;
-				font-weight: 500;
-			}
-			
-			.auth-link:hover {
-				text-decoration: underline;
-			}
-			
-			.message {
-				margin-top: 20px;
-				padding: 12px 16px;
-				border-radius: 8px;
-				font-size: 14px;
-				text-align: center;
-			}
-			
-			.message.success {
-				background: #d4edda;
-				color: #155724;
-				border: 1px solid #c3e6cb;
-			}
-			
-			.message.error {
-				background: #f8d7da;
-				color: #721c24;
-				border: 1px solid #f5c6cb;
-			}
-			
-			@media (max-width: 480px) {
-				.auth-container {
-					padding: 10px;
-				}
-				
-				.auth-card {
-					padding: 30px 20px;
-				}
-				
-				.auth-header h1 {
-					font-size: 24px;
-				}
-				
-				.form-options {
-					flex-direction: column;
-					gap: 15px;
-					align-items: flex-start;
-				}
-			}
-		</style>
 		
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
