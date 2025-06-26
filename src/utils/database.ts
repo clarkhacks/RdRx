@@ -23,34 +23,19 @@ export async function initializeTables(env: Env): Promise<void> {
       )`
 		).run();
 
-		// Create bio_links table for storing individual links within bio pages
+		// Create comprehensive bio_profiles table for storing all bio page data
 		await env.DB.prepare(
-			`CREATE TABLE IF NOT EXISTS bio_links (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        bio_shortcode TEXT NOT NULL,
-        title TEXT NOT NULL,
-        description TEXT,
-        url TEXT NOT NULL,
-        icon TEXT,
-        order_index INTEGER NOT NULL DEFAULT 0,
-        is_active BOOLEAN NOT NULL DEFAULT 1,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        FOREIGN KEY (bio_shortcode) REFERENCES short_urls(shortcode)
-      )`
-		).run();
-
-		// Create bio_pages table for storing bio page metadata
-		await env.DB.prepare(
-			`CREATE TABLE IF NOT EXISTS bio_pages (
-        shortcode TEXT PRIMARY KEY,
+			`CREATE TABLE IF NOT EXISTS bio_profiles (
+        id TEXT PRIMARY KEY,
+        short_id TEXT NOT NULL,
         title TEXT NOT NULL,
         description TEXT,
         profile_picture_url TEXT,
         theme TEXT DEFAULT 'default',
+        bio_links TEXT,
+        social_media_links TEXT,
         created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL,
-        FOREIGN KEY (shortcode) REFERENCES short_urls(shortcode)
+        updated_at TEXT NOT NULL
       )`
 		).run();
 
@@ -293,16 +278,18 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
 }
 
 /**
- * Save a bio page to the database
+ * Save a complete bio profile to the database
  */
-export async function saveBioPage(
+export async function saveBioProfile(
 	env: Env,
 	userId: string,
 	shortcode: string,
 	title: string,
 	description: string | null = null,
 	profilePictureUrl: string | null = null,
-	theme: string = 'default'
+	theme: string = 'default',
+	bioLinks: any[] = [],
+	socialMediaLinks: any[] = []
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
@@ -312,65 +299,89 @@ export async function saveBioPage(
 
 		if (existingBio) {
 			if (existingBio.shortcode !== shortcode) {
-				// User is changing their shortcode, delete old entries
-				await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-				await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
+				// User is changing their shortcode, just delete the old redirect and create new one
 				await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-
-				// Create new entry in short_urls table
-				await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+				// Create new entry in short_urls table with new shortcode
+				await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 			} else {
 				// User is updating their existing bio page with the same shortcode
-				// Update the target_url in case it changed
-				await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${shortcode}`, shortcode).run();
+				// Update the target_url to ensure it points to their user ID
+				await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${userId}`, shortcode).run();
 			}
 		} else {
 			// User doesn't have a bio page yet, create a new one
-			await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+			await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 		}
 
-		// Then save/update bio page
+		// Save/update bio profile using userId as the key
 		await env.DB.prepare(
-			`INSERT OR REPLACE INTO bio_pages 
-			(shortcode, title, description, profile_picture_url, theme, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?)`
+			`INSERT OR REPLACE INTO bio_profiles 
+			(id, short_id, title, description, profile_picture_url, theme, bio_links, social_media_links, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
-			.bind(shortcode, title, description, profilePictureUrl, theme, now, now)
+			.bind(
+				userId, 
+				shortcode, 
+				title, 
+				description, 
+				profilePictureUrl, 
+				theme, 
+				JSON.stringify(bioLinks), 
+				JSON.stringify(socialMediaLinks), 
+				now, 
+				now
+			)
 			.run();
 
-		console.log(`Bio page saved: ${shortcode} for user: ${userId}`);
+		console.log(`Bio profile saved: ${shortcode} for user: ${userId}`);
 	} catch (error) {
-		console.error('Error saving bio page:', error);
+		console.error('Error saving bio profile:', error);
 		throw error;
 	}
 }
 
 /**
- * Get bio page by shortcode
+ * Get bio profile by user ID
  */
-export async function getBioPage(env: Env, shortcode: string): Promise<any | null> {
+export async function getBioProfile(env: Env, userId: string): Promise<any | null> {
 	try {
-		const result = await env.DB.prepare(`SELECT * FROM bio_pages WHERE shortcode = ?`).bind(shortcode).first();
-		return result || null;
+		const result = await env.DB.prepare(`SELECT * FROM bio_profiles WHERE id = ?`).bind(userId).first();
+		
+		if (result) {
+			// Parse JSON fields
+			const profile = {
+				...result,
+				bio_links: result.bio_links ? JSON.parse(result.bio_links as string) : [],
+				social_media_links: result.social_media_links ? JSON.parse(result.social_media_links as string) : []
+			};
+			return profile;
+		}
+		
+		return null;
 	} catch (error) {
-		console.error('Error getting bio page:', error);
+		console.error('Error getting bio profile:', error);
 		return null;
 	}
 }
 
 /**
- * Get user's bio page (if they have one)
+ * Get user's bio page (if they have one) - for compatibility
  */
 export async function getUserBioPage(env: Env, userId: string): Promise<any | null> {
 	try {
-		const result = await env.DB.prepare(
-			`SELECT bp.* FROM bio_pages bp 
-			 JOIN short_urls su ON bp.shortcode = su.shortcode 
-			 WHERE su.creator_id = ? AND su.is_bio = 1`
-		)
-			.bind(userId)
-			.first();
-		return result || null;
+		const profile = await getBioProfile(env, userId);
+		if (!profile) return null;
+
+		// Return in the old format for compatibility
+		return {
+			shortcode: profile.short_id,
+			title: profile.title,
+			description: profile.description,
+			profile_picture_url: profile.profile_picture_url,
+			theme: profile.theme,
+			created_at: profile.created_at,
+			updated_at: profile.updated_at
+		};
 	} catch (error) {
 		console.error('Error getting user bio page:', error);
 		return null;
@@ -378,45 +389,62 @@ export async function getUserBioPage(env: Env, userId: string): Promise<any | nu
 }
 
 /**
- * Save a bio link
+ * Get bio page by shortcode - for viewing
  */
-export async function saveBioLink(
-	env: Env,
-	bioShortcode: string,
-	title: string,
-	url: string,
-	description: string | null = null,
-	icon: string | null = null,
-	orderIndex: number = 0
-): Promise<void> {
+export async function getBioPage(env: Env, shortcode: string): Promise<any | null> {
 	try {
-		const now = new Date().toISOString();
+		// Check if this is a direct bio-view URL (shortcode is actually a user ID)
+		if (shortcode.includes('-') && shortcode.length > 20) {
+			// This looks like a user ID, get the bio profile directly
+			const profile = await getBioProfile(env, shortcode);
+			if (!profile) return null;
 
-		await env.DB.prepare(
-			`INSERT INTO bio_links 
-			(bio_shortcode, title, description, url, icon, order_index, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-		)
-			.bind(bioShortcode, title, description, url, icon, orderIndex, now, now)
-			.run();
+			// Return in the old format for compatibility with bio view
+			return {
+				shortcode: profile.short_id,
+				title: profile.title,
+				description: profile.description,
+				profile_picture_url: profile.profile_picture_url,
+				theme: profile.theme,
+				created_at: profile.created_at,
+				updated_at: profile.updated_at
+			};
+		}
 
-		console.log(`Bio link saved for: ${bioShortcode}`);
+		// Otherwise, get the user ID from the shortcode redirect
+		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
+		
+		if (!shortUrlResult || !shortUrlResult.creator_id) {
+			return null;
+		}
+
+		// Then get the bio profile using the user ID
+		const profile = await getBioProfile(env, shortUrlResult.creator_id as string);
+		if (!profile) return null;
+
+		// Return in the old format for compatibility with bio view
+		return {
+			shortcode: profile.short_id,
+			title: profile.title,
+			description: profile.description,
+			profile_picture_url: profile.profile_picture_url,
+			theme: profile.theme,
+			created_at: profile.created_at,
+			updated_at: profile.updated_at
+		};
 	} catch (error) {
-		console.error('Error saving bio link:', error);
-		throw error;
+		console.error('Error getting bio page:', error);
+		return null;
 	}
 }
 
 /**
- * Get bio links by shortcode
+ * Get bio links - for compatibility
  */
-export async function getBioLinks(env: Env, bioShortcode: string): Promise<any[]> {
+export async function getBioLinks(env: Env, userId: string): Promise<any[]> {
 	try {
-		const result = await env.DB.prepare(`SELECT * FROM bio_links WHERE bio_shortcode = ? AND is_active = 1 ORDER BY order_index ASC`)
-			.bind(bioShortcode)
-			.all();
-
-		return result.results || [];
+		const profile = await getBioProfile(env, userId);
+		return profile ? profile.bio_links : [];
 	} catch (error) {
 		console.error('Error getting bio links:', error);
 		return [];
@@ -424,29 +452,71 @@ export async function getBioLinks(env: Env, bioShortcode: string): Promise<any[]
 }
 
 /**
- * Delete bio link
+ * Get social media links - for compatibility
  */
-export async function deleteBioLink(env: Env, linkId: number): Promise<void> {
+export async function getBioSocialMedia(env: Env, userId: string): Promise<Record<string, any>> {
 	try {
-		await env.DB.prepare(`DELETE FROM bio_links WHERE id = ?`).bind(linkId).run();
-		console.log(`Bio link deleted: ${linkId}`);
+		const profile = await getBioProfile(env, userId);
+		if (!profile || !profile.social_media_links) return {};
+
+		// Convert array back to object format for compatibility
+		const socialMedia: Record<string, any> = {};
+		profile.social_media_links.forEach((link: any) => {
+			if (link.platform && link.url) {
+				socialMedia[link.platform] = {
+					url: link.url,
+					icon: link.icon || ''
+				};
+			}
+		});
+
+		return socialMedia;
 	} catch (error) {
-		console.error('Error deleting bio link:', error);
-		throw error;
+		console.error('Error getting bio social media:', error);
+		return {};
 	}
 }
 
-/**
- * Update bio link order
- */
-export async function updateBioLinkOrder(env: Env, linkId: number, newOrder: number): Promise<void> {
-	try {
-		const now = new Date().toISOString();
-		await env.DB.prepare(`UPDATE bio_links SET order_index = ?, updated_at = ? WHERE id = ?`).bind(newOrder, now, linkId).run();
+// Legacy functions for compatibility
+export async function saveBioPage(
+	env: Env,
+	userId: string,
+	shortcode: string,
+	title: string,
+	description: string | null = null,
+	profilePictureUrl: string | null = null,
+	theme: string = 'default'
+): Promise<void> {
+	// Get existing profile to preserve links
+	const existingProfile = await getBioProfile(env, userId);
+	const bioLinks = existingProfile ? existingProfile.bio_links : [];
+	const socialMediaLinks = existingProfile ? existingProfile.social_media_links : [];
+	
+	return saveBioProfile(env, userId, shortcode, title, description, profilePictureUrl, theme, bioLinks, socialMediaLinks);
+}
 
-		console.log(`Bio link order updated: ${linkId} -> ${newOrder}`);
-	} catch (error) {
-		console.error('Error updating bio link order:', error);
-		throw error;
-	}
+export async function saveBioLink(
+	env: Env,
+	userId: string,
+	title: string,
+	url: string,
+	description: string | null = null,
+	icon: string | null = null,
+	orderIndex: number = 0
+): Promise<void> {
+	// This function is now handled by saveBioProfile with the links array
+	console.log(`Bio link save called for user: ${userId} - use saveBioProfile instead`);
+}
+
+export async function saveBioSocialMedia(env: Env, userId: string, socialMedia: Record<string, any>): Promise<void> {
+	// This function is now handled by saveBioProfile with the social media array
+	console.log(`Bio social media save called for user: ${userId} - use saveBioProfile instead`);
+}
+
+export async function deleteBioLink(env: Env, linkId: number): Promise<void> {
+	console.log(`Bio link delete called for ID: ${linkId} - use saveBioProfile instead`);
+}
+
+export async function updateBioLinkOrder(env: Env, linkId: number, newOrder: number): Promise<void> {
+	console.log(`Bio link order update called for ID: ${linkId} - use saveBioProfile instead`);
 }

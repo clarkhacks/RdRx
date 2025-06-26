@@ -55,6 +55,7 @@ async function getUserUrls(env: Env, userId: string, page: number = 1, itemsPerP
 				s.created_at, 
 				s.is_snippet, 
 				s.is_file,
+				s.is_bio,
 				COUNT(a.id) as clicks
 			FROM short_urls s
 			LEFT JOIN analytics a ON s.shortcode = a.shortcode
@@ -76,6 +77,7 @@ async function getUserUrls(env: Env, userId: string, page: number = 1, itemsPerP
 			created_at: url.created_at as string,
 			is_snippet: Number(url.is_snippet) as number,
 			is_file: Number(url.is_file) as number,
+			is_bio: Number(url.is_bio) as number,
 			clicks: Number(url.clicks || 0),
 		}));
 

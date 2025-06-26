@@ -145,7 +145,7 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
                   Random
                 </button>
             </div>
-            <p class="text-xs text-gray-500 mt-1">This will be your bio page URL. You can change it anytime.</p>
+            <p class="text-xs text-gray-500 mt-1">This will be your bio page URL. You can change it anytime. It will render at /bio-view/your-user-id</p>
         </div>
 
         <!-- Bio Page Info -->
@@ -162,16 +162,29 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </div>
         </div>
 
-        <!-- Links Section -->
+        <!-- Bio Links Section -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <label class="block text-sm font-medium text-gray-700">Links</label>
-                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <label class="block text-sm font-medium text-gray-700">Bio Links</label>
+                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                     + Add Link
                 </button>
             </div>
-            <div id="linksContainer">
-                <!-- Links will be added here dynamically -->
+            <div id="bioLinkContainer">
+                <!-- Bio links will be added here -->
+            </div>
+        </div>
+
+        <!-- Social Media Icons Section -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <label class="block text-sm font-medium text-gray-700">Social Media Links</label>
+                <button type="button" id="addSocialBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    + Add Social Link
+                </button>
+            </div>
+            <div id="socialLinksContainer">
+                <!-- Social links will be added here dynamically -->
             </div>
         </div>
 
@@ -227,6 +240,36 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     </div>
 </template>
 
+<!-- Social Link Template (hidden) -->
+<template id="socialLinkTemplate">
+    <div class="social-link-item bg-gray-50 border border-gray-200 rounded-lg p-4 mb-3">
+        <div class="flex items-center gap-4">
+            <div class="flex-shrink-0">
+                <div class="w-10 h-10 bg-white border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer social-icon-display" onclick="openSocialIconPicker(this)">
+                    <img class="w-6 h-6 social-icon-img" src="" alt="" style="display: none;">
+                    <span class="text-gray-400 text-sm">Icon</span>
+                </div>
+                <input type="hidden" class="social-icon-value" value="">
+            </div>
+            <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                    <input type="text" placeholder="Platform name (e.g., Twitter)" class="social-platform w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <div>
+                    <input type="url" placeholder="https://platform.com/username" class="social-url w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+            </div>
+            <div class="flex-shrink-0">
+                <button type="button" class="text-red-400 hover:text-red-600 remove-social" onclick="removeSocialLink(this)" title="Remove">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
 <!-- Icon Picker Modal -->
 <div id="iconPickerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
     <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
@@ -239,6 +282,26 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </button>
         </div>
         <div class="icon-picker" id="iconPicker">
+            <!-- Icons will be populated here -->
+        </div>
+    </div>
+</div>
+
+<!-- Social Icon Picker Modal -->
+<div id="socialIconPickerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Choose Social Icon</h3>
+            <button onclick="closeSocialIconPicker()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="iconSearchInput" placeholder="Search for icons..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        <div class="social-icon-picker grid grid-cols-5 gap-2 max-h-60 overflow-y-auto" id="socialIconPicker">
             <!-- Icons will be populated here -->
         </div>
     </div>
@@ -273,7 +336,7 @@ function renderBioFormScripts(shortDomain: string): string {
                 const data = await response.json();
                 if (data.success && data.bioPage) {
                     isEditing = true;
-                    populateForm(data.bioPage, data.links || []);
+                    populateForm(data.bioPage, data.links || [], data.socialMedia || {});
                     document.getElementById('submit-text').textContent = 'Update Bio Page';
                 }
             }
@@ -285,20 +348,32 @@ function renderBioFormScripts(shortDomain: string): string {
             
             // Add initial link if no existing data
             if (!isEditing) {
-                addLink();
+                addBioLink();
             }
         }
     }
 
-    function populateForm(bioPage, links) {
+    function populateForm(bioPage, links, socialMedia = {}) {
         document.getElementById('customCode').value = bioPage.shortcode || '';
         document.getElementById('bioTitle').value = bioPage.title || '';
         document.getElementById('bioDescription').value = bioPage.description || '';
         
-        // Populate links
-        links.forEach(link => {
-            addLink(link);
+        // Populate social media links dynamically
+        Object.entries(socialMedia).forEach(([platform, data]) => {
+            if (data && typeof data === 'object' && data.url) {
+                addSocialLink(platform, data.url, data.icon);
+            } else if (typeof data === 'string' && data) {
+                // Handle legacy format where data might be just a URL string
+                addSocialLink(platform, data);
+            }
         });
+        
+        // Populate multiple bio links
+        if (links && links.length > 0) {
+            links.forEach(link => addBioLink(link));
+        } else {
+            addBioLink(); // Add one default link
+        }
     }
 
     // Add hover effects to inputs
@@ -344,8 +419,8 @@ function renderBioFormScripts(shortDomain: string): string {
         closeIconPicker();
     }
 
-    // Add new link
-    function addLink(linkData = null) {
+    // Add bio link (supports multiple links)
+    function addBioLink(linkData = null) {
         const template = document.getElementById('linkTemplate');
         const clone = template.content.cloneNode(true);
         const linkItem = clone.querySelector('.link-item');
@@ -359,8 +434,13 @@ function renderBioFormScripts(shortDomain: string): string {
             linkItem.querySelector('.link-icon span').textContent = linkData.icon || '🔗';
         }
         
-        document.getElementById('linksContainer').appendChild(clone);
+        document.getElementById('bioLinkContainer').appendChild(clone);
         updateLinkButtons();
+    }
+
+    // Legacy function for compatibility (not used in new single-link system)
+    function addLink(linkData = null) {
+        addBioLink(linkData);
     }
 
     function removeLink(button) {
@@ -401,9 +481,6 @@ function renderBioFormScripts(shortDomain: string): string {
         });
     }
 
-    // Event listeners
-    document.getElementById('addLinkBtn').addEventListener('click', () => addLink());
-
     // Form submission
     document.getElementById('bioForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -412,9 +489,9 @@ function renderBioFormScripts(shortDomain: string): string {
         const bioTitle = document.querySelector('#bioTitle').value.trim();
         const bioDescription = document.querySelector('#bioDescription').value.trim();
         
-        // Collect all links
+        // Collect all bio links
         const links = [];
-        document.querySelectorAll('.link-item').forEach((linkItem, index) => {
+        document.querySelectorAll('#bioLinkContainer .link-item').forEach((linkItem, index) => {
             const title = linkItem.querySelector('.link-title').value.trim();
             const url = linkItem.querySelector('.link-url').value.trim();
             const description = linkItem.querySelector('.link-description').value.trim();
@@ -428,6 +505,21 @@ function renderBioFormScripts(shortDomain: string): string {
                     icon,
                     order_index: index
                 });
+            }
+        });
+        
+        // Collect social media links dynamically
+        const socialMedia = {};
+        document.querySelectorAll('.social-link-item').forEach(item => {
+            const platform = item.querySelector('.social-platform').value.trim();
+            const url = item.querySelector('.social-url').value.trim();
+            const icon = item.querySelector('.social-icon-value').value;
+            
+            if (platform && url) {
+                socialMedia[platform] = {
+                    url: url,
+                    icon: icon
+                };
             }
         });
         
@@ -448,7 +540,8 @@ function renderBioFormScripts(shortDomain: string): string {
                 shortcode: customCode,
                 title: bioTitle,
                 description: bioDescription,
-                links: links
+                links: links,
+                socialMedia: socialMedia
             });
 
             const response = await fetch('/api/bio/save', {
@@ -463,9 +556,8 @@ function renderBioFormScripts(shortDomain: string): string {
             const successAlert = document.querySelector('#success-alert');
             const successMessage = document.querySelector('#success-message');
 
-            // Get the shortDomain from the form
-            const domainPrefix = document.querySelector('.absolute.inset-y-0.left-0.pl-3').textContent.trim();
-            const domain = domainPrefix.replace('/', '');
+            // Get the shortDomain from the bio URL display
+            const domain = '${shortDomain}';
             
             try {
                 // Always check response.ok first (HTTP status code)
@@ -539,6 +631,103 @@ function renderBioFormScripts(shortDomain: string): string {
         }
     });
 
+    // Social media functions
+    let currentSocialIconTarget = null;
+    
+    function addSocialLink(platform = '', url = '', icon = '') {
+        const template = document.getElementById('socialLinkTemplate');
+        const clone = template.content.cloneNode(true);
+        const socialItem = clone.querySelector('.social-link-item');
+        
+        if (platform) socialItem.querySelector('.social-platform').value = platform;
+        if (url) socialItem.querySelector('.social-url').value = url;
+        if (icon) {
+            socialItem.querySelector('.social-icon-value').value = icon;
+            const iconImg = socialItem.querySelector('.social-icon-img');
+            const iconText = socialItem.querySelector('.social-icon-display span');
+            iconImg.src = 'https://icons.rdrx.co/' + icon;
+            iconImg.style.display = 'block';
+            iconText.style.display = 'none';
+        }
+        
+        document.getElementById('socialLinksContainer').appendChild(clone);
+    }
+    
+    function removeSocialLink(button) {
+        const socialItem = button.closest('.social-link-item');
+        socialItem.remove();
+    }
+    
+    async function openSocialIconPicker(target) {
+        currentSocialIconTarget = target;
+        document.getElementById('socialIconPickerModal').classList.remove('hidden');
+        
+        // Load default icons
+        await searchIcons('social');
+        
+        // Setup search functionality
+        const searchInput = document.getElementById('iconSearchInput');
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchIcons(e.target.value);
+            }, 300);
+        });
+    }
+    
+    function closeSocialIconPicker() {
+        document.getElementById('socialIconPickerModal').classList.add('hidden');
+        currentSocialIconTarget = null;
+    }
+    
+    async function searchIcons(query) {
+        try {
+            const response = await fetch('https://icons.rdrx.co/search?q=' + encodeURIComponent(query));
+            const icons = await response.json();
+            
+            // Filter to only PNG icons
+            const pngIcons = icons.filter(icon => icon.type === 'png');
+            
+            const iconPicker = document.getElementById('socialIconPicker');
+            iconPicker.innerHTML = '';
+            
+            pngIcons.slice(0, 10).forEach(icon => {
+                const iconElement = document.createElement('div');
+                iconElement.className = 'w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition';
+                iconElement.innerHTML = '<img src="https://icons.rdrx.co/png/' + icon.name + '" alt="' + icon.name + '" class="w-8 h-8">';
+                iconElement.onclick = () => selectSocialIcon(icon.name);
+                iconPicker.appendChild(iconElement);
+            });
+        } catch (error) {
+            console.error('Error searching icons:', error);
+        }
+    }
+    
+    function selectSocialIcon(iconName) {
+        if (currentSocialIconTarget) {
+            const iconImg = currentSocialIconTarget.querySelector('.social-icon-img');
+            const iconText = currentSocialIconTarget.querySelector('span');
+            const iconValue = currentSocialIconTarget.parentElement.querySelector('.social-icon-value');
+            
+            iconImg.src = 'https://icons.rdrx.co/png/' + iconName;
+            iconImg.style.display = 'block';
+            iconText.style.display = 'none';
+            iconValue.value = iconName;
+        }
+        closeSocialIconPicker();
+    }
+    
+    // Add link button event listener
+    document.getElementById('addLinkBtn').addEventListener('click', () => {
+        addBioLink();
+    });
+
+    // Add social button event listener
+    document.getElementById('addSocialBtn').addEventListener('click', () => {
+        addSocialLink();
+    });
+
     // Make functions global for onclick handlers
     window.openIconPicker = openIconPicker;
     window.closeIconPicker = closeIconPicker;
@@ -546,6 +735,10 @@ function renderBioFormScripts(shortDomain: string): string {
     window.removeLink = removeLink;
     window.moveLinkUp = moveLinkUp;
     window.moveLinkDown = moveLinkDown;
+    window.addSocialLink = addSocialLink;
+    window.removeSocialLink = removeSocialLink;
+    window.openSocialIconPicker = openSocialIconPicker;
+    window.closeSocialIconPicker = closeSocialIconPicker;
 
     // Load existing data on page load
     loadBioData();

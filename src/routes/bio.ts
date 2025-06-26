@@ -2,13 +2,12 @@ import { Env } from '../types';
 import { renderBioFormPage } from '../components/pages/BioFormPage';
 import { renderBioViewPage } from '../components/pages/BioViewPage';
 import {
-	saveBioPage,
+	saveBioProfile,
 	getUserBioPage,
 	getBioPage,
 	getBioLinks,
-	saveBioLink,
-	deleteBioLink,
 	isBioShortcodeAvailable,
+	getBioSocialMedia,
 } from '../utils/database';
 import { isAuthenticated, getUserID } from '../utils/auth';
 
@@ -59,13 +58,15 @@ export async function handleGetUserBio(request: Request, env: Env): Promise<Resp
 			});
 		}
 
-		const links = await getBioLinks(env, bioPage.shortcode);
+		const links = await getBioLinks(env, userId);
+		const socialMedia = await getBioSocialMedia(env, userId);
 
 		return new Response(
 			JSON.stringify({
 				success: true,
 				bioPage,
 				links,
+				socialMedia,
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
@@ -113,9 +114,10 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				icon?: string;
 				order_index: number;
 			}>;
+			socialMedia?: Record<string, any>;
 		};
 
-		let { shortcode, title, description, links } = body;
+		let { shortcode, title, description, links, socialMedia } = body;
 
 		if (!shortcode || !title) {
 			return new Response(JSON.stringify({ success: false, message: 'Shortcode and title are required' }), {
@@ -141,19 +143,25 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		}
 
 		try {
-			// Save bio page with the user-provided shortcode
-			await saveBioPage(env, userId, shortcode, title, description);
+			// Convert social media object to array format
+			const socialMediaArray = socialMedia ? Object.entries(socialMedia).map(([platform, data]) => ({
+				platform,
+				url: data.url,
+				icon: data.icon || ''
+			})) : [];
 
-			// Delete existing links for this bio page
-			const existingLinks = await getBioLinks(env, shortcode);
-			for (const link of existingLinks) {
-				await deleteBioLink(env, link.id);
-			}
-
-			// Save new links
-			for (const link of links) {
-				await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
-			}
+			// Save complete bio profile with all data
+			await saveBioProfile(
+				env, 
+				userId, 
+				shortcode, 
+				title, 
+				description, 
+				null, // profile picture URL
+				'default', // theme
+				links, // bio links array
+				socialMediaArray // social media links array
+			);
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
 			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
@@ -166,7 +174,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		return new Response(
 			JSON.stringify({
 				success: true,
-				shortcode,
+				shortcode: shortcode,
 				message: isEditing ? 'Bio page updated successfully' : 'Bio page created successfully',
 			}),
 			{
@@ -205,14 +213,35 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 
 		console.log('Bio page found:', bioPage);
 
-		// Get bio links
+		// Get the user ID for fetching links and social media
+		let userId = shortcode;
+		
+		// If this is a custom shortcode, get the user ID from the database
+		if (!shortcode.includes('-') || shortcode.length <= 20) {
+			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
+			if (shortUrlInfo && shortUrlInfo.creator_id) {
+				userId = shortUrlInfo.creator_id as string;
+			}
+		}
+
+		// Get bio links using user ID
 		let links = [];
 		try {
-			links = await getBioLinks(env, shortcode);
+			links = await getBioLinks(env, userId);
 			console.log(`Found ${links.length} links for bio page`);
 		} catch (linkError) {
 			console.error('Error fetching bio links:', linkError);
 			// Continue with empty links array
+		}
+
+		// Get social media links using user ID
+		let socialMedia = {};
+		try {
+			socialMedia = await getBioSocialMedia(env, userId);
+			console.log(`Found social media links for bio page`);
+		} catch (socialError) {
+			console.error('Error fetching social media links:', socialError);
+			// Continue with empty social media object
 		}
 
 		// Get the creator's profile picture if available
@@ -252,6 +281,7 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 				links: links || [],
 				shortDomain: env.SHORT_DOMAIN,
 				profilePictureUrl,
+				socialMedia,
 			});
 
 			return new Response(html, {

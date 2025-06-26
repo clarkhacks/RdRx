@@ -12,6 +12,7 @@ interface UrlAnalytics {
 	created_at: string;
 	is_snippet: number;
 	is_file: number;
+	is_bio: number;
 	clicks: number;
 }
 
@@ -555,6 +556,7 @@ ${scripts}
 function getUrlType(url: UrlAnalytics): string {
 	if (url.is_snippet === 1) return 'Code Snippet';
 	if (url.is_file === 1) return 'File Upload';
+	if (url.is_bio === 1) return 'Bio Page';
 	return 'URL Shortener';
 }
 
