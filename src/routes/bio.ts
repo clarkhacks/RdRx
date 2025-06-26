@@ -1,5 +1,6 @@
 import { Env } from '../types';
 import { renderBioFormPage } from '../components/pages/BioFormPage';
+import { renderBioEditorPage } from '../components/pages/BioEditorPage';
 import { renderBioViewPage } from '../components/pages/BioViewPage';
 import {
 	saveBioProfile,
@@ -25,6 +26,25 @@ export async function handleBioFormPage(request: Request, env: Env): Promise<Res
 		return renderBioFormPage(env);
 	} catch (error) {
 		console.error('Error rendering bio form page:', error);
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response('Internal Server Error: ' + errorMessage, { status: 500 });
+	}
+}
+
+/**
+ * Handle bio editor page
+ */
+export async function handleBioEditorPage(request: Request, env: Env): Promise<Response> {
+	try {
+		// Check if user is authenticated
+		const authenticated = await isAuthenticated(request, env);
+		if (!authenticated) {
+			return new Response('Unauthorized', { status: 401 });
+		}
+
+		return renderBioEditorPage(request, env);
+	} catch (error) {
+		console.error('Error rendering bio editor page:', error);
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 		return new Response('Internal Server Error: ' + errorMessage, { status: 500 });
 	}
@@ -115,9 +135,13 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				order_index: number;
 			}>;
 			socialMedia?: Record<string, any>;
+			metaTitle?: string;
+			metaDescription?: string;
+			metaTags?: string;
+			ogImageUrl?: string;
 		};
 
-		let { shortcode, title, description, links, socialMedia } = body;
+		let { shortcode, title, description, links, socialMedia, metaTitle, metaDescription, metaTags, ogImageUrl } = body;
 
 		if (!shortcode || !title) {
 			return new Response(JSON.stringify({ success: false, message: 'Shortcode and title are required' }), {
@@ -160,7 +184,11 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				null, // profile picture URL
 				'default', // theme
 				links, // bio links array
-				socialMediaArray // social media links array
+				socialMediaArray, // social media links array
+				metaTitle, // meta title
+				metaDescription, // meta description
+				metaTags, // meta tags
+				ogImageUrl // OG image URL
 			);
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
@@ -183,6 +211,113 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		);
 	} catch (error) {
 		console.error('Error saving bio page:', error);
+		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error: ' + errorMessage }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+}
+
+/**
+ * Handle viewing a bio page
+ */
+/**
+ * Handle OG image upload
+ */
+export async function handleOgImageUpload(request: Request, env: Env): Promise<Response> {
+	try {
+		const authenticated = await isAuthenticated(request, env);
+		if (!authenticated) {
+			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		const userId = await getUserID(request, env);
+		if (!userId) {
+			return new Response(JSON.stringify({ success: false, message: 'Unable to get user ID' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		const formData = await request.formData();
+		const ogImageFile = formData.get('ogImage') as File;
+
+		if (!ogImageFile) {
+			return new Response(JSON.stringify({ success: false, message: 'No image file provided' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		// Validate file type
+		if (!ogImageFile.type.startsWith('image/')) {
+			return new Response(JSON.stringify({ success: false, message: 'File must be an image' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		// Validate file size (max 5MB)
+		if (ogImageFile.size > 5 * 1024 * 1024) {
+			return new Response(JSON.stringify({ success: false, message: 'File size must be less than 5MB' }), {
+				status: 400,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+
+		try {
+			// Generate unique filename
+			const timestamp = Date.now();
+			const extension = ogImageFile.name.split('.').pop() || 'jpg';
+			const filename = `og-${userId}-${timestamp}.${extension}`;
+
+			// Convert file to array buffer
+			const arrayBuffer = await ogImageFile.arrayBuffer();
+			const uint8Array = new Uint8Array(arrayBuffer);
+
+			// Upload to R2 bucket (assuming you have R2 configured)
+			if (env.BUCKET) {
+				await env.BUCKET.put(filename, uint8Array, {
+					httpMetadata: {
+						contentType: ogImageFile.type,
+					},
+				});
+
+				// Return the public URL
+				const imageUrl = `https://your-r2-domain.com/${filename}`;
+				
+				return new Response(JSON.stringify({ 
+					success: true, 
+					imageUrl: imageUrl 
+				}), {
+					headers: { 'Content-Type': 'application/json' },
+				});
+			} else {
+				// Fallback: return a placeholder URL or handle differently
+				return new Response(JSON.stringify({ 
+					success: false, 
+					message: 'File storage not configured' 
+				}), {
+					status: 500,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+		} catch (uploadError) {
+			console.error('Error uploading OG image:', uploadError);
+			return new Response(JSON.stringify({ 
+				success: false, 
+				message: 'Failed to upload image' 
+			}), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json' },
+			});
+		}
+	} catch (error) {
+		console.error('Error handling OG image upload:', error);
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 		return new Response(JSON.stringify({ success: false, message: 'Internal Server Error: ' + errorMessage }), {
 			status: 500,

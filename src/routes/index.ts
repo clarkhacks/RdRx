@@ -75,14 +75,23 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		});
 	}
 
+	// Handle bio edit page
+	if (url.pathname === '/bio/edit') {
+		const { handleBioEditorPage } = await import('./bio');
+		return handleBioEditorPage(enhancedRequest, env);
+	}
+
 	// Handle bio API routes
 	if (url.pathname.startsWith('/api/bio/')) {
-		const { handleGetUserBio, handleSaveBio } = await import('./bio');
+		const { handleGetUserBio, handleSaveBio, handleOgImageUpload } = await import('./bio');
 		if (url.pathname === '/api/bio/my-bio' && request.method === 'GET') {
 			return handleGetUserBio(enhancedRequest, env);
 		}
 		if (url.pathname === '/api/bio/save' && request.method === 'POST') {
 			return handleSaveBio(enhancedRequest, env);
+		}
+		if (url.pathname === '/api/bio/og-image' && request.method === 'POST') {
+			return handleOgImageUpload(enhancedRequest, env);
 		}
 	}
 

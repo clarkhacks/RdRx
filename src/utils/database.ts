@@ -289,7 +289,11 @@ export async function saveBioProfile(
 	profilePictureUrl: string | null = null,
 	theme: string = 'default',
 	bioLinks: any[] = [],
-	socialMediaLinks: any[] = []
+	socialMediaLinks: any[] = [],
+	metaTitle: string | null = null,
+	metaDescription: string | null = null,
+	metaTags: string | null = null,
+	ogImageUrl: string | null = null
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
@@ -316,8 +320,8 @@ export async function saveBioProfile(
 		// Save/update bio profile using userId as the key
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO bio_profiles 
-			(id, short_id, title, description, profile_picture_url, theme, bio_links, social_media_links, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			(id, short_id, title, description, profile_picture_url, theme, bio_links, social_media_links, meta_title, meta_description, meta_tags, og_image_url, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
 			.bind(
 				userId, 
@@ -328,6 +332,10 @@ export async function saveBioProfile(
 				theme, 
 				JSON.stringify(bioLinks), 
 				JSON.stringify(socialMediaLinks), 
+				metaTitle,
+				metaDescription,
+				metaTags,
+				ogImageUrl,
 				now, 
 				now
 			)
