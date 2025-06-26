@@ -312,7 +312,6 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
 export async function saveBioPage(
 	env: Env,
 	userId: string,
-	shortcode: string,
 	title: string,
 	description: string | null = null,
 	profilePictureUrl: string | null = null,
@@ -320,27 +319,18 @@ export async function saveBioPage(
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
+		const shortcode = userId; // Use userId as shortcode
 
 		// Check if user already has a bio page
 		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).first();
 
 		if (existingBio) {
-			if (existingBio.shortcode !== shortcode) {
-				// User is changing their shortcode, delete old entries
-				await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-				await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
-				await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-
-				// Create new entry in short_urls table
-				await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
-			} else {
-				// User is updating their existing bio page with the same shortcode
-				// Update the target_url in case it changed
-				await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${shortcode}`, shortcode).run();
-			}
+			// User is updating their existing bio page
+			// Update the target_url in case it changed
+			await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${userId}`, shortcode).run();
 		} else {
 			// User doesn't have a bio page yet, create a new one
-			await saveUrlToDatabase(shortcode, `/bio-view/${shortcode}`, env, userId);
+			await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 		}
 
 		// Then save/update bio page

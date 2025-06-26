@@ -107,7 +107,6 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		}
 
 		const body = (await request.json()) as {
-			shortcode: string;
 			title: string;
 			description?: string;
 			links: Array<{
@@ -120,10 +119,10 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			socialMedia?: Record<string, string>;
 		};
 
-		let { shortcode, title, description, links, socialMedia } = body;
+		let { title, description, links, socialMedia } = body;
 
-		if (!shortcode || !title) {
-			return new Response(JSON.stringify({ success: false, message: 'Shortcode and title are required' }), {
+		if (!title) {
+			return new Response(JSON.stringify({ success: false, message: 'Title is required' }), {
 				status: 400,
 				headers: { 'Content-Type': 'application/json' },
 			});
@@ -133,30 +132,18 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		const existingBioPage = await getUserBioPage(env, userId);
 		const isEditing = existingBioPage !== null;
 
-		// If the user is editing their bio page and changing the shortcode,
-		// or if they're creating a new bio page, check if the shortcode is available
-		if (!isEditing || (isEditing && existingBioPage.shortcode !== shortcode)) {
-			const isAvailable = await isBioShortcodeAvailable(env, shortcode, userId);
-			if (!isAvailable) {
-				return new Response(JSON.stringify({ success: false, message: 'This shortcode is already taken by another user' }), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				});
-			}
-		}
-
 		try {
-			// Save bio page with the user-provided shortcode
-			await saveBioPage(env, userId, shortcode, title, description);
+			// Save bio page using userId as shortcode
+			await saveBioPage(env, userId, title, description);
 
 			// Save new links (existing links are cleared in saveBioPage)
 			for (const link of links) {
-				await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
+				await saveBioLink(env, userId, link.title, link.url, link.description, link.icon, link.order_index);
 			}
 
 			// Save social media links if provided
 			if (socialMedia) {
-				await saveBioSocialMedia(env, shortcode, socialMedia);
+				await saveBioSocialMedia(env, userId, socialMedia);
 			}
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
@@ -170,7 +157,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		return new Response(
 			JSON.stringify({
 				success: true,
-				shortcode,
+				shortcode: userId,
 				message: isEditing ? 'Bio page updated successfully' : 'Bio page created successfully',
 			}),
 			{

@@ -128,24 +128,15 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     </div>
     
     <form id="bioForm" class="space-y-6" style="display: none;">
-        <!-- Custom Code -->
+        <!-- Bio Page URL (Read-only) -->
         <div>
-            <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Bio Page URL</label>
-            <div class="flex items-start">
-                <div class="relative flex-grow">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
-                    ${shortDomain}/
-                  </div>
-                  <input type="text" id="customCode" name="customCode"
-                    placeholder="your-bio-page"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Your Bio Page URL</label>
+            <div class="relative">
+                <div class="block w-full px-4 py-3 border border-gray-300 rounded-2xl bg-gray-50 text-gray-700">
+                    <span class="text-amber-500 font-medium">${shortDomain}/</span><span id="userBioUrl">your-user-id</span>
                 </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
-                  onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 8);">
-                  Random
-                </button>
             </div>
-            <p class="text-xs text-gray-500 mt-1">This will be your bio page URL. You can change it anytime.</p>
+            <p class="text-xs text-gray-500 mt-1">Your bio page URL is based on your user account and cannot be changed.</p>
         </div>
 
         <!-- Bio Page Info -->
@@ -319,7 +310,8 @@ function renderBioFormScripts(shortDomain: string): string {
     }
 
     function populateForm(bioPage, links, socialMedia = {}) {
-        document.getElementById('customCode').value = bioPage.shortcode || '';
+        // Update the bio URL display
+        document.getElementById('userBioUrl').textContent = bioPage.shortcode || 'your-user-id';
         document.getElementById('bioTitle').value = bioPage.title || '';
         document.getElementById('bioDescription').value = bioPage.description || '';
         
@@ -456,7 +448,6 @@ function renderBioFormScripts(shortDomain: string): string {
     document.getElementById('bioForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         
-        const customCode = document.querySelector('#customCode').value.trim();
         const bioTitle = document.querySelector('#bioTitle').value.trim();
         const bioDescription = document.querySelector('#bioDescription').value.trim();
         
@@ -488,8 +479,8 @@ function renderBioFormScripts(shortDomain: string): string {
             linkedin: document.getElementById('linkedinUrl').value.trim()
         };
         
-        if (!customCode || !bioTitle) {
-            alert('Please fill in the bio page URL and title.');
+        if (!bioTitle) {
+            alert('Please fill in the bio page title.');
             return;
         }
         
@@ -502,7 +493,6 @@ function renderBioFormScripts(shortDomain: string): string {
 
         try {
             const body = JSON.stringify({
-                shortcode: customCode,
                 title: bioTitle,
                 description: bioDescription,
                 links: links,
@@ -521,9 +511,8 @@ function renderBioFormScripts(shortDomain: string): string {
             const successAlert = document.querySelector('#success-alert');
             const successMessage = document.querySelector('#success-message');
 
-            // Get the shortDomain from the form
-            const domainPrefix = document.querySelector('.absolute.inset-y-0.left-0.pl-3').textContent.trim();
-            const domain = domainPrefix.replace('/', '');
+            // Get the shortDomain from the bio URL display
+            const domain = '${shortDomain}';
             
             try {
                 // Always check response.ok first (HTTP status code)
