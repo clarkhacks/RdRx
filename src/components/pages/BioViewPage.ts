@@ -18,23 +18,31 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 	const description = bioPage && bioPage.description ? bioPage.description : 'Check out my bio page';
 	const shortcode = bioPage && bioPage.shortcode ? bioPage.shortcode : '';
 
-	// Generate meta tags for SEO and social sharing
-	const metaTags = `
-    <meta property="og:title" content="${title} | Bio Page">
-    <meta property="og:description" content="${description}">
-    <meta property="og:image" content="${profilePictureUrl || 'https://cdn.rdrx.co/banner.jpg'}">
-    <meta property="og:url" content="https://${shortDomain}/${shortcode}">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="RdRx">
-    <meta property="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  `;
+	// Use meta fields from the database if available, otherwise fall back to defaults
+	const metaTitle = bioPage?.meta_title || title;
+	const metaDescription = bioPage?.meta_description || description;
+	const metaTags = bioPage?.meta_tags || '';
+	const ogImage = bioPage?.og_image_url || profilePictureUrl || 'https://cdn.rdrx.co/banner.jpg';
+	const pageUrl = `https://${shortDomain}/${shortcode}`;
+
+	// Prepare custom meta data for DocumentHead
+	const customMeta = {
+		description: metaDescription,
+		ogTitle: metaTitle,
+		ogDescription: metaDescription,
+		ogImage: ogImage,
+		ogUrl: pageUrl,
+		keywords: metaTags
+	};
 
 	return `
 <!DOCTYPE html>
 <html lang="en">
-${renderDocumentHead({ title, additionalScripts: metaTags })}
+${renderDocumentHead({ 
+	title: metaTitle, 
+	customMeta: customMeta,
+	noMeta: false 
+})}
 <body>
   ${renderBioViewStyles()}
   ${renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl, socialMedia })}

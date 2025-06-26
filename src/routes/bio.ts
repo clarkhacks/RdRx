@@ -270,25 +270,24 @@ export async function handleOgImageUpload(request: Request, env: Env): Promise<R
 		}
 
 		try {
-			// Generate unique filename
-			const timestamp = Date.now();
-			const extension = ogImageFile.name.split('.').pop() || 'jpg';
-			const filename = `og-${userId}-${timestamp}.${extension}`;
+			// Generate file path following the same pattern as profile pictures
+			const extension = ogImageFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+			const filePath = `users/${userId}/og.${extension}`;
 
 			// Convert file to array buffer
 			const arrayBuffer = await ogImageFile.arrayBuffer();
-			const uint8Array = new Uint8Array(arrayBuffer);
 
-			// Upload to R2 bucket (assuming you have R2 configured)
-			if (env.BUCKET) {
-				await env.BUCKET.put(filename, uint8Array, {
+			// Upload to R2 bucket
+			if (env.R2_RDRX) {
+				await env.R2_RDRX.put(filePath, arrayBuffer, {
 					httpMetadata: {
 						contentType: ogImageFile.type,
 					},
 				});
 
-				// Return the public URL
-				const imageUrl = `https://your-r2-domain.com/${filename}`;
+				// Return the public URL with timestamp to prevent caching
+				const timestamp = Date.now();
+				const imageUrl = `${env.R2_URL}/${filePath}?t=${timestamp}`;
 				
 				return new Response(JSON.stringify({ 
 					success: true, 
@@ -297,7 +296,7 @@ export async function handleOgImageUpload(request: Request, env: Env): Promise<R
 					headers: { 'Content-Type': 'application/json' },
 				});
 			} else {
-				// Fallback: return a placeholder URL or handle differently
+				// Fallback: return error if R2 not configured
 				return new Response(JSON.stringify({ 
 					success: false, 
 					message: 'File storage not configured' 

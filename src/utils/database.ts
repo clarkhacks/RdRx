@@ -407,13 +407,17 @@ export async function getBioPage(env: Env, shortcode: string): Promise<any | nul
 			const profile = await getBioProfile(env, shortcode);
 			if (!profile) return null;
 
-			// Return in the old format for compatibility with bio view
+			// Return with meta fields included
 			return {
 				shortcode: profile.short_id,
 				title: profile.title,
 				description: profile.description,
 				profile_picture_url: profile.profile_picture_url,
 				theme: profile.theme,
+				meta_title: profile.meta_title,
+				meta_description: profile.meta_description,
+				meta_tags: profile.meta_tags,
+				og_image_url: profile.og_image_url,
 				created_at: profile.created_at,
 				updated_at: profile.updated_at
 			};
@@ -430,13 +434,17 @@ export async function getBioPage(env: Env, shortcode: string): Promise<any | nul
 		const profile = await getBioProfile(env, shortUrlResult.creator_id as string);
 		if (!profile) return null;
 
-		// Return in the old format for compatibility with bio view
+		// Return with meta fields included
 		return {
 			shortcode: profile.short_id,
 			title: profile.title,
 			description: profile.description,
 			profile_picture_url: profile.profile_picture_url,
 			theme: profile.theme,
+			meta_title: profile.meta_title,
+			meta_description: profile.meta_description,
+			meta_tags: profile.meta_tags,
+			og_image_url: profile.og_image_url,
 			created_at: profile.created_at,
 			updated_at: profile.updated_at
 		};
