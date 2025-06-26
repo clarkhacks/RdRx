@@ -327,12 +327,9 @@ export async function saveBioPage(
 
 		if (existingBio) {
 			if (existingBio.shortcode !== shortcode) {
-				// User is changing their shortcode, delete old entries
-				await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-				await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
+				// User is changing their shortcode, just delete the old redirect and create new one
 				await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
-
-				// Create new entry in short_urls table
+				// Create new entry in short_urls table with new shortcode
 				await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 			} else {
 				// User is updating their existing bio page with the same shortcode
@@ -344,17 +341,17 @@ export async function saveBioPage(
 			await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 		}
 
-		// Then save/update bio page
+		// Always save/update bio page content using userId as the key (not shortcode)
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO bio_pages 
 			(shortcode, title, description, profile_picture_url, theme, created_at, updated_at)
 			VALUES (?, ?, ?, ?, ?, ?, ?)`
 		)
-			.bind(shortcode, title, description, profilePictureUrl, theme, now, now)
+			.bind(userId, title, description, profilePictureUrl, theme, now, now)
 			.run();
 
-		// Clear existing bio links to enforce one link rule
-		await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(shortcode).run();
+		// Clear existing bio links for this user (using userId, not shortcode)
+		await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(userId).run();
 
 		console.log(`Bio page saved: ${shortcode} for user: ${userId}`);
 	} catch (error) {

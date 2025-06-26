@@ -61,8 +61,8 @@ export async function handleGetUserBio(request: Request, env: Env): Promise<Resp
 			});
 		}
 
-		const links = await getBioLinks(env, bioPage.shortcode);
-		const socialMedia = await getBioSocialMedia(env, bioPage.shortcode);
+		const links = await getBioLinks(env, userId);
+		const socialMedia = await getBioSocialMedia(env, userId);
 
 		return new Response(
 			JSON.stringify({
@@ -151,12 +151,12 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 
 			// Save new links (existing links are cleared in saveBioPage)
 			for (const link of links) {
-				await saveBioLink(env, shortcode, link.title, link.url, link.description, link.icon, link.order_index);
+				await saveBioLink(env, userId, link.title, link.url, link.description, link.icon, link.order_index);
 			}
 
 			// Save social media links if provided
 			if (socialMedia) {
-				await saveBioSocialMedia(env, shortcode, socialMedia);
+				await saveBioSocialMedia(env, userId, socialMedia);
 			}
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
