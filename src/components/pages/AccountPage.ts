@@ -2,7 +2,6 @@ import { Env } from '../../types';
 import { User } from '../auth/types';
 import { renderDocumentHead } from '../layouts/DocumentHead';
 import { renderPageLayout } from '../layouts/PageLayout';
-import { renderBioFormUI, renderBioFormScripts } from '../ui/BioFormUI';
 
 /**
  * Render the account page
@@ -218,8 +217,7 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 					}
 				});
 				
-				// Bio page scripts
-				${renderBioFormScripts(env.SHORT_DOMAIN)}
+				// No bio page scripts needed anymore
 			</script>
 		</body>
 		</html>
@@ -403,10 +401,60 @@ function renderAccountContent(user: User, shortDomain: string): string {
                 
                 <!-- Bio Page Section -->
                 <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card lg:col-span-3 mt-8">
-                    <h2 class="text-2xl font-bold mb-6 text-gray-800">My Bio Page</h2>
-                    <p class="text-gray-600 mb-6">Create and manage your link-in-bio style page. Share all your important links in one place.</p>
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">My Bio Page</h2>
+                            <p class="text-gray-600 mt-2">Create and manage your professional bio page with advanced SEO options</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <a href="/bio/edit" class="btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300 text-decoration-none">
+                                Edit Bio Page
+                            </a>
+                        </div>
+                    </div>
                     
-                    ${renderBioFormUI({ shortDomain })}
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold text-blue-900 mb-2">Professional Bio Editor</h3>
+                                <p class="text-blue-800 mb-4">Use our dedicated bio editor to create a comprehensive bio page with:</p>
+                                <ul class="text-blue-700 space-y-2 mb-4">
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Multiple bio links with custom icons
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Social media integration
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        SEO optimization with meta tags
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Custom Open Graph images for social sharing
+                                    </li>
+                                </ul>
+                                <p class="text-sm text-blue-600">
+                                    <strong>Note:</strong> Your profile picture can be changed here in Account Settings and will automatically appear on your bio page.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

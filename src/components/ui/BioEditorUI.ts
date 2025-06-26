@@ -1,10 +1,10 @@
-interface BioFormUIProps {
+interface BioEditorUIProps {
 	shortcode?: string;
 	shortcodeValue?: string;
 	shortDomain?: string;
 }
 
-function renderBioFormUI(props: BioFormUIProps = {}): string {
+function renderBioEditorUI(props: BioEditorUIProps = {}): string {
 	const { shortcode, shortcodeValue, shortDomain } = props;
 
 	return `
@@ -95,12 +95,111 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     color: white;
     border-color: #007bff;
   }
+
+  /* Tab Styles */
+  .tab-button {
+    padding: 12px 24px;
+    border: none;
+    background: #f8f9fa;
+    color: #6c757d;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  .tab-button.active {
+    background: white;
+    color: #333;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tab-button:hover:not(.active) {
+    background: #e9ecef;
+    color: #495057;
+  }
+  
+  .tab-content {
+    display: none;
+    background: white;
+    border-radius: 0 12px 12px 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tab-content.active {
+    display: block;
+  }
+
+  .profile-picture-note {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+
+  .profile-picture-note a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .tag-input-container {
+    position: relative;
+  }
+
+  .tag-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    display: none;
+  }
+
+  .tag-suggestion {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .tag-suggestion:hover {
+    background: #f8f9fa;
+  }
+
+  .og-image-preview {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-top: 12px;
+    display: none;
+  }
 </style>
 
-<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-4xl mx-auto form-card">
+<div class="bg-white shadow-xl rounded-xl p-6 md:p-8 max-w-6xl mx-auto form-card">
     <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2 gradient-text">My Bio Page</h1>
-      <p class="text-gray-500">Create and manage your link-in-bio style page</p>
+      <h1 class="text-4xl font-bold mb-2 gradient-text">Bio Page Editor</h1>
+      <p class="text-gray-500">Create and manage your professional bio page with advanced SEO options</p>
+    </div>
+
+    <!-- Profile Picture Note -->
+    <div class="profile-picture-note">
+      <div class="flex items-center">
+        <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+          <p class="font-semibold">Profile Picture</p>
+          <p class="text-sm opacity-90">To change your profile picture, visit your <a href="/account">Account Settings</a></p>
+        </div>
+      </div>
     </div>
     
     <div class="success-gradient rounded-lg p-4 mb-6 hidden" id="success-alert">
@@ -128,42 +227,53 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     </div>
     
     <form id="bioForm" class="space-y-6" style="display: none;">
-        <!-- Custom Code -->
-        <div>
-            <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Bio Page URL</label>
-            <div class="flex items-start">
-                <div class="relative flex-grow">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
-                    ${shortDomain}/
-                  </div>
-                  <input type="text" id="customCode" name="customCode"
-                    placeholder="your-bio-page"
-                    class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+        <!-- Tab Navigation -->
+        <div class="flex space-x-1 mb-6">
+            <button type="button" class="tab-button active" data-tab="basic">Basic Info</button>
+            <button type="button" class="tab-button" data-tab="links">Links</button>
+            <button type="button" class="tab-button" data-tab="social">Social Media</button>
+            <button type="button" class="tab-button" data-tab="seo">SEO & Meta</button>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div id="basic-tab" class="tab-content active">
+            <!-- Custom Code -->
+            <div class="mb-6">
+                <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Bio Page URL</label>
+                <div class="flex items-start">
+                    <div class="relative flex-grow">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary-500 font-medium">
+                        ${shortDomain}/
+                      </div>
+                      <input type="text" id="customCode" name="customCode"
+                        placeholder="your-bio-page"
+                        class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    </div>
+                    <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
+                      onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 8);">
+                      Random
+                    </button>
                 </div>
-                <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
-                  onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 8);">
-                  Random
-                </button>
+                <p class="text-xs text-gray-500 mt-1">This will be your bio page URL. You can change it anytime.</p>
             </div>
-            <p class="text-xs text-gray-500 mt-1">This will be your bio page URL. You can change it anytime. It will render at /bio-view/your-user-id</p>
-        </div>
 
-        <!-- Bio Page Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label for="bioTitle" class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
-                <input type="text" id="bioTitle" name="bioTitle" placeholder="Your Name or Brand"
-                    class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
-            </div>
-            <div>
-                <label for="bioDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <input type="text" id="bioDescription" name="bioDescription" placeholder="What you do or your tagline"
-                    class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+            <!-- Bio Page Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="bioTitle" class="block text-sm font-medium text-gray-700 mb-1">Page Title</label>
+                    <input type="text" id="bioTitle" name="bioTitle" placeholder="Your Name or Brand"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
+                <div>
+                    <label for="bioDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <input type="text" id="bioDescription" name="bioDescription" placeholder="What you do or your tagline"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
             </div>
         </div>
 
-        <!-- Bio Links Section -->
-        <div>
+        <!-- Links Tab -->
+        <div id="links-tab" class="tab-content">
             <div class="flex items-center justify-between mb-4">
                 <label class="block text-sm font-medium text-gray-700">Bio Links</label>
                 <button type="button" id="addLinkBtn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
@@ -175,8 +285,8 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </div>
         </div>
 
-        <!-- Social Media Icons Section -->
-        <div>
+        <!-- Social Media Tab -->
+        <div id="social-tab" class="tab-content">
             <div class="flex items-center justify-between mb-4">
                 <label class="block text-sm font-medium text-gray-700">Social Media Links</label>
                 <button type="button" id="addSocialBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
@@ -188,8 +298,49 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </div>
         </div>
 
+        <!-- SEO & Meta Tab -->
+        <div id="seo-tab" class="tab-content">
+            <div class="space-y-6">
+                <div>
+                    <label for="metaTitle" class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                    <input type="text" id="metaTitle" name="metaTitle" placeholder="SEO title for search engines"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    <p class="text-xs text-gray-500 mt-1">Recommended: 50-60 characters. This appears in search results.</p>
+                </div>
+                
+                <div>
+                    <label for="metaDescription" class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                    <textarea id="metaDescription" name="metaDescription" rows="3" placeholder="Brief description for search engines and social media"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition resize-none"></textarea>
+                    <p class="text-xs text-gray-500 mt-1">Recommended: 150-160 characters. This appears in search results and social shares.</p>
+                </div>
+                
+                <div class="tag-input-container">
+                    <label for="metaTags" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+                    <input type="text" id="metaTags" name="metaTags" placeholder="e.g., entrepreneur, designer, developer"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                    <p class="text-xs text-gray-500 mt-1">Separate tags with commas. These help categorize your bio page.</p>
+                    <div class="tag-suggestions" id="tagSuggestions">
+                        <!-- Tag suggestions will appear here -->
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="ogImage" class="block text-sm font-medium text-gray-700 mb-1">Open Graph Image</label>
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-grow">
+                            <input type="file" id="ogImage" name="ogImage" accept="image/*"
+                                class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                            <p class="text-xs text-gray-500 mt-1">Recommended: 1200x630px. This image appears when your bio is shared on social media.</p>
+                        </div>
+                        <img id="ogImagePreview" class="og-image-preview" alt="OG Image Preview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Submit Button -->
-        <div class="pt-4">
+        <div class="pt-6 border-t">
             <button type="submit"
                     class="w-full btn-gradient text-white font-medium py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition duration-300">
                 <span id="submit-text">Save Bio Page</span>
@@ -309,7 +460,7 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
     `;
 }
 
-function renderBioFormScripts(shortDomain: string): string {
+function renderBioEditorScripts(shortDomain: string): string {
 	return `
     // Load clipboard.js
     const clipboardScript = document.createElement('script');
@@ -324,9 +475,101 @@ function renderBioFormScripts(shortDomain: string): string {
         '🎮', '🕹️', '🎲', '🃏', '🎰', '🎪', '🎨', '🖼️', '🖌️', '✏️'
     ];
 
+    // Common tag suggestions
+    const tagSuggestions = [
+        'entrepreneur', 'designer', 'developer', 'artist', 'writer', 'photographer',
+        'musician', 'coach', 'consultant', 'speaker', 'influencer', 'creator',
+        'business', 'marketing', 'technology', 'lifestyle', 'travel', 'fitness',
+        'food', 'fashion', 'beauty', 'health', 'education', 'finance'
+    ];
+
     let currentIconTarget = null;
     let linkCounter = 0;
     let isEditing = false;
+    let currentOgImageFile = null;
+
+    // Tab functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tabName = button.getAttribute('data-tab');
+            
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            button.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        });
+    });
+
+    // Tag suggestions functionality
+    const metaTagsInput = document.getElementById('metaTags');
+    const tagSuggestionsDiv = document.getElementById('tagSuggestions');
+    
+    metaTagsInput.addEventListener('input', (e) => {
+        const value = e.target.value;
+        const lastCommaIndex = value.lastIndexOf(',');
+        const currentTag = lastCommaIndex >= 0 ? value.substring(lastCommaIndex + 1).trim() : value.trim();
+        
+        if (currentTag.length > 0) {
+            const matches = tagSuggestions.filter(tag => 
+                tag.toLowerCase().includes(currentTag.toLowerCase()) && 
+                !value.toLowerCase().includes(tag.toLowerCase())
+            );
+            
+            if (matches.length > 0) {
+                tagSuggestionsDiv.innerHTML = matches.slice(0, 5).map(tag => 
+                    '<div class="tag-suggestion" onclick="selectTag(\\''+tag+'\\')">'+tag+'</div>'
+                ).join('');
+                tagSuggestionsDiv.style.display = 'block';
+            } else {
+                tagSuggestionsDiv.style.display = 'none';
+            }
+        } else {
+            tagSuggestionsDiv.style.display = 'none';
+        }
+    });
+    
+    metaTagsInput.addEventListener('blur', () => {
+        setTimeout(() => {
+            tagSuggestionsDiv.style.display = 'none';
+        }, 200);
+    });
+
+    function selectTag(tag) {
+        const currentValue = metaTagsInput.value;
+        const lastCommaIndex = currentValue.lastIndexOf(',');
+        
+        if (lastCommaIndex >= 0) {
+            metaTagsInput.value = currentValue.substring(0, lastCommaIndex + 1) + ' ' + tag + ', ';
+        } else {
+            metaTagsInput.value = tag + ', ';
+        }
+        
+        tagSuggestionsDiv.style.display = 'none';
+        metaTagsInput.focus();
+    }
+
+    // OG Image preview functionality
+    document.getElementById('ogImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('ogImagePreview');
+        
+        if (file) {
+            currentOgImageFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            currentOgImageFile = null;
+        }
+    });
 
     // Load existing bio page data
     async function loadBioData() {
@@ -357,6 +600,16 @@ function renderBioFormScripts(shortDomain: string): string {
         document.getElementById('customCode').value = bioPage.shortcode || '';
         document.getElementById('bioTitle').value = bioPage.title || '';
         document.getElementById('bioDescription').value = bioPage.description || '';
+        
+        // Populate meta fields if they exist
+        if (bioPage.meta_title) document.getElementById('metaTitle').value = bioPage.meta_title;
+        if (bioPage.meta_description) document.getElementById('metaDescription').value = bioPage.meta_description;
+        if (bioPage.meta_tags) document.getElementById('metaTags').value = bioPage.meta_tags;
+        if (bioPage.og_image_url) {
+            const preview = document.getElementById('ogImagePreview');
+            preview.src = bioPage.og_image_url;
+            preview.style.display = 'block';
+        }
         
         // Populate social media links dynamically
         Object.entries(socialMedia).forEach(([platform, data]) => {
@@ -438,11 +691,6 @@ function renderBioFormScripts(shortDomain: string): string {
         updateLinkButtons();
     }
 
-    // Legacy function for compatibility (not used in new single-link system)
-    function addLink(linkData = null) {
-        addBioLink(linkData);
-    }
-
     function removeLink(button) {
         const linkItem = button.closest('.link-item');
         linkItem.remove();
@@ -481,6 +729,117 @@ function renderBioFormScripts(shortDomain: string): string {
         });
     }
 
+    // Social media functions
+    let currentSocialIconTarget = null;
+    
+    function addSocialLink(platform = '', url = '', icon = '') {
+        const template = document.getElementById('socialLinkTemplate');
+        const clone = template.content.cloneNode(true);
+        const socialItem = clone.querySelector('.social-link-item');
+        
+        if (platform) socialItem.querySelector('.social-platform').value = platform;
+        if (url) socialItem.querySelector('.social-url').value = url;
+        if (icon) {
+            socialItem.querySelector('.social-icon-value').value = icon;
+            const iconImg = socialItem.querySelector('.social-icon-img');
+            const iconText = socialItem.querySelector('.social-icon-display span');
+            iconImg.src = 'https://icons.rdrx.co/png/' + icon;
+            iconImg.style.display = 'block';
+            iconText.style.display = 'none';
+        }
+        
+        document.getElementById('socialLinksContainer').appendChild(clone);
+    }
+    
+    function removeSocialLink(button) {
+        const socialItem = button.closest('.social-link-item');
+        socialItem.remove();
+    }
+    
+    async function openSocialIconPicker(target) {
+        currentSocialIconTarget = target;
+        document.getElementById('socialIconPickerModal').classList.remove('hidden');
+        
+        // Load default icons
+        await searchIcons('social');
+        
+        // Setup search functionality
+        const searchInput = document.getElementById('iconSearchInput');
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchIcons(e.target.value);
+            }, 300);
+        });
+    }
+    
+    function closeSocialIconPicker() {
+        document.getElementById('socialIconPickerModal').classList.add('hidden');
+        currentSocialIconTarget = null;
+    }
+    
+    async function searchIcons(query) {
+        try {
+            const response = await fetch('https://icons.rdrx.co/search?q=' + encodeURIComponent(query));
+            const icons = await response.json();
+            
+            // Filter to only PNG icons
+            const pngIcons = icons.filter(icon => icon.type === 'png');
+            
+            const iconPicker = document.getElementById('socialIconPicker');
+            iconPicker.innerHTML = '';
+            
+            pngIcons.slice(0, 10).forEach(icon => {
+                const iconElement = document.createElement('div');
+                iconElement.className = 'w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition';
+                iconElement.innerHTML = '<img src="https://icons.rdrx.co/png/' + icon.name + '" alt="' + icon.name + '" class="w-8 h-8">';
+                iconElement.onclick = () => selectSocialIcon(icon.name);
+                iconPicker.appendChild(iconElement);
+            });
+        } catch (error) {
+            console.error('Error searching icons:', error);
+        }
+    }
+    
+    function selectSocialIcon(iconName) {
+        if (currentSocialIconTarget) {
+            const iconImg = currentSocialIconTarget.querySelector('.social-icon-img');
+            const iconText = currentSocialIconTarget.querySelector('span');
+            const iconValue = currentSocialIconTarget.parentElement.querySelector('.social-icon-value');
+            
+            iconImg.src = 'https://icons.rdrx.co/png/' + iconName;
+            iconImg.style.display = 'block';
+            iconText.style.display = 'none';
+            iconValue.value = iconName;
+        }
+        closeSocialIconPicker();
+    }
+
+    // Upload OG Image function
+    async function uploadOgImage(file) {
+        const formData = new FormData();
+        formData.append('ogImage', file);
+        
+        try {
+            const response = await fetch('/api/bio/og-image', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    return result.imageUrl;
+                }
+            }
+            throw new Error('Failed to upload OG image');
+        } catch (error) {
+            console.error('Error uploading OG image:', error);
+            throw error;
+        }
+    }
+
     // Form submission
     document.getElementById('bioForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -488,6 +847,9 @@ function renderBioFormScripts(shortDomain: string): string {
         const customCode = document.querySelector('#customCode').value.trim();
         const bioTitle = document.querySelector('#bioTitle').value.trim();
         const bioDescription = document.querySelector('#bioDescription').value.trim();
+        const metaTitle = document.querySelector('#metaTitle').value.trim();
+        const metaDescription = document.querySelector('#metaDescription').value.trim();
+        const metaTags = document.querySelector('#metaTags').value.trim();
         
         // Collect all bio links
         const links = [];
@@ -536,12 +898,28 @@ function renderBioFormScripts(shortDomain: string): string {
         submitButton.classList.add('opacity-75');
 
         try {
+            let ogImageUrl = null;
+            
+            // Upload OG image if selected
+            if (currentOgImageFile) {
+                try {
+                    ogImageUrl = await uploadOgImage(currentOgImageFile);
+                } catch (error) {
+                    console.error('Failed to upload OG image:', error);
+                    // Continue without OG image if upload fails
+                }
+            }
+
             const body = JSON.stringify({
                 shortcode: customCode,
                 title: bioTitle,
                 description: bioDescription,
                 links: links,
-                socialMedia: socialMedia
+                socialMedia: socialMedia,
+                metaTitle: metaTitle || null,
+                metaDescription: metaDescription || null,
+                metaTags: metaTags || null,
+                ogImageUrl: ogImageUrl
             });
 
             const response = await fetch('/api/bio/save', {
@@ -630,93 +1008,6 @@ function renderBioFormScripts(shortDomain: string): string {
             submitButton.classList.remove('opacity-75');
         }
     });
-
-    // Social media functions
-    let currentSocialIconTarget = null;
-    
-    function addSocialLink(platform = '', url = '', icon = '') {
-        const template = document.getElementById('socialLinkTemplate');
-        const clone = template.content.cloneNode(true);
-        const socialItem = clone.querySelector('.social-link-item');
-        
-        if (platform) socialItem.querySelector('.social-platform').value = platform;
-        if (url) socialItem.querySelector('.social-url').value = url;
-        if (icon) {
-            socialItem.querySelector('.social-icon-value').value = icon;
-            const iconImg = socialItem.querySelector('.social-icon-img');
-            const iconText = socialItem.querySelector('.social-icon-display span');
-            iconImg.src = 'https://icons.rdrx.co/png/' + icon;
-            iconImg.style.display = 'block';
-            iconText.style.display = 'none';
-        }
-        
-        document.getElementById('socialLinksContainer').appendChild(clone);
-    }
-    
-    function removeSocialLink(button) {
-        const socialItem = button.closest('.social-link-item');
-        socialItem.remove();
-    }
-    
-    async function openSocialIconPicker(target) {
-        currentSocialIconTarget = target;
-        document.getElementById('socialIconPickerModal').classList.remove('hidden');
-        
-        // Load default icons
-        await searchIcons('social');
-        
-        // Setup search functionality
-        const searchInput = document.getElementById('iconSearchInput');
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                searchIcons(e.target.value);
-            }, 300);
-        });
-    }
-    
-    function closeSocialIconPicker() {
-        document.getElementById('socialIconPickerModal').classList.add('hidden');
-        currentSocialIconTarget = null;
-    }
-    
-    async function searchIcons(query) {
-        try {
-            const response = await fetch('https://icons.rdrx.co/search?q=' + encodeURIComponent(query));
-            const icons = await response.json();
-            
-            // Filter to only PNG icons
-            const pngIcons = icons.filter(icon => icon.type === 'png');
-            
-            const iconPicker = document.getElementById('socialIconPicker');
-            iconPicker.innerHTML = '';
-            
-            pngIcons.slice(0, 10).forEach(icon => {
-                const iconElement = document.createElement('div');
-                iconElement.className = 'w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition';
-                iconElement.innerHTML = '<img src="https://icons.rdrx.co/png/' + icon.name + '" alt="' + icon.name + '" class="w-8 h-8">';
-                iconElement.onclick = () => selectSocialIcon(icon.name);
-                iconPicker.appendChild(iconElement);
-            });
-        } catch (error) {
-            console.error('Error searching icons:', error);
-        }
-    }
-    
-    function selectSocialIcon(iconName) {
-        if (currentSocialIconTarget) {
-            const iconImg = currentSocialIconTarget.querySelector('.social-icon-img');
-            const iconText = currentSocialIconTarget.querySelector('span');
-            const iconValue = currentSocialIconTarget.parentElement.querySelector('.social-icon-value');
-            
-            iconImg.src = 'https://icons.rdrx.co/png/' + iconName;
-            iconImg.style.display = 'block';
-            iconText.style.display = 'none';
-            iconValue.value = iconName;
-        }
-        closeSocialIconPicker();
-    }
     
     // Add link button event listener
     document.getElementById('addLinkBtn').addEventListener('click', () => {
@@ -739,10 +1030,11 @@ function renderBioFormScripts(shortDomain: string): string {
     window.removeSocialLink = removeSocialLink;
     window.openSocialIconPicker = openSocialIconPicker;
     window.closeSocialIconPicker = closeSocialIconPicker;
+    window.selectTag = selectTag;
 
     // Load existing data on page load
     loadBioData();
     `;
 }
 
-export { renderBioFormUI, renderBioFormScripts };
+export { renderBioEditorUI, renderBioEditorScripts };

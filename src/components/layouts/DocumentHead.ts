@@ -1,25 +1,46 @@
 interface DocumentHeadProps {
 	title: string;
 	additionalScripts?: string;
+  noMeta?: boolean;
+  customMeta?: {
+    description?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+    ogImage?: string;
+    ogUrl?: string;
+    keywords?: string;
+  };
 }
 
-function renderDocumentHead({ title, additionalScripts = '' }: DocumentHeadProps): string {
+function renderDocumentHead({ title, additionalScripts = '', noMeta = false, customMeta }: DocumentHeadProps): string {
+  // Use custom meta or defaults
+  const metaDescription = customMeta?.description || "RdRx is a modern URL shortener that allows you to create and share short URLs easily.";
+  const ogTitle = customMeta?.ogTitle || `${title} | RdRx`;
+  const ogDescription = customMeta?.ogDescription || metaDescription;
+  const ogImage = customMeta?.ogImage || "https://cdn.rdrx.co/banner.jpg";
+  const ogUrl = customMeta?.ogUrl || "https://rdrx.co";
+  const keywords = customMeta?.keywords || "";
+
 	return `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>${title} | RdRx</title>
-  <meta property="og:title" content="${title} | RdRx">
-  <meta property="og:description" content="RdRx is a modern URL shortener that allows you to create and share short URLs easily.">
-  <meta property="og:image" content="https://cdn.rdrx.co/banner.jpg">
-  <meta property="og:url" content="https://rdrx.co">
+  <title>${title}</title>
+  <meta name="description" content="${metaDescription}">
+  ${keywords ? `<meta name="keywords" content="${keywords}">` : ''}
+  `+ (noMeta ? '' : `
+  <meta property="og:title" content="${ogTitle}">
+  <meta property="og:description" content="${ogDescription}">
+  <meta property="og:image" content="${ogImage}">
+  <meta property="og:url" content="${ogUrl}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RdRx">
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="${title} | RdRx">
-  <meta property="twitter:description" content="RdRx is a modern URL shortener that allows you to create and share short URLs easily.">
-  <meta property="twitter:image" content="https://cdn.rdrx.co/banner.jpg">
+  <meta property="twitter:title" content="${ogTitle}">
+  <meta property="twitter:description" content="${ogDescription}">
+  <meta property="twitter:image" content="${ogImage}">
+  `) + `
   <link rel="apple-touch-icon" sizes="57x57" href="https://cdn.rdrx.co/favicons/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="https://cdn.rdrx.co/favicons/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="https://cdn.rdrx.co/favicons/apple-icon-72x72.png">
