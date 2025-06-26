@@ -393,7 +393,25 @@ export async function getUserBioPage(env: Env, userId: string): Promise<any | nu
  */
 export async function getBioPage(env: Env, shortcode: string): Promise<any | null> {
 	try {
-		// First get the user ID from the shortcode
+		// Check if this is a direct bio-view URL (shortcode is actually a user ID)
+		if (shortcode.includes('-') && shortcode.length > 20) {
+			// This looks like a user ID, get the bio profile directly
+			const profile = await getBioProfile(env, shortcode);
+			if (!profile) return null;
+
+			// Return in the old format for compatibility with bio view
+			return {
+				shortcode: profile.short_id,
+				title: profile.title,
+				description: profile.description,
+				profile_picture_url: profile.profile_picture_url,
+				theme: profile.theme,
+				created_at: profile.created_at,
+				updated_at: profile.updated_at
+			};
+		}
+
+		// Otherwise, get the user ID from the shortcode redirect
 		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
 		
 		if (!shortUrlResult || !shortUrlResult.creator_id) {

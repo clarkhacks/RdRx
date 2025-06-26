@@ -174,7 +174,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		return new Response(
 			JSON.stringify({
 				success: true,
-				shortcode: userId,
+				shortcode: shortcode,
 				message: isEditing ? 'Bio page updated successfully' : 'Bio page created successfully',
 			}),
 			{
@@ -213,20 +213,31 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 
 		console.log('Bio page found:', bioPage);
 
-		// Get bio links
+		// Get the user ID for fetching links and social media
+		let userId = shortcode;
+		
+		// If this is a custom shortcode, get the user ID from the database
+		if (!shortcode.includes('-') || shortcode.length <= 20) {
+			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
+			if (shortUrlInfo && shortUrlInfo.creator_id) {
+				userId = shortUrlInfo.creator_id as string;
+			}
+		}
+
+		// Get bio links using user ID
 		let links = [];
 		try {
-			links = await getBioLinks(env, shortcode);
+			links = await getBioLinks(env, userId);
 			console.log(`Found ${links.length} links for bio page`);
 		} catch (linkError) {
 			console.error('Error fetching bio links:', linkError);
 			// Continue with empty links array
 		}
 
-		// Get social media links
+		// Get social media links using user ID
 		let socialMedia = {};
 		try {
-			socialMedia = await getBioSocialMedia(env, shortcode);
+			socialMedia = await getBioSocialMedia(env, userId);
 			console.log(`Found social media links for bio page`);
 		} catch (socialError) {
 			console.error('Error fetching social media links:', socialError);
