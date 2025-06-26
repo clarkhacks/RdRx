@@ -645,7 +645,7 @@ function renderBioFormScripts(shortDomain: string): string {
             socialItem.querySelector('.social-icon-value').value = icon;
             const iconImg = socialItem.querySelector('.social-icon-img');
             const iconText = socialItem.querySelector('.social-icon-display span');
-            iconImg.src = 'https://icons.rdrx.co/' + icon;
+            iconImg.src = 'https://icons.rdrx.co/png/' + icon;
             iconImg.style.display = 'block';
             iconText.style.display = 'none';
         }
