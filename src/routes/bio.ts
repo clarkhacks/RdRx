@@ -117,7 +117,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				icon?: string;
 				order_index: number;
 			}>;
-			socialMedia?: Record<string, string>;
+			socialMedia?: Record<string, any>;
 		};
 
 		let { shortcode, title, description, links, socialMedia } = body;
