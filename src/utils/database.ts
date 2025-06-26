@@ -61,6 +61,7 @@ export async function initializeTables(env: Env): Promise<void> {
         bio_shortcode TEXT NOT NULL,
         platform TEXT NOT NULL,
         url TEXT NOT NULL,
+        icon TEXT,
         is_active BOOLEAN NOT NULL DEFAULT 1,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
@@ -312,6 +313,7 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
 export async function saveBioPage(
 	env: Env,
 	userId: string,
+	shortcode: string,
 	title: string,
 	description: string | null = null,
 	profilePictureUrl: string | null = null,
@@ -319,15 +321,24 @@ export async function saveBioPage(
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
-		const shortcode = userId; // Use userId as shortcode
 
 		// Check if user already has a bio page
 		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).first();
 
 		if (existingBio) {
-			// User is updating their existing bio page
-			// Update the target_url in case it changed
-			await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${userId}`, shortcode).run();
+			if (existingBio.shortcode !== shortcode) {
+				// User is changing their shortcode, delete old entries
+				await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(existingBio.shortcode).run();
+				await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(existingBio.shortcode).run();
+				await env.DB.prepare(`DELETE FROM short_urls WHERE shortcode = ?`).bind(existingBio.shortcode).run();
+
+				// Create new entry in short_urls table
+				await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
+			} else {
+				// User is updating their existing bio page with the same shortcode
+				// Update the target_url to ensure it points to their user ID
+				await env.DB.prepare(`UPDATE short_urls SET target_url = ? WHERE shortcode = ?`).bind(`/bio-view/${userId}`, shortcode).run();
+			}
 		} else {
 			// User doesn't have a bio page yet, create a new one
 			await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
@@ -461,7 +472,7 @@ export async function updateBioLinkOrder(env: Env, linkId: number, newOrder: num
 /**
  * Save social media links for a bio page
  */
-export async function saveBioSocialMedia(env: Env, bioShortcode: string, socialMedia: Record<string, string>): Promise<void> {
+export async function saveBioSocialMedia(env: Env, bioShortcode: string, socialMedia: Record<string, any>): Promise<void> {
 	try {
 		const now = new Date().toISOString();
 
@@ -469,14 +480,14 @@ export async function saveBioSocialMedia(env: Env, bioShortcode: string, socialM
 		await env.DB.prepare(`DELETE FROM bio_social_media WHERE bio_shortcode = ?`).bind(bioShortcode).run();
 
 		// Save new social media links
-		for (const [platform, url] of Object.entries(socialMedia)) {
-			if (url && url.trim()) {
+		for (const [platform, data] of Object.entries(socialMedia)) {
+			if (data && typeof data === 'object' && data.url && data.url.trim()) {
 				await env.DB.prepare(
 					`INSERT INTO bio_social_media 
-					(bio_shortcode, platform, url, created_at, updated_at)
-					VALUES (?, ?, ?, ?, ?)`
+					(bio_shortcode, platform, url, icon, created_at, updated_at)
+					VALUES (?, ?, ?, ?, ?, ?)`
 				)
-					.bind(bioShortcode, platform, url.trim(), now, now)
+					.bind(bioShortcode, platform, data.url.trim(), data.icon || '', now, now)
 					.run();
 			}
 		}
@@ -491,16 +502,19 @@ export async function saveBioSocialMedia(env: Env, bioShortcode: string, socialM
 /**
  * Get social media links for a bio page
  */
-export async function getBioSocialMedia(env: Env, bioShortcode: string): Promise<Record<string, string>> {
+export async function getBioSocialMedia(env: Env, bioShortcode: string): Promise<Record<string, any>> {
 	try {
-		const result = await env.DB.prepare(`SELECT platform, url FROM bio_social_media WHERE bio_shortcode = ? AND is_active = 1`)
+		const result = await env.DB.prepare(`SELECT platform, url, icon FROM bio_social_media WHERE bio_shortcode = ? AND is_active = 1`)
 			.bind(bioShortcode)
 			.all();
 
-		const socialMedia: Record<string, string> = {};
+		const socialMedia: Record<string, any> = {};
 		if (result.results) {
 			for (const row of result.results) {
-				socialMedia[row.platform as string] = row.url as string;
+				socialMedia[row.platform as string] = {
+					url: row.url as string,
+					icon: row.icon as string || ''
+				};
 			}
 		}
 
