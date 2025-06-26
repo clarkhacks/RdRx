@@ -701,7 +701,7 @@ function renderBioFormScripts(shortDomain: string): string {
             pngIcons.slice(0, 10).forEach(icon => {
                 const iconElement = document.createElement('div');
                 iconElement.className = 'w-12 h-12 border border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition';
-                iconElement.innerHTML = '<img src="https://icons.rdrx.co/' + icon.name + '" alt="' + icon.name + '" class="w-8 h-8">';
+                iconElement.innerHTML = '<img src="https://icons.rdrx.co/png/' + icon.name + '" alt="' + icon.name + '" class="w-8 h-8">';
                 iconElement.onclick = () => selectSocialIcon(icon.name);
                 iconPicker.appendChild(iconElement);
             });
