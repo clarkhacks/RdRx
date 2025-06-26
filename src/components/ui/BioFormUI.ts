@@ -359,9 +359,12 @@ function renderBioFormScripts(shortDomain: string): string {
         document.getElementById('bioDescription').value = bioPage.description || '';
         
         // Populate social media links dynamically
-        Object.entries(socialMedia).forEach(([platform, url]) => {
-            if (url) {
-                addSocialLink(platform, url);
+        Object.entries(socialMedia).forEach(([platform, data]) => {
+            if (data && typeof data === 'object' && data.url) {
+                addSocialLink(platform, data.url, data.icon);
+            } else if (typeof data === 'string' && data) {
+                // Handle legacy format where data might be just a URL string
+                addSocialLink(platform, data);
             }
         });
         
