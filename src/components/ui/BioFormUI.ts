@@ -162,14 +162,16 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </div>
         </div>
 
-        <!-- Bio Link Section -->
+        <!-- Bio Links Section -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <label class="block text-sm font-medium text-gray-700">Your Bio Link</label>
-                <p class="text-sm text-gray-500">You can have one main bio link</p>
+                <label class="block text-sm font-medium text-gray-700">Bio Links</label>
+                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                    + Add Link
+                </button>
             </div>
             <div id="bioLinkContainer">
-                <!-- Bio link will be added here -->
+                <!-- Bio links will be added here -->
             </div>
         </div>
 
@@ -363,11 +365,11 @@ function renderBioFormScripts(shortDomain: string): string {
             }
         });
         
-        // Populate the single bio link
+        // Populate multiple bio links
         if (links && links.length > 0) {
-            addBioLink(links[0]);
+            links.forEach(link => addBioLink(link));
         } else {
-            addBioLink();
+            addBioLink(); // Add one default link
         }
     }
 
@@ -414,23 +416,12 @@ function renderBioFormScripts(shortDomain: string): string {
         closeIconPicker();
     }
 
-    // Add single bio link
+    // Add bio link (supports multiple links)
     function addBioLink(linkData = null) {
-        // Clear existing bio link
-        document.getElementById('bioLinkContainer').innerHTML = '';
-        
         const template = document.getElementById('linkTemplate');
         const clone = template.content.cloneNode(true);
         const linkItem = clone.querySelector('.link-item');
-        linkItem.setAttribute('data-link-index', 0);
-        
-        // Remove the move up/down buttons since there's only one link
-        const moveButtons = linkItem.querySelectorAll('.move-up, .move-down');
-        moveButtons.forEach(btn => btn.style.display = 'none');
-        
-        // Remove the remove button since they must have one link
-        const removeButton = linkItem.querySelector('.remove-link');
-        removeButton.style.display = 'none';
+        linkItem.setAttribute('data-link-index', linkCounter++);
         
         if (linkData) {
             linkItem.querySelector('.link-title').value = linkData.title || '';
@@ -441,6 +432,7 @@ function renderBioFormScripts(shortDomain: string): string {
         }
         
         document.getElementById('bioLinkContainer').appendChild(clone);
+        updateLinkButtons();
     }
 
     // Legacy function for compatibility (not used in new single-link system)
@@ -494,10 +486,9 @@ function renderBioFormScripts(shortDomain: string): string {
         const bioTitle = document.querySelector('#bioTitle').value.trim();
         const bioDescription = document.querySelector('#bioDescription').value.trim();
         
-        // Collect the single bio link
+        // Collect all bio links
         const links = [];
-        const linkItem = document.querySelector('#bioLinkContainer .link-item');
-        if (linkItem) {
+        document.querySelectorAll('#bioLinkContainer .link-item').forEach((linkItem, index) => {
             const title = linkItem.querySelector('.link-title').value.trim();
             const url = linkItem.querySelector('.link-url').value.trim();
             const description = linkItem.querySelector('.link-description').value.trim();
@@ -509,10 +500,10 @@ function renderBioFormScripts(shortDomain: string): string {
                     url,
                     description,
                     icon,
-                    order_index: 0
+                    order_index: index
                 });
             }
-        }
+        });
         
         // Collect social media links dynamically
         const socialMedia = {};
@@ -716,7 +707,7 @@ function renderBioFormScripts(shortDomain: string): string {
             const iconText = currentSocialIconTarget.querySelector('span');
             const iconValue = currentSocialIconTarget.parentElement.querySelector('.social-icon-value');
             
-            iconImg.src = 'https://icons.rdrx.co/' + iconName;
+            iconImg.src = 'https://icons.rdrx.co/png/' + iconName;
             iconImg.style.display = 'block';
             iconText.style.display = 'none';
             iconValue.value = iconName;
@@ -724,6 +715,11 @@ function renderBioFormScripts(shortDomain: string): string {
         closeSocialIconPicker();
     }
     
+    // Add link button event listener
+    document.getElementById('addLinkBtn').addEventListener('click', () => {
+        addBioLink();
+    });
+
     // Add social button event listener
     document.getElementById('addSocialBtn').addEventListener('click', () => {
         addSocialLink();

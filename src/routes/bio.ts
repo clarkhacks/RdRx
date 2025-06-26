@@ -2,14 +2,11 @@ import { Env } from '../types';
 import { renderBioFormPage } from '../components/pages/BioFormPage';
 import { renderBioViewPage } from '../components/pages/BioViewPage';
 import {
-	saveBioPage,
+	saveBioProfile,
 	getUserBioPage,
 	getBioPage,
 	getBioLinks,
-	saveBioLink,
-	deleteBioLink,
 	isBioShortcodeAvailable,
-	saveBioSocialMedia,
 	getBioSocialMedia,
 } from '../utils/database';
 import { isAuthenticated, getUserID } from '../utils/auth';
@@ -146,18 +143,25 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 		}
 
 		try {
-			// Save bio page with the user-provided shortcode but render at /bio-view/userId
-			await saveBioPage(env, userId, shortcode, title, description);
+			// Convert social media object to array format
+			const socialMediaArray = socialMedia ? Object.entries(socialMedia).map(([platform, data]) => ({
+				platform,
+				url: data.url,
+				icon: data.icon || ''
+			})) : [];
 
-			// Save new links (existing links are cleared in saveBioPage)
-			for (const link of links) {
-				await saveBioLink(env, userId, link.title, link.url, link.description, link.icon, link.order_index);
-			}
-
-			// Save social media links if provided
-			if (socialMedia) {
-				await saveBioSocialMedia(env, userId, socialMedia);
-			}
+			// Save complete bio profile with all data
+			await saveBioProfile(
+				env, 
+				userId, 
+				shortcode, 
+				title, 
+				description, 
+				null, // profile picture URL
+				'default', // theme
+				links, // bio links array
+				socialMediaArray // social media links array
+			);
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
 			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
