@@ -6,12 +6,13 @@ interface BioViewPageProps {
 	links: any[];
 	shortDomain: string;
 	profilePictureUrl?: string | null;
+	socialMedia?: Record<string, string>;
 }
 
 /**
  * Render a bio view page
  */
-function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = null }: BioViewPageProps): string {
+function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = null, socialMedia = {} }: BioViewPageProps): string {
 	// Ensure bioPage has all required properties
 	const title = bioPage && bioPage.title ? bioPage.title : 'Bio Page';
 	const description = bioPage && bioPage.description ? bioPage.description : 'Check out my bio page';
@@ -36,7 +37,7 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 ${renderDocumentHead({ title, additionalScripts: metaTags })}
 <body>
   ${renderBioViewStyles()}
-  ${renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl })}
+  ${renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl, socialMedia })}
 </body>
 </html>
   `;

@@ -54,6 +54,20 @@ export async function initializeTables(env: Env): Promise<void> {
       )`
 		).run();
 
+		// Create bio_social_media table for storing social media links
+		await env.DB.prepare(
+			`CREATE TABLE IF NOT EXISTS bio_social_media (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bio_shortcode TEXT NOT NULL,
+        platform TEXT NOT NULL,
+        url TEXT NOT NULL,
+        is_active BOOLEAN NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (bio_shortcode) REFERENCES short_urls(shortcode)
+      )`
+		).run();
+
 		// Create analytics table with minimal fields
 		await env.DB.prepare(
 			`CREATE TABLE IF NOT EXISTS analytics (
@@ -338,6 +352,9 @@ export async function saveBioPage(
 			.bind(shortcode, title, description, profilePictureUrl, theme, now, now)
 			.run();
 
+		// Clear existing bio links to enforce one link rule
+		await env.DB.prepare(`DELETE FROM bio_links WHERE bio_shortcode = ?`).bind(shortcode).run();
+
 		console.log(`Bio page saved: ${shortcode} for user: ${userId}`);
 	} catch (error) {
 		console.error('Error saving bio page:', error);
@@ -448,5 +465,58 @@ export async function updateBioLinkOrder(env: Env, linkId: number, newOrder: num
 	} catch (error) {
 		console.error('Error updating bio link order:', error);
 		throw error;
+	}
+}
+
+/**
+ * Save social media links for a bio page
+ */
+export async function saveBioSocialMedia(env: Env, bioShortcode: string, socialMedia: Record<string, string>): Promise<void> {
+	try {
+		const now = new Date().toISOString();
+
+		// Delete existing social media links for this bio page
+		await env.DB.prepare(`DELETE FROM bio_social_media WHERE bio_shortcode = ?`).bind(bioShortcode).run();
+
+		// Save new social media links
+		for (const [platform, url] of Object.entries(socialMedia)) {
+			if (url && url.trim()) {
+				await env.DB.prepare(
+					`INSERT INTO bio_social_media 
+					(bio_shortcode, platform, url, created_at, updated_at)
+					VALUES (?, ?, ?, ?, ?)`
+				)
+					.bind(bioShortcode, platform, url.trim(), now, now)
+					.run();
+			}
+		}
+
+		console.log(`Bio social media saved for: ${bioShortcode}`);
+	} catch (error) {
+		console.error('Error saving bio social media:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get social media links for a bio page
+ */
+export async function getBioSocialMedia(env: Env, bioShortcode: string): Promise<Record<string, string>> {
+	try {
+		const result = await env.DB.prepare(`SELECT platform, url FROM bio_social_media WHERE bio_shortcode = ? AND is_active = 1`)
+			.bind(bioShortcode)
+			.all();
+
+		const socialMedia: Record<string, string> = {};
+		if (result.results) {
+			for (const row of result.results) {
+				socialMedia[row.platform as string] = row.url as string;
+			}
+		}
+
+		return socialMedia;
+	} catch (error) {
+		console.error('Error getting bio social media:', error);
+		return {};
 	}
 }

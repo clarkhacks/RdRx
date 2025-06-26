@@ -162,16 +162,44 @@ function renderBioFormUI(props: BioFormUIProps = {}): string {
             </div>
         </div>
 
-        <!-- Links Section -->
+        <!-- Bio Link Section -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <label class="block text-sm font-medium text-gray-700">Links</label>
-                <button type="button" id="addLinkBtn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                    + Add Link
-                </button>
+                <label class="block text-sm font-medium text-gray-700">Your Bio Link</label>
+                <p class="text-sm text-gray-500">You can have one main bio link</p>
             </div>
-            <div id="linksContainer">
-                <!-- Links will be added here dynamically -->
+            <div id="bioLinkContainer">
+                <!-- Bio link will be added here -->
+            </div>
+        </div>
+
+        <!-- Social Media Icons Section -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <label class="block text-sm font-medium text-gray-700">Social Media Links</label>
+                <p class="text-sm text-gray-500">Add your social media profiles (optional)</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="twitterUrl" class="block text-sm font-medium text-gray-700 mb-1">Twitter/X</label>
+                    <input type="url" id="twitterUrl" name="twitterUrl" placeholder="https://twitter.com/username"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
+                <div>
+                    <label for="githubUrl" class="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+                    <input type="url" id="githubUrl" name="githubUrl" placeholder="https://github.com/username"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
+                <div>
+                    <label for="instagramUrl" class="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                    <input type="url" id="instagramUrl" name="instagramUrl" placeholder="https://instagram.com/username"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
+                <div>
+                    <label for="linkedinUrl" class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                    <input type="url" id="linkedinUrl" name="linkedinUrl" placeholder="https://linkedin.com/in/username"
+                        class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                </div>
             </div>
         </div>
 
@@ -273,7 +301,7 @@ function renderBioFormScripts(shortDomain: string): string {
                 const data = await response.json();
                 if (data.success && data.bioPage) {
                     isEditing = true;
-                    populateForm(data.bioPage, data.links || []);
+                    populateForm(data.bioPage, data.links || [], data.socialMedia || {});
                     document.getElementById('submit-text').textContent = 'Update Bio Page';
                 }
             }
@@ -285,20 +313,28 @@ function renderBioFormScripts(shortDomain: string): string {
             
             // Add initial link if no existing data
             if (!isEditing) {
-                addLink();
+                addBioLink();
             }
         }
     }
 
-    function populateForm(bioPage, links) {
+    function populateForm(bioPage, links, socialMedia = {}) {
         document.getElementById('customCode').value = bioPage.shortcode || '';
         document.getElementById('bioTitle').value = bioPage.title || '';
         document.getElementById('bioDescription').value = bioPage.description || '';
         
-        // Populate links
-        links.forEach(link => {
-            addLink(link);
-        });
+        // Populate social media fields
+        document.getElementById('twitterUrl').value = socialMedia.twitter || '';
+        document.getElementById('githubUrl').value = socialMedia.github || '';
+        document.getElementById('instagramUrl').value = socialMedia.instagram || '';
+        document.getElementById('linkedinUrl').value = socialMedia.linkedin || '';
+        
+        // Populate the single bio link
+        if (links && links.length > 0) {
+            addBioLink(links[0]);
+        } else {
+            addBioLink();
+        }
     }
 
     // Add hover effects to inputs
@@ -344,12 +380,23 @@ function renderBioFormScripts(shortDomain: string): string {
         closeIconPicker();
     }
 
-    // Add new link
-    function addLink(linkData = null) {
+    // Add single bio link
+    function addBioLink(linkData = null) {
+        // Clear existing bio link
+        document.getElementById('bioLinkContainer').innerHTML = '';
+        
         const template = document.getElementById('linkTemplate');
         const clone = template.content.cloneNode(true);
         const linkItem = clone.querySelector('.link-item');
-        linkItem.setAttribute('data-link-index', linkCounter++);
+        linkItem.setAttribute('data-link-index', 0);
+        
+        // Remove the move up/down buttons since there's only one link
+        const moveButtons = linkItem.querySelectorAll('.move-up, .move-down');
+        moveButtons.forEach(btn => btn.style.display = 'none');
+        
+        // Remove the remove button since they must have one link
+        const removeButton = linkItem.querySelector('.remove-link');
+        removeButton.style.display = 'none';
         
         if (linkData) {
             linkItem.querySelector('.link-title').value = linkData.title || '';
@@ -359,8 +406,12 @@ function renderBioFormScripts(shortDomain: string): string {
             linkItem.querySelector('.link-icon span').textContent = linkData.icon || '🔗';
         }
         
-        document.getElementById('linksContainer').appendChild(clone);
-        updateLinkButtons();
+        document.getElementById('bioLinkContainer').appendChild(clone);
+    }
+
+    // Legacy function for compatibility (not used in new single-link system)
+    function addLink(linkData = null) {
+        addBioLink(linkData);
     }
 
     function removeLink(button) {
@@ -401,9 +452,6 @@ function renderBioFormScripts(shortDomain: string): string {
         });
     }
 
-    // Event listeners
-    document.getElementById('addLinkBtn').addEventListener('click', () => addLink());
-
     // Form submission
     document.getElementById('bioForm').addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -412,9 +460,10 @@ function renderBioFormScripts(shortDomain: string): string {
         const bioTitle = document.querySelector('#bioTitle').value.trim();
         const bioDescription = document.querySelector('#bioDescription').value.trim();
         
-        // Collect all links
+        // Collect the single bio link
         const links = [];
-        document.querySelectorAll('.link-item').forEach((linkItem, index) => {
+        const linkItem = document.querySelector('#bioLinkContainer .link-item');
+        if (linkItem) {
             const title = linkItem.querySelector('.link-title').value.trim();
             const url = linkItem.querySelector('.link-url').value.trim();
             const description = linkItem.querySelector('.link-description').value.trim();
@@ -426,10 +475,18 @@ function renderBioFormScripts(shortDomain: string): string {
                     url,
                     description,
                     icon,
-                    order_index: index
+                    order_index: 0
                 });
             }
-        });
+        }
+        
+        // Collect social media links
+        const socialMedia = {
+            twitter: document.getElementById('twitterUrl').value.trim(),
+            github: document.getElementById('githubUrl').value.trim(),
+            instagram: document.getElementById('instagramUrl').value.trim(),
+            linkedin: document.getElementById('linkedinUrl').value.trim()
+        };
         
         if (!customCode || !bioTitle) {
             alert('Please fill in the bio page URL and title.');
@@ -448,7 +505,8 @@ function renderBioFormScripts(shortDomain: string): string {
                 shortcode: customCode,
                 title: bioTitle,
                 description: bioDescription,
-                links: links
+                links: links,
+                socialMedia: socialMedia
             });
 
             const response = await fetch('/api/bio/save', {
