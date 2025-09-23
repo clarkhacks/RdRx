@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      x-init="
+        $watch('darkMode', val => {
+          localStorage.setItem('darkMode', val);
+          if (val) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        });
+        
+        // Initialize on page load
+        if (localStorage.getItem('darkMode') === 'true') {
+          document.documentElement.classList.add('dark');
+        }
+      " 
+      :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon | RdRx</title>
+    <meta name="description" content="This feature is coming soon to RdRx">
+    <meta name="keywords" content="URL shortener, short URLs, share links, modern URL shortener">
+    <meta name="author" content="RdRx Team">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Coming Soon | RdRx">
+    <meta property="og:description" content="This feature is coming soon to RdRx">
+    <meta property="og:image" content="/assets/banner.jpg">
+    <meta property="og:url" content="https://rdrx.co/coming-soon/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RdRx">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Coming Soon | RdRx">
+    <meta property="twitter:description" content="This feature is coming soon to RdRx">
+    <meta property="twitter:image" content="/assets/banner.jpg">
+    
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/assets/built.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js for all pages -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+        
+        /* Base styles */
+        body {
+            font-family: 'Poppins', 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Light mode (default) */
+        :root {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F8FAFC;
+            --bg-tertiary: #F1F5F9;
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-tertiary: #64748B;
+            --border-color: #E2E8F0;
+            --card-bg: #FFFFFF;
+            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            
+            /* Orange accent colors for light mode */
+            --accent-orange: #EA580C;
+            --accent-orange-light: #FB923C;
+            --accent-orange-dark: #C2410C;
+            
+            --primary-50: #FFF7ED;
+            --primary-100: #FFEDD5;
+            --primary-200: #FED7AA;
+            --primary-300: #FDBA74;
+            --primary-400: #FB923C;
+            --primary-500: #F97316;
+            --primary-600: #EA580C;
+            --primary-700: #C2410C;
+            --primary-800: #9A3412;
+            --primary-900: #7C2D12;
+            
+            --secondary-50: #F8FAFC;
+            --secondary-100: #F1F5F9;
+            --secondary-200: #E2E8F0;
+            --secondary-300: #CBD5E1;
+            --secondary-400: #94A3B8;
+            --secondary-500: #64748B;
+            --secondary-600: #475569;
+            --secondary-700: #334155;
+            --secondary-800: #1E293B;
+            --secondary-900: #0F172A;
+        }
+        
+        /* Dark mode */
+        .dark {
+            --bg-primary: #111827;
+            --bg-secondary: #1F2937;
+            --bg-tertiary: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #E5E7EB;
+            --text-tertiary: #D1D5DB;
+            --border-color: #374151;
+            --card-bg: #1F2937;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            
+            --primary-50: #433600;
+            --primary-100: #664D00;
+            --primary-200: #8C6900;
+            --primary-300: #B38600;
+            --primary-400: #D9A200;
+            --primary-500: #FFBF00;
+            --primary-600: #FFCC33;
+            --primary-700: #FFD966;
+            --primary-800: #FFE699;
+            --primary-900: #FFF2CC;
+            
+            --secondary-50: #4A0D2B;
+            --secondary-100: #731342;
+            --secondary-200: #9C1A59;
+            --secondary-300: #C52170;
+            --secondary-400: #E91E63;
+            --secondary-500: #ED4B82;
+            --secondary-600: #F178A1;
+            --secondary-700: #F5A5C0;
+            --secondary-800: #F9D2DF;
+            --secondary-900: #FCE8EF;
+        }
+        
+        /* Common styles */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent-orange, var(--primary-500)), var(--secondary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Light mode specific gradient for "Simplify" */
+        :root .gradient-text {
+            background: linear-gradient(90deg, #EA580C, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Dark mode keeps the original gradient */
+        .dark .gradient-text {
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%);
+        }
+        
+        .dark .hero-gradient {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 191, 0, 0.1), transparent 40%),
+                        radial-gradient(circle at 70% 70%, rgba(237, 75, 130, 0.1), transparent 40%);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+            border-color: var(--primary-200);
+        }
+        
+        .dark .feature-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary-600);
+        }
+        
+        .playful-shadow {
+            box-shadow: 5px 5px 0px var(--secondary-500);
+        }
+        
+        .btn-playful {
+            transition: all 0.2s ease;
+            transform-origin: center;
+        }
+        
+        .btn-playful:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+        
+        .btn-playful:active {
+            transform: scale(0.98);
+        }
+        
+        .logo-bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* Dark mode toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .dark .dark-mode-toggle {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<!-- forcing dark mode until fixed. -->
+<body class="dark bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+    
+<!-- Navigation -->
+<nav 
+  x-data="{ open: false }"
+  class="bg-[var(--card-bg)] max-w-5xl mx-auto dark:bg-gray-800 shadow-md py-3 px-6 flex items-center justify-between sticky top-0 z-50 rounded-full mx-4 my-3 card-container backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90"
+>
+    <a href="/" class="flex items-center gap-2">
+        <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8">
+        <span class="text-xl font-bold text-[var(--text-primary)] dark:text-white">RdRx</span>
+    </a>
+    
+    <!-- Mobile menu button -->
+    <button 
+      @click="open = !open"
+      class="md:hidden ml-auto text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 focus:outline-none"
+      aria-label="Open Menu"
+    >
+      <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Desktop & mobile nav links -->
+    <div 
+      class="flex items-center gap-4"
+      :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-[var(--card-bg)] dark:bg-gray-800 shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
+    >
+        <a href="/login" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
+        <a href="/coming-soon" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
+        <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful bg-white dark:bg-gray-700 text-[var(--text-primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg text-sm py-2 px-4">
+            <i class="fab fa-github mr-1"></i> GitHub
+        </a>
+    </div>
+</nav>
+<style>
+  @media (max-width: 768px) {
+    nav .flex.items-center.gap-4 {
+      display: none;
+    }
+    nav .flex.items-center.gap-4.flex {
+      display: flex !important;
+    }
+  }
+</style>
+
+
+<!-- Main Content -->
+<main class="flex-grow hero-gradient flex flex-col items-center justify-center p-4 md:p-8">
+    <div class="max-w-3xl mx-auto text-center">
+        <div class="mb-8">
+            <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-24 h-24 mx-auto">
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold mb-6">
+            <span class="gradient-text">Coming Soon</span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-8">
+            We're working hard to bring you this feature. Stay tuned!
+        </p>
+        <div class="bg-white p-8 rounded-xl shadow-md max-w-2xl mx-auto">
+            <div class="flex items-center justify-center mb-6">
+                <i class="fas fa-tools text-4xl text-gray-400 mr-4"></i>
+                <div class="text-left">
+                    <h2 class="text-xl font-semibold">Under Construction</h2>
+                    <p class="text-gray-600">This section of our website is currently being developed</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-gray-100 rounded-lg p-4">
+                    <h3 class="font-medium mb-2">What to expect</h3>
+                    <p class="text-gray-600">We're building new features to make your experience even better. Check back soon!</p>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-4">
+                    <h3 class="font-medium mb-2">Want to be notified?</h3>
+                    <p class="text-gray-600">Follow us on <a href="https://github.com/clarkhacks/RdRx" class="text-primary-500 hover:underline">GitHub</a> to stay updated on our progress.</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8">
+            <a href="/" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+            <div>© 2025 RdRx. All rights reserved.</div>
+            <div class="flex gap-4">
+                <a href="/terms/" class="hover:text-primary-500 transition-colors duration-200">Terms of Service</a>
+                <a href="/privacy/" class="hover:text-primary-500 transition-colors duration-200">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <!-- Dark mode toggle button -->
+    <button 
+        class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300"
+        @click="darkMode = !darkMode"
+        aria-label="Toggle dark mode"
+    >
+        <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+    </button>
+
+    <!-- Force dark mode styles to apply immediately -->
+    <script>
+      // Check if dark mode is enabled in localStorage
+      if (localStorage.getItem('darkMode') === 'true') {
+        // Apply dark mode class to html element
+        document.documentElement.classList.add('dark');
+      }
+      
+      // Function to copy install command
+      function copyInstallCommand() {
+        const command = document.getElementById('install-command').textContent.trim();
+        navigator.clipboard.writeText(command).then(function() {
+          // Show success feedback
+          const button = event.target.closest('button');
+          const originalText = button.innerHTML;
+          button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+          button.classList.add('text-green-400');
+          
+          setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('text-green-400');
+          }, 2000);
+        }).catch(function(err) {
+          console.error('Failed to copy: ', err);
+          alert('Failed to copy to clipboard');
+        });
+      }
+    </script>
+</body>
+</html>
