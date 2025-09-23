@@ -1,7 +1,7 @@
 # RdRx URL Shortener
 
 <div align="center">
-  <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" width="120" height="120">
+  <img src="/assets/RdRx.png" alt="RdRx Logo" width="120" height="120">
   <h1>RdRx</h1>
   <p><strong>Modern URL Shortening & Content Sharing</strong></p>
 </div>

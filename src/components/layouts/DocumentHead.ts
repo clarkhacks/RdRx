@@ -17,7 +17,7 @@ function renderDocumentHead({ title, additionalScripts = '', noMeta = false, cus
   const metaDescription = customMeta?.description || "RdRx is a modern URL shortener that allows you to create and share short URLs easily.";
   const ogTitle = customMeta?.ogTitle || `${title} | RdRx`;
   const ogDescription = customMeta?.ogDescription || metaDescription;
-  const ogImage = customMeta?.ogImage || "https://cdn.rdrx.co/banner.jpg";
+  const ogImage = customMeta?.ogImage || "/assets/banner.jpg";
   const ogUrl = customMeta?.ogUrl || "https://rdrx.co";
   const keywords = customMeta?.keywords || "";
 
@@ -41,19 +41,19 @@ function renderDocumentHead({ title, additionalScripts = '', noMeta = false, cus
   <meta property="twitter:description" content="${ogDescription}">
   <meta property="twitter:image" content="${ogImage}">
   `) + `
-  <link rel="apple-touch-icon" sizes="57x57" href="https://cdn.rdrx.co/favicons/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="https://cdn.rdrx.co/favicons/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="https://cdn.rdrx.co/favicons/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="https://cdn.rdrx.co/favicons/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="https://cdn.rdrx.co/favicons/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.rdrx.co/favicons/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="https://cdn.rdrx.co/favicons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/assets/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/assets/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/assets/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/assets/apple-icon-144x144.png">
   <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rdrx.co/favicons/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192"  href="https://cdn.rdrx.co/favicons/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.rdrx.co/favicons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.rdrx.co/favicons/favicon-96x96.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.rdrx.co/favicons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="/assets/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/built.css">

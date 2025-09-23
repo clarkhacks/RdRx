@@ -19,7 +19,7 @@ function renderSidebar(currentPage: string = ''): string {
       <div class="flex h-full flex-col overflow-y-auto py-4 px-3">
         <div class="mb-6 px-4 md:hidden">
           <a href="/" class="flex items-center gap-2">
-            <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-8 h-8">
+            <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8">
             <span class="text-xl font-medium text-gray-800">RdRx</span>
           </a>
         </div>

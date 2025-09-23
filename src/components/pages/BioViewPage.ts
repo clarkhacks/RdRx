@@ -22,7 +22,7 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 	const metaTitle = bioPage?.meta_title || title;
 	const metaDescription = bioPage?.meta_description || description;
 	const metaTags = bioPage?.meta_tags || '';
-	const ogImage = bioPage?.og_image_url || profilePictureUrl || 'https://cdn.rdrx.co/banner.jpg';
+	const ogImage = bioPage?.og_image_url || profilePictureUrl || '/assets/banner.jpg';
 	const pageUrl = `https://${shortDomain}/${shortcode}`;
 
 	// Prepare custom meta data for DocumentHead
