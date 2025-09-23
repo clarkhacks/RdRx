@@ -440,7 +440,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 			paginatedUrls.items.length > 0
 				? `
 		<table class="table-container hidden md:table">
-			<thead>
+			<thead class="hidden md:block">
 				<tr class="table-header">
 					<th class="table-cell">Short URL</th>
 					<th class="table-cell">Target</th>
