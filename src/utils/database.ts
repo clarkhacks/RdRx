@@ -227,12 +227,12 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
 	try {
 		// Extract only essential data
 		const timestamp = new Date().toISOString();
-		const country =
-			request.cf && typeof request.cf === 'object' && request.cf !== null
-				? typeof request.cf.country === 'string'
-					? request.cf.country
-					: ''
-				: '';
+	const country =
+		(request as any).cf && typeof (request as any).cf === 'object' && (request as any).cf !== null
+			? typeof (request as any).cf.country === 'string'
+				? (request as any).cf.country
+				: ''
+			: '';
 
 		// Insert minimal view data into D1
 		await env.DB.prepare(

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Coming Soon - RdRx">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
+    <div class="max-w-md w-full text-center">
+      <div class="bg-white py-8 px-6 shadow-lg rounded-xl">
+        <img src="https://cdn.rdrx.co/logo.png" alt="RdRx Logo" class="w-16 h-16 mx-auto mb-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Coming Soon</h1>
+        <p class="text-gray-600 mb-6">
+          New user registrations are currently disabled. Please contact an administrator for access.
+        </p>
+        <div class="space-y-4">
+          <a 
+            href="/login" 
+            class="block w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Back to Login
+          </a>
+          <a 
+            href="/" 
+            class="block w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Go Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

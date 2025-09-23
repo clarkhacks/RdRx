@@ -1,0 +1,26 @@
+# Environment variables for local development
+# Copy this file to .dev.vars and fill in your values
+
+# JWT Secret for authentication
+JWT_SECRET=your-super-secret-jwt-key-here
+
+# Mailgun API Key (optional, for email functionality)
+MAILGUN_API_KEY=your-mailgun-api-key
+
+# Frontend URL
+FRONTEND_URL=http://localhost:4321
+
+# Short domain for URLs
+SHORT_DOMAIN=localhost:4321
+
+# Mailgun domain
+MAILGUN_DOMAIN=localhost
+
+# From email address
+FROM_EMAIL=no-reply@localhost
+
+# R2 URL for file storage
+R2_URL=http://localhost:4321
+
+# Disable signups (set to "true" to disable)
+DISABLE_SIGNUPS=false

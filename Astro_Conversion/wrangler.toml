@@ -1,0 +1,41 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "rdrx-astro"
+main = "dist/_worker.js"
+compatibility_date = "2024-12-05"
+compatibility_flags = ["nodejs_compat"]
+
+# Static Directory for Astro build output
+[assets]
+directory = "./dist"
+binding = "STATIC"
+
+# Vars
+[vars]
+FRONTEND_URL = "https://rdrx.co"
+SHORT_DOMAIN = "rdrx.co"
+MAILGUN_DOMAIN = "go.rdrx.co"
+FROM_EMAIL = "no-reply@go.rdrx.co"
+R2_URL = "https://cdn.rdrx.co"
+DISABLE_SIGNUPS = "true"
+
+# Workers Logs
+[observability]
+enabled = true
+
+[triggers]
+# daily cron trigger for cronDelete
+crons = ["0 0 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "rdrx"
+database_id = "42c61a4b-4fca-4742-9a0f-edd5046b5eed"
+
+[[kv_namespaces]]
+binding = "KV_RDRX"
+id = "a36a7916aca6496db9a8301d8ad4f895"
+preview_id = "0c3ffd554cbb4401b00c221424c6d023"
+
+[[r2_buckets]]
+binding = "R2_RDRX"
+bucket_name = "rdrx"

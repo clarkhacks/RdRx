@@ -3,7 +3,7 @@
  * @returns A random 6-character shortcode
  */
 export function generateShortcode(): string {
-	return Math.random().toString(36).substr(2, 6);
+ return Math.random().toString(36).substring(2, 8);
 }
 
 /**

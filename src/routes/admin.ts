@@ -417,7 +417,7 @@ async function handleGetAnalytics(request: Request, env: Env): Promise<Response>
 		let storageUsed = 0;
 		try {
 			const objects = await env.R2_RDRX.list();
-			storageUsed = Math.round(objects.objects.reduce((total, obj) => total + (obj.size || 0), 0) / (1024 * 1024));
+   storageUsed = Math.round(objects.objects.reduce((total: number, obj: any) => total + (obj.size || 0), 0) / (1024 * 1024));
 		} catch (r2Error) {
 			console.error('Error calculating storage:', r2Error);
 		}
