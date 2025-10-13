@@ -407,7 +407,7 @@ async function handlePossibleSnippetWithoutPrefix(shortcode: string, env: Env, r
 		const extension = 'txt'; // Default extension
 		return new Response(snippetContent, {
 			headers: {
-				'Content-Type': 'text/plain',
+				'Content-Type': 'text/plain; charset=utf-8',
 				'Content-Disposition': `inline; filename="snippet.${extension}"`,
 			},
 		});
