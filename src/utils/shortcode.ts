@@ -63,8 +63,10 @@ export function getContentTypeForExtension(extension: string): string {
 	const contentTypes: Record<string, string> = {
 		js: 'application/javascript',
 		css: 'text/css',
-		html: 'text/html',
-		txt: 'text/plain',
+		html: 'text/html; charset=utf-8',
+		txt: 'text/plain; charset=utf-8',
+		json: 'application/json',
+		png: 'image/png',
 		// Add more as needed
 	};
 
