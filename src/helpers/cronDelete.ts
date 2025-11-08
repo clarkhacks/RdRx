@@ -96,16 +96,28 @@ async function handleD1Deletions(env: Env, now: number): Promise<void> {
 
 				// If it's a file, delete associated files from R2
 				if (is_file) {
-					const files = await env.R2_RDRX.list({ prefix: shortcode });
+					// Use the correct prefix pattern: uploads/${shortcode}- to ensure exact matching
+					// This prevents deleting files from other shortcodes that start with the same characters
+					const files = await env.R2_RDRX.list({ prefix: `uploads/${shortcode}-` });
 					if (files.objects && files.objects.length > 0) {
 						for (const file of files.objects) {
 							await env.R2_RDRX.delete(file.key);
 							console.log(`Deleted file: ${file.key}`);
 						}
 					} else {
-						console.warn(`No files found for prefix: ${shortcode}`);
+						console.warn(`No files found for prefix: uploads/${shortcode}-`);
 					}
 				}
+
+				// Delete the shortcode entry from short_urls table
+				await env.DB.prepare(
+					`
+					DELETE FROM short_urls WHERE shortcode = ?
+				`
+				)
+					.bind(actualShortcode)
+					.run();
+				console.log(`Deleted short_url entry for: ${actualShortcode}`);
 
 				// Delete the entry from the deletions table
 				await env.DB.prepare(
