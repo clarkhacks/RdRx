@@ -9,7 +9,7 @@ FROM_EMAIL="noreply@your-domain.com"
 FRONTEND_URL="http://localhost:8787"
 SHORT_DOMAIN="rdrx.co"
 ADMIN_UID="12345678901234567890" # Example UID for admin user
-R2_URL="htps://cdn.rdrx.co"
+R2_URL="https://cdn.rdrx.co"
 
 # Optional: Disable user signups (set to "true" to disable)
 DISABLE_SIGNUPS="true"

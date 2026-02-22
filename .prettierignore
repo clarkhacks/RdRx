@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.wrangler/
+
+# Build outputs
+dist/
+static/assets/built.css
+static/coming-soon/
+static/privacy/
+static/terms/
+static/verify/
+
+# Logs
+*.log
+
+# Environment files
+.dev.vars
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+
+# Generated files
+*.d.ts
+worker-configuration.d.ts
+
+# Website build
+website/_site/
+
+# Git
+.git/
