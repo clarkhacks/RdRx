@@ -3,14 +3,17 @@
 <div align="center">
   <img src="/assets/RdRx.png" alt="RdRx Logo" width="120" height="120">
   <h1>RdRx</h1>
-  <p><strong>Modern URL Shortening & Content Sharing</strong></p>
+  <p><strong>Modern URL Shortening & Content Sharing Platform</strong></p>
+  <p>Built with Cloudflare Workers, D1, R2, and KV</p>
 </div>
 
 <div align="center">
   <a href="CONTRIBUTING.md">Contributing</a> |
+  <a href="CHANGELOG.md">Changelog</a> |
+  <a href="DEPLOYMENT.md">Deployment Guide</a> |
   <a href="https://github.com/clarkhacks/RdRx/stargazers">⭐ Star</a> |
   <a href="https://github.com/clarkhacks/RdRx/fork">🍴 Fork</a> |
-  <a href="https://github.com/clarkhacks/RdRx/issues">🛠 Open Issue</a>
+  <a href="https://github.com/clarkhacks/RdRx/issues">🛠 Issues</a>
 </div>
 
 <div align="center">
@@ -19,7 +22,9 @@
   </a>
 </div>
 
-> **Note:** This project is in early development. Some features may require tinkering to work properly in your environment.
+<br>
+
+> **Production Ready**: RdRx is ready for production deployment. Follow the [Deployment Guide](DEPLOYMENT.md) for a comprehensive checklist.
 
 ## 📸 Visual Features Showcase
 
