@@ -143,6 +143,24 @@ async function handleAuthAPI(request: Request, env: Env, path: string, method: s
 				}
 				return await handleLogoutAPI(corsHeaders);
 
+			case '/api/auth/api-key':
+				if (method !== 'GET') {
+					return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
+						status: 405,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+				return await handleGetApiKeyAPI(request, env, corsHeaders);
+
+			case '/api/auth/api-key/regenerate':
+				if (method !== 'POST') {
+					return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
+						status: 405,
+						headers: { 'Content-Type': 'application/json', ...corsHeaders },
+					});
+				}
+				return await handleRegenerateApiKeyAPI(request, env, corsHeaders);
+
 			default:
 				return new Response(JSON.stringify({ success: false, message: 'Not found' }), {
 					status: 404,
@@ -722,4 +740,82 @@ async function handleTestAuthPage(request: Request, env: Env): Promise<Response>
 	return new Response(html, {
 		headers: { 'Content-Type': 'text/html' },
 	});
+}
+
+/**
+ * Handle get API key API
+ */
+async function handleGetApiKeyAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+	try {
+		// Verify session
+		const { user } = await verifySession(env, request);
+		if (!user) {
+			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Return the user's API key (or null if they don't have one)
+		return new Response(
+			JSON.stringify({
+				success: true,
+				api_key: user.api_key || null,
+			}),
+			{
+				status: 200,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			},
+		);
+	} catch (error) {
+		console.error('Get API key error:', error);
+		return new Response(JSON.stringify({ success: false, message: 'Internal server error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	}
+}
+
+/**
+ * Handle regenerate API key API
+ */
+async function handleRegenerateApiKeyAPI(request: Request, env: Env, corsHeaders: Record<string, string>): Promise<Response> {
+	try {
+		// Verify session
+		const { user } = await verifySession(env, request);
+		if (!user) {
+			return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+				status: 401,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			});
+		}
+
+		// Generate new API key
+		const { generateApiKey } = await import('../components/auth/apiKey');
+		const { updateUserApiKey } = await import('../components/auth/database');
+		
+		const newApiKey = generateApiKey();
+		
+		// Update in database
+		await updateUserApiKey(env, user.uid, newApiKey);
+
+		// Return the new API key
+		return new Response(
+			JSON.stringify({
+				success: true,
+				api_key: newApiKey,
+				message: 'API key regenerated successfully',
+			}),
+			{
+				status: 200,
+				headers: { 'Content-Type': 'application/json', ...corsHeaders },
+			},
+		);
+	} catch (error) {
+		console.error('Regenerate API key error:', error);
+		return new Response(JSON.stringify({ success: false, message: 'Internal server error' }), {
+			status: 500,
+			headers: { 'Content-Type': 'application/json', ...corsHeaders },
+		});
+	}
 }

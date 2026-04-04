@@ -13,6 +13,7 @@ export interface User {
 	email_verified: boolean;
 	reset_token?: string;
 	reset_token_expires?: string;
+	api_key?: string;
 }
 
 export interface SignupRequest {

@@ -230,27 +230,46 @@
         /* Dark mode toggle */
         .dark-mode-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            width: 50px;
-            height: 50px;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border-color);
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
         
         .dark .dark-mode-toggle {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-color: var(--border-color);
+        }
+        
+        .dark .dark-mode-toggle:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(-15deg);
         }
     </style>
 </head>
-<!-- forcing dark mode until fixed. -->
-<body class="dark bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
     
 <!-- Navigation -->
 <nav 
@@ -309,30 +328,30 @@
         <h1 class="text-4xl sm:text-5xl font-bold mb-6">
             <span class="gradient-text">Coming Soon</span>
         </h1>
-        <p class="text-xl text-gray-600 mb-8">
+        <p class="text-xl text-[var(--text-secondary)] dark:text-gray-300 mb-8">
             We're working hard to bring you this feature. Stay tuned!
         </p>
-        <div class="bg-white p-8 rounded-xl shadow-md max-w-2xl mx-auto">
+        <div class="bg-[var(--card-bg)] dark:bg-gray-800 p-8 rounded-xl shadow-md max-w-2xl mx-auto border border-gray-100 dark:border-gray-700">
             <div class="flex items-center justify-center mb-6">
-                <i class="fas fa-tools text-4xl text-gray-400 mr-4"></i>
+                <i class="fas fa-tools text-4xl text-[var(--text-tertiary)] dark:text-gray-400 mr-4"></i>
                 <div class="text-left">
-                    <h2 class="text-xl font-semibold">Under Construction</h2>
-                    <p class="text-gray-600">This section of our website is currently being developed</p>
+                    <h2 class="text-xl font-semibold text-[var(--text-primary)] dark:text-white">Under Construction</h2>
+                    <p class="text-[var(--text-secondary)] dark:text-gray-300">This section of our website is currently being developed</p>
                 </div>
             </div>
             <div class="space-y-4">
-                <div class="bg-gray-100 rounded-lg p-4">
-                    <h3 class="font-medium mb-2">What to expect</h3>
-                    <p class="text-gray-600">We're building new features to make your experience even better. Check back soon!</p>
+                <div class="bg-[var(--bg-tertiary)] dark:bg-gray-700 rounded-lg p-4">
+                    <h3 class="font-medium mb-2 text-[var(--text-primary)] dark:text-white">What to expect</h3>
+                    <p class="text-[var(--text-secondary)] dark:text-gray-300">We're building new features to make your experience even better. Check back soon!</p>
                 </div>
-                <div class="bg-gray-100 rounded-lg p-4">
-                    <h3 class="font-medium mb-2">Want to be notified?</h3>
-                    <p class="text-gray-600">Follow us on <a href="https://github.com/clarkhacks/RdRx" class="text-primary-500 hover:underline">GitHub</a> to stay updated on our progress.</p>
+                <div class="bg-[var(--bg-tertiary)] dark:bg-gray-700 rounded-lg p-4">
+                    <h3 class="font-medium mb-2 text-[var(--text-primary)] dark:text-white">Want to be notified?</h3>
+                    <p class="text-[var(--text-secondary)] dark:text-gray-300">Follow us on <a href="https://github.com/clarkhacks/RdRx" class="text-primary-600 dark:text-primary-400 hover:underline">GitHub</a> to stay updated on our progress.</p>
                 </div>
             </div>
         </div>
         <div class="mt-8">
-            <a href="/" class="bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200">
+            <a href="/" class="bg-[var(--card-bg)] dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-[var(--text-primary)] dark:text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl border border-gray-200 dark:border-gray-600">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Home
             </a>
         </div>
@@ -340,13 +359,13 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-sm text-gray-600">
+<footer class="bg-[var(--card-bg)] dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 py-4 px-6 text-center text-sm text-[var(--text-secondary)] dark:text-gray-400">
     <div class="max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-center items-center gap-4">
             <div>© 2025 RdRx. All rights reserved.</div>
             <div class="flex gap-4">
-                <a href="/terms/" class="hover:text-primary-500 transition-colors duration-200">Terms of Service</a>
-                <a href="/privacy/" class="hover:text-primary-500 transition-colors duration-200">Privacy Policy</a>
+                <a href="/terms/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Terms of Service</a>
+                <a href="/privacy/" class="hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200">Privacy Policy</a>
             </div>
         </div>
     </div>

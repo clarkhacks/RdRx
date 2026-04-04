@@ -230,34 +230,53 @@
         /* Dark mode toggle */
         .dark-mode-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            width: 50px;
-            height: 50px;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border-color);
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
         
         .dark .dark-mode-toggle {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-color: var(--border-color);
+        }
+        
+        .dark .dark-mode-toggle:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(-15deg);
         }
     </style>
 </head>
-<!-- forcing dark mode until fixed. -->
-<body class="dark bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
     
-<div class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white shadow-lg rounded-lg p-6 md:p-8 w-full max-w-md flex flex-col items-center justify-center">
-        <h1 class="font-bold text-center">Domain Owner: Clark Weckmann</h1>
-        <h2 class="font-bold text-center">Contact: <a href="https://www.clark.today" class="">https://www.clark.today</a></h2>
-        <p class="">This is not an official RDRX tool, but a personal project by Clark Weckmann. If you have any questions or concerns, please reach out to me directly.</p>
-        <p class="">I built this tool to make my life easier, and I hope it helps you too. If you have any feedback or suggestions, I'd love to hear them.</p>
+<div class="bg-[var(--bg-secondary)] dark:bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-[var(--card-bg)] dark:bg-gray-800 shadow-lg rounded-lg p-6 md:p-8 w-full max-w-md flex flex-col items-center justify-center border border-gray-200 dark:border-gray-700">
+        <h1 class="font-bold text-center text-[var(--text-primary)] dark:text-white mb-4">Domain Owner: Clark Weckmann</h1>
+        <h2 class="font-bold text-center text-[var(--text-secondary)] dark:text-gray-300 mb-4">Contact: <a href="https://www.clark.today" class="text-primary-600 dark:text-primary-400 hover:underline">https://www.clark.today</a></h2>
+        <p class="text-[var(--text-secondary)] dark:text-gray-300 mb-4 text-center">This is not an official RDRX tool, but a personal project by Clark Weckmann. If you have any questions or concerns, please reach out to me directly.</p>
+        <p class="text-[var(--text-secondary)] dark:text-gray-300 text-center">I built this tool to make my life easier, and I hope it helps you too. If you have any feedback or suggestions, I'd love to hear them.</p>
     </div>
 </div>
 

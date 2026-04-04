@@ -17,7 +17,8 @@ export async function initializeUsersTable(env: Env): Promise<void> {
 				updated_at TEXT NOT NULL,
 				email_verified BOOLEAN NOT NULL DEFAULT 0,
 				reset_token TEXT,
-				reset_token_expires TEXT
+				reset_token_expires TEXT,
+				api_key TEXT
 			)`
 		).run();
 
@@ -49,8 +50,8 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 		await env.DB.prepare(
 			`INSERT INTO users (
 				uid, name, email, password_hash, profile_picture_url,
-				created_at, updated_at, email_verified, reset_token, reset_token_expires
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+				created_at, updated_at, email_verified, reset_token, reset_token_expires, api_key
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		)
 			.bind(
 				newUser.uid,
@@ -62,7 +63,8 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 				newUser.updated_at,
 				newUser.email_verified ? 1 : 0,
 				newUser.reset_token || null,
-				newUser.reset_token_expires || null
+				newUser.reset_token_expires || null,
+				newUser.api_key || null
 			)
 			.run();
 
@@ -94,6 +96,7 @@ export async function getUserByEmail(env: Env, email: string): Promise<User | nu
 			email_verified: Boolean(result.email_verified),
 			reset_token: (result.reset_token as string) || undefined,
 			reset_token_expires: (result.reset_token_expires as string) || undefined,
+			api_key: (result.api_key as string) || undefined,
 		};
 	} catch (error) {
 		console.error('Error getting user by email:', error);
@@ -121,6 +124,7 @@ export async function getUserByUid(env: Env, uid: string): Promise<User | null> 
 			email_verified: Boolean(result.email_verified),
 			reset_token: (result.reset_token as string) || undefined,
 			reset_token_expires: (result.reset_token_expires as string) || undefined,
+			api_key: (result.api_key as string) || undefined,
 		};
 	} catch (error) {
 		console.error('Error getting user by UID:', error);
@@ -182,6 +186,7 @@ export async function getUserByResetToken(env: Env, token: string): Promise<User
 			email_verified: Boolean(result.email_verified),
 			reset_token: (result.reset_token as string) || undefined,
 			reset_token_expires: (result.reset_token_expires as string) || undefined,
+			api_key: (result.api_key as string) || undefined,
 		};
 	} catch (error) {
 		console.error('Error getting user by reset token:', error);
@@ -216,5 +221,49 @@ export async function markEmailVerified(env: Env, uid: string): Promise<void> {
 	} catch (error) {
 		console.error('Error marking email as verified:', error);
 		throw error;
+	}
+}
+
+/**
+ * Update user API key
+ */
+export async function updateUserApiKey(env: Env, uid: string, apiKey: string): Promise<void> {
+	try {
+		await env.DB.prepare(`UPDATE users SET api_key = ?, updated_at = ? WHERE uid = ?`)
+			.bind(apiKey, new Date().toISOString(), uid)
+			.run();
+
+		console.log(`API key updated for user: ${uid}`);
+	} catch (error) {
+		console.error('Error updating API key:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get user by API key
+ */
+export async function getUserByApiKey(env: Env, apiKey: string): Promise<User | null> {
+	try {
+		const result = await env.DB.prepare(`SELECT * FROM users WHERE api_key = ?`).bind(apiKey).first();
+
+		if (!result) return null;
+
+		return {
+			uid: result.uid as string,
+			name: result.name as string,
+			email: result.email as string,
+			password_hash: result.password_hash as string,
+			profile_picture_url: (result.profile_picture_url as string) || undefined,
+			created_at: result.created_at as string,
+			updated_at: result.updated_at as string,
+			email_verified: Boolean(result.email_verified),
+			reset_token: (result.reset_token as string) || undefined,
+			reset_token_expires: (result.reset_token_expires as string) || undefined,
+			api_key: (result.api_key as string) || undefined,
+		};
+	} catch (error) {
+		console.error('Error getting user by API key:', error);
+		return null;
 	}
 }

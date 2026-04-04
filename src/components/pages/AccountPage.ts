@@ -217,7 +217,111 @@ export async function renderAccountPage(request: Request, env: Env): Promise<Res
 					}
 				});
 				
-				// No bio page scripts needed anymore
+				// API Key Management
+				let apiKeyVisible = false;
+				let currentApiKey = null;
+				
+				// Load API key on page load
+				async function loadApiKey() {
+					try {
+						const response = await fetch('/api/auth/api-key');
+						const result = await response.json();
+						
+						if (result.success) {
+							currentApiKey = result.api_key;
+							const display = document.getElementById('api-key-display');
+							
+							if (currentApiKey) {
+								display.value = '••••••••••••••••••••••••';
+								document.getElementById('api-key-status').textContent = 'API key is set';
+							} else {
+								display.value = 'No API key generated yet';
+								document.getElementById('api-key-status').textContent = 'Click "Regenerate API Key" to create one';
+							}
+						}
+					} catch (error) {
+						console.error('Error loading API key:', error);
+						document.getElementById('api-key-status').textContent = 'Error loading API key';
+					}
+				}
+				
+				// Toggle API key visibility
+				document.getElementById('toggle-api-key').addEventListener('click', function() {
+					const display = document.getElementById('api-key-display');
+					const button = this;
+					
+					if (!currentApiKey) {
+						document.getElementById('api-key-status').textContent = 'No API key to show';
+						return;
+					}
+					
+					apiKeyVisible = !apiKeyVisible;
+					
+					if (apiKeyVisible) {
+						display.type = 'text';
+						display.value = currentApiKey;
+						button.textContent = 'Hide';
+					} else {
+						display.type = 'password';
+						display.value = '••••••••••••••••••••••••';
+						button.textContent = 'Show';
+					}
+				});
+				
+				// Copy API key to clipboard
+				document.getElementById('copy-api-key').addEventListener('click', async function() {
+					if (!currentApiKey) {
+						document.getElementById('api-key-status').textContent = 'No API key to copy';
+						return;
+					}
+					
+					try {
+						await navigator.clipboard.writeText(currentApiKey);
+						document.getElementById('api-key-status').textContent = 'API key copied to clipboard!';
+						setTimeout(() => {
+							document.getElementById('api-key-status').textContent = 'API key is set';
+						}, 3000);
+					} catch (error) {
+						document.getElementById('api-key-status').textContent = 'Failed to copy to clipboard';
+					}
+				});
+				
+				// Regenerate API key
+				document.getElementById('regenerate-api-key').addEventListener('click', async function() {
+					if (!confirm('Are you sure you want to regenerate your API key? This will invalidate your current key and any applications using it will stop working.')) {
+						return;
+					}
+					
+					try {
+						document.getElementById('api-key-status').textContent = 'Generating new API key...';
+						this.disabled = true;
+						
+						const response = await fetch('/api/auth/api-key/regenerate', {
+							method: 'POST'
+						});
+						
+						const result = await response.json();
+						
+						if (result.success) {
+							currentApiKey = result.api_key;
+							const display = document.getElementById('api-key-display');
+							display.type = 'text';
+							display.value = currentApiKey;
+							apiKeyVisible = true;
+							document.getElementById('toggle-api-key').textContent = 'Hide';
+							document.getElementById('api-key-status').textContent = 'New API key generated! Make sure to copy it now.';
+						} else {
+							document.getElementById('api-key-status').textContent = 'Failed to generate API key: ' + result.message;
+						}
+					} catch (error) {
+						document.getElementById('api-key-status').textContent = 'Error generating API key';
+					} finally {
+						this.disabled = false;
+					}
+				});
+				
+				// Load API key on page load
+				loadApiKey();
 			</script>
 		</body>
 		</html>
@@ -360,6 +464,42 @@ function renderAccountContent(user: User, shortDomain: string): string {
                             <p id="profile-status" class="text-sm text-gray-600"></p>
                         </div>
                     </form>
+                </div>
+                
+                <!-- API Key Section -->
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card lg:col-span-3">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">API Key</h2>
+                    <p class="text-gray-600 mb-6">Use your API key to create short URLs programmatically from iOS Shortcuts or other applications.</p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 mb-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Your API Key</label>
+                                <div class="flex items-center space-x-2">
+                                    <input id="api-key-display" type="password" readonly 
+                                        class="flex-1 px-4 py-3 border border-gray-300 rounded-2xl bg-white text-gray-900 font-mono text-sm"
+                                        value="Loading..." />
+                                    <button id="toggle-api-key" type="button" 
+                                        class="btn-secondary text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                        Show
+                                    </button>
+                                    <button id="copy-api-key" type="button" 
+                                        class="btn-gradient text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                        Copy
+                                    </button>
+                                </div>
+                                <p id="api-key-status" class="mt-2 text-sm text-gray-600"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button id="regenerate-api-key" type="button" 
+                            class="btn-cancel text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                            Regenerate API Key
+                        </button>
+                        <p class="text-sm text-gray-500">⚠️ Regenerating will invalidate your current key</p>
+                    </div>
                 </div>
                 
                 <!-- Change Password Section -->

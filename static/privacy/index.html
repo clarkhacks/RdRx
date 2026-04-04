@@ -230,27 +230,46 @@
         /* Dark mode toggle */
         .dark-mode-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            width: 50px;
-            height: 50px;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border-color);
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
         
         .dark .dark-mode-toggle {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-color: var(--border-color);
+        }
+        
+        .dark .dark-mode-toggle:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(-15deg);
         }
     </style>
 </head>
-<!-- forcing dark mode until fixed. -->
-<body class="dark bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
     
 <!-- Navigation -->
 <nav 
@@ -303,9 +322,9 @@
 <!-- Main Content -->
 <main class="flex-grow p-4 md:p-8">
   <div class="container mx-auto px-4 py-8 max-w-4xl mt-8">
-    <h1 class="text-3xl font-bold mb-6">Privacy Policy | RdRx</h1>
+    <h1 class="text-3xl font-bold mb-6 text-[var(--text-primary)] dark:text-white">Privacy Policy | RdRx</h1>
     
-<div class="prose prose-lg max-w-none prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary-500 prose-ol:list-decimal prose-ol:pl-6 prose-li:pl-2">
+<div class="prose prose-lg max-w-none prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary-600 dark:prose-li:marker:text-primary-400 prose-ol:list-decimal prose-ol:pl-6 prose-li:pl-2 prose-headings:text-[var(--text-primary)] dark:prose-headings:text-white prose-p:text-[var(--text-secondary)] dark:prose-p:text-gray-300 prose-strong:text-[var(--text-primary)] dark:prose-strong:text-white prose-li:text-[var(--text-secondary)] dark:prose-li:text-gray-300">
       <p>This Privacy Policy describes how we collect, use, and handle your information when you use our services.</p>
 <h2>1. Information We Collect</h2>
 <p>We collect information in the following ways:</p>
