@@ -35,7 +35,7 @@ Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE
 
 ### Creating a Short URL
 
-**Endpoint:** `POST https://your-domain.com/api/create`
+**Endpoint:** `POST https://rdrx.co/`
 
 **Headers:**
 ```
@@ -43,7 +43,7 @@ Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE
 Content-Type: application/json
 ```
 
-**Request Body:**
+**Request Body (Random Shortcode):**
 ```json
 {
   "url": "https://example.com/very/long/url",
@@ -51,7 +51,7 @@ Content-Type: application/json
 }
 ```
 
-**With Custom Shortcode:**
+**Request Body (Custom Shortcode):**
 ```json
 {
   "url": "https://example.com/very/long/url",
@@ -60,13 +60,21 @@ Content-Type: application/json
 }
 ```
 
-**Response:**
+**Response (Success):**
 ```json
 {
-  "shortcode": "abc123",
-  "message": "Short URL created successfully"
+  "shortcode": "abc123"
 }
 ```
+
+**Response (Error - Shortcode Exists):**
+```json
+{
+  "message": "Shortcode already exists"
+}
+```
+
+**Your Short URL:** `https://rdrx.co/{shortcode}`
 
 ## iOS Shortcuts Integration
 
@@ -80,31 +88,41 @@ Content-Type: application/json
 
 Add the following actions to your shortcut:
 
-1. **Get Text from Input** (or **Ask for Input** with prompt "Enter URL to shorten")
+1. **Ask for Input**
+   - Prompt: `Enter URL to shorten`
+   - Input Type: `URL`
 
-2. **Get Contents of URL**
-   - URL: `https://your-domain.com/api/create`
+2. **Text**
+   - Content: 
+   ```json
+   {"url":"[Provided Input]","custom":false}
+   ```
+   - Replace `[Provided Input]` with the output from step 1
+
+3. **Get Contents of URL**
+   - URL: `https://rdrx.co/`
    - Method: `POST`
    - Headers:
-     - `Authorization`: `Bearer rdrx_live_YOUR_API_KEY_HERE`
-     - `Content-Type`: `application/json`
-   - Request Body: `JSON`
-   ```json
-   {
-     "url": "[Input from Step 1]",
-     "custom": false
-   }
-   ```
+     - Add Header: `Authorization` = `Bearer rdrx_live_YOUR_API_KEY_HERE`
+     - Add Header: `Content-Type` = `application/json`
+   - Request Body: `Text` (select the Text from step 2)
 
-3. **Get Dictionary from Input** (parse the JSON response)
+4. **Get Dictionary from Input**
+   - Input: `Contents of URL` (from step 3)
 
-4. **Get Dictionary Value** 
+5. **Get Dictionary Value**
    - Key: `shortcode`
+   - Dictionary: `Dictionary` (from step 4)
 
-5. **Text**
-   - Content: `https://your-domain.com/[Dictionary Value]`
+6. **Text**
+   - Content: `https://rdrx.co/[Dictionary Value]`
+   - Replace `[Dictionary Value]` with output from step 5
 
-6. **Copy to Clipboard** (or **Share** or **Show Result**)
+7. **Copy to Clipboard**
+   - Content: `Text` (from step 6)
+
+8. **Show Result**
+   - Content: `Clipboard`
 
 ### Step 3: Run the Shortcut
 
@@ -115,7 +133,7 @@ Add the following actions to your shortcut:
 ## Example: cURL
 
 ```bash
-curl -X POST https://your-domain.com/api/create \
+curl -X POST https://rdrx.co/ \
   -H "Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE" \
   -H "Content-Type: application/json" \
   -d '{
@@ -130,7 +148,7 @@ curl -X POST https://your-domain.com/api/create \
 import requests
 
 API_KEY = "rdrx_live_YOUR_API_KEY_HERE"
-BASE_URL = "https://your-domain.com"
+BASE_URL = "https://rdrx.co"
 
 def create_short_url(long_url, custom_code=None):
     headers = {
@@ -147,7 +165,7 @@ def create_short_url(long_url, custom_code=None):
         data["custom_code"] = custom_code
     
     response = requests.post(
-        f"{BASE_URL}/api/create",
+        BASE_URL,
         headers=headers,
         json=data
     )
@@ -167,10 +185,10 @@ print(f"Short URL: {short_url}")
 
 ```javascript
 const API_KEY = "rdrx_live_YOUR_API_KEY_HERE";
-const BASE_URL = "https://your-domain.com";
+const BASE_URL = "https://rdrx.co";
 
 async function createShortUrl(longUrl, customCode = null) {
-  const response = await fetch(`${BASE_URL}/api/create`, {
+  const response = await fetch(BASE_URL, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${API_KEY}`,
@@ -245,21 +263,32 @@ createShortUrl("https://example.com/very/long/url")
 
 ### Create Short URL
 - **Method**: `POST`
-- **Endpoint**: `/api/create`
+- **Endpoint**: `/`
 - **Auth**: Required (API Key or Session)
 - **Body**: `{ "url": string, "custom"?: boolean, "custom_code"?: string }`
+- **Response**: `{ "shortcode": string }`
 
 ### Create Code Snippet
 - **Method**: `POST`
-- **Endpoint**: `/api/create`
-- **Auth**: Required
+- **Endpoint**: `/`
+- **Auth**: Required (API Key or Session)
 - **Body**: `{ "snippet": string, "custom"?: boolean, "custom_code"?: string }`
+- **Response**: `{ "shortcode": string }`
 
 ### Upload Files
 - **Method**: `POST`
 - **Endpoint**: `/upload`
-- **Auth**: Required
+- **Auth**: Required (API Key or Session)
 - **Body**: `multipart/form-data` with files
+- **Response**: `{ "urls": string[], "shortcode": string }`
+
+### Create Temporary URL (No Auth Required)
+- **Method**: `POST`
+- **Endpoint**: `/temp`
+- **Auth**: Not required
+- **Body**: `{ "url": string }`
+- **Response**: `{ "shortcode": string, "url": string, "expires_at": string, "full_url": string }`
+- **Note**: Expires in 2 days
 
 ## Future Enhancements
 

@@ -15,18 +15,47 @@ export async function handleApiRoutes(request: Request, env: Env): Promise<Respo
 		return handleCreateTempUrl(request, env);
 	}
 
-	// Check if the user is authenticated using the user property attached by the middleware
-	const isAuthenticatedUser = request.user !== undefined && request.user !== null;
+	// Check for API key authentication first
+	const authHeader = request.headers.get('Authorization');
+	let userId: string | null = null;
+	let isAuthenticated = false;
 
-	// Return unauthorized response if not authenticated
-	const unauthorizedResponse = unauthorizedResponseIfNotAuthenticated(isAuthenticatedUser);
-	if (unauthorizedResponse) {
-		console.log('Unauthorized POST request');
-		return unauthorizedResponse;
+	if (authHeader && authHeader.startsWith('Bearer ')) {
+		const apiKey = authHeader.substring(7); // Remove 'Bearer ' prefix
+		
+		// Check if it's an API key (starts with rdrx_live_)
+		if (apiKey.startsWith('rdrx_live_')) {
+			const { getUserByApiKey } = await import('../components/auth/database');
+			const user = await getUserByApiKey(env, apiKey);
+			
+			if (user) {
+				userId = user.uid;
+				isAuthenticated = true;
+				console.log('Authenticated via API key');
+			} else {
+				console.log('Invalid API key');
+				return new Response(JSON.stringify({ error: 'Invalid API key' }), {
+					status: 401,
+					headers: { 'Content-Type': 'application/json' },
+				});
+			}
+		}
 	}
 
-	// Get the user ID from the authenticated user
-	const userId = request.user?.uid || null;
+	// If not authenticated via API key, check session authentication
+	if (!isAuthenticated) {
+		const isAuthenticatedUser = request.user !== undefined && request.user !== null;
+		
+		// Return unauthorized response if not authenticated
+		const unauthorizedResponse = unauthorizedResponseIfNotAuthenticated(isAuthenticatedUser);
+		if (unauthorizedResponse) {
+			console.log('Unauthorized POST request');
+			return unauthorizedResponse;
+		}
+
+		// Get the user ID from the authenticated user
+		userId = request.user?.uid || null;
+	}
 
 	// Handle file upload
 	if (request.url.endsWith('/upload')) {
