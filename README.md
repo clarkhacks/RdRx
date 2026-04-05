@@ -28,11 +28,7 @@ Quick links:
 
 ## 🚀 Quick Start
 
-### One-Click Install
-
-```bash
-curl -sSL https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh | bash
-```
+> Quiest start with CloudFlare Workers [Deploy](https://deploy.workers.cloudflare.com/?url=https://github.com/clarkhacks/RdRx)
 
 ### Manual Install
 

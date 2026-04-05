@@ -1,26 +1,50 @@
-<footer class="bg-gray-900 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+<footer class="bg-gray-900 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8 mt-auto">
     <div class="max-w-5xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <!-- Brand -->
+            <div>
+                <div class="flex items-center mb-3">
                     <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-10 h-10 mr-3">
                     <span class="text-2xl font-bold gradient-text">RdRx</span>
                 </div>
-                <p class="text-gray-400 dark:text-gray-300 mt-2">Modern URL shortening & content sharing</p>
+                <p class="text-gray-400 dark:text-gray-300 text-sm">
+                    Modern URL shortening & content sharing platform built on Cloudflare Workers.
+                </p>
             </div>
             
-            <div class="flex flex-col items-end">
-                <div class="flex gap-4 mb-3">
-                    <a href="/terms/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Terms of Service</a>
-                    <a href="/privacy/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Privacy Policy</a>
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="/docs/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Documentation</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">GitHub</a></li>
+                    <li><a href="/terms/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Terms of Service</a></li>
+                    <li><a href="/privacy/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Privacy Policy</a></li>
+                </ul>
+            </div>
+            
+            <!-- Connect -->
+            <div>
+                <h3 class="text-lg font-semibold mb-3">Connect</h3>
+                <div class="flex gap-4 mb-4">
+                    <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
                 </div>
-                <p class="text-gray-400 dark:text-gray-300 mb-2">
-                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">GPL-3.0</a>
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">
-                    &copy; 2025 RdRx. All rights reserved.
+                <p class="text-gray-400 dark:text-gray-300 text-sm">
+                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">GPL-3.0 License</a>
                 </p>
             </div>
+        </div>
+        
+        <!-- Bottom Bar -->
+        <div class="border-t border-gray-800 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-gray-500 dark:text-gray-400 text-sm text-center md:text-left">
+                &copy; 2025 RdRx. All rights reserved.
+            </p>
+            <p class="text-gray-500 dark:text-gray-400 text-sm text-center md:text-right">
+                A <a href="https://www.clark.today/" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition font-medium">Clark Today</a> product • Made with <i class="fas fa-heart text-red-500"></i> by <a href="https://www.clark.today/" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">Clark</a>
+            </p>
         </div>
     </div>
 </footer>

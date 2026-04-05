@@ -249,8 +249,7 @@
         }
     </style>
 </head>
-<!-- forcing dark mode until fixed. -->
-<body class="dark {% if page.url == "/" %}bg-[var(--bg-primary)] text-[var(--text-primary)]{% else %}bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col{% endif %}">
+<body class="{% if page.url == "/" %}bg-[var(--bg-primary)] text-[var(--text-primary)]{% else %}bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col{% endif %}">
     {{ content | safe }}
     <!-- Dark mode toggle button -->
     <button 

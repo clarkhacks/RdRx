@@ -163,7 +163,7 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                 <span class="gradient-text">Deploy Your Own</span> RdRx Instance
             </h2>
             <p class="text-lg text-[var(--text-secondary)] dark:text-gray-300 max-w-3xl mx-auto mb-6">
-                Get RdRx up and running in minutes with our automated one-click installation script.
+                Get RdRx up and running in minutes with one-click deployment to Cloudflare Workers.
             </p>
             
             <!-- Cloudflare Deploy Button -->
@@ -176,69 +176,68 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                 </p>
             </div>
             
-            <div class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 max-w-4xl mx-auto">
+            <div class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 max-w-4xl mx-auto">
                 <div class="flex items-start">
-                    <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-xl mr-3 mt-1"></i>
+                    <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 text-xl mr-3 mt-1"></i>
                     <div class="text-left">
-                        <h3 class="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-2">Development Status</h3>
-                        <p class="text-yellow-700 dark:text-yellow-300 text-sm mb-2">
-                            <strong>RdRx is currently in active development.</strong> The installation script and application are functional but still being refined. Some manual configuration may be required:
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">Post-Deployment Setup</h3>
+                        <p class="text-blue-700 dark:text-blue-300 text-sm mb-2">
+                            After deploying, you'll need to complete a few setup steps:
                         </p>
-                        <ul class="text-yellow-700 dark:text-yellow-300 text-sm list-disc list-inside space-y-1">
-                            <li>User registration is currently disabled during development</li>
-                            <li>You'll need to manually create an admin account and set the ADMIN_UID</li>
-                            <li>Some features may require additional configuration</li>
+                        <ul class="text-blue-700 dark:text-blue-300 text-sm list-disc list-inside space-y-1">
+                            <li>Create Cloudflare D1 database, R2 bucket, and KV namespace</li>
+                            <li>Configure environment variables and secrets</li>
+                            <li>Initialize the database with the schema</li>
+                            <li>Create your admin account and set ADMIN_UID</li>
                         </ul>
+                        <p class="text-blue-700 dark:text-blue-300 text-sm mt-2">
+                            See the <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/getting-started.md" class="underline hover:text-blue-900 dark:hover:text-blue-200" target="_blank">Getting Started Guide</a> for detailed instructions.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <!-- One-Click Installation -->
+            <!-- Quick Deployment -->
             <div class="bg-[var(--card-bg)] dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
                 <div class="flex items-center mb-6">
                     <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-full flex items-center justify-center mr-4">
                         <i class="fas fa-rocket text-primary-600 dark:text-primary-400 text-xl"></i>
                     </div>
-                    <h3 class="text-2xl font-semibold">One-Click Installation</h3>
+                    <h3 class="text-2xl font-semibold">Quick Deployment</h3>
                 </div>
                 
                 <p class="text-[var(--text-secondary)] dark:text-gray-300 mb-6">
-                    Deploy RdRx to Cloudflare Workers with a single command. The script handles everything automatically.
+                    Deploy RdRx to Cloudflare Workers with the deploy button above, then follow the setup guide to configure your instance.
                 </p>
-                
-                <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-gray-400 text-sm">Terminal</span>
-                        <button onclick="copyInstallCommand()" class="text-gray-400 hover:text-white text-sm">
-                            <i class="fas fa-copy mr-1"></i> Copy
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <code id="install-command" class="text-green-400 text-sm font-mono whitespace-nowrap block">
-                            curl -sSL https://raw.githubusercontent.com/clarkhacks/RdRx/main/install.sh | bash
-                        </code>
-                    </div>
-                </div>
                 
                 <div class="space-y-3 text-sm">
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
-                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Installs dependencies automatically</span>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Deploy to Cloudflare Workers instantly</span>
                     </div>
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
-                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Creates Cloudflare resources (D1, R2, KV)</span>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Create D1 database, R2 bucket, and KV namespace</span>
                     </div>
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
-                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Configures custom domains and DNS</span>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Configure environment variables</span>
                     </div>
                     <div class="flex items-center">
                         <i class="fas fa-check text-green-500 mr-2"></i>
-                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Deploys to global edge network</span>
+                        <span class="text-[var(--text-secondary)] dark:text-gray-300">Initialize database and create admin account</span>
                     </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg border border-primary-200 dark:border-primary-800">
+                    <h4 class="font-semibold text-primary-800 dark:text-primary-300 mb-2">
+                        <i class="fas fa-book mr-2"></i>Step-by-Step Guide
+                    </h4>
+                    <p class="text-primary-700 dark:text-primary-300 text-sm">
+                        Follow our comprehensive <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/getting-started.md" class="underline hover:text-primary-900 dark:hover:text-primary-200" target="_blank">Getting Started Guide</a> for detailed deployment instructions.
+                    </p>
                 </div>
             </div>
             
@@ -299,9 +298,9 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
         </div>
         
         <div class="mt-12 text-center">
-            <a href="https://github.com/clarkhacks/RdRx#installation" target="_blank" class="inline-flex items-center bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                <i class="fab fa-github mr-2"></i>
-                View Installation Guide
+            <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/getting-started.md" target="_blank" class="inline-flex items-center bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <i class="fas fa-book mr-2"></i>
+                View Getting Started Guide
             </a>
         </div>
     </div>
@@ -455,4 +454,14 @@ keywords: "URL shortener, short URLs, share links, modern URL shortener"
                 <div class="w-12 h-12 bg-secondary-100 dark:bg-secondary-900/50 rounded-full flex items-center justify-center mb-4">
                     <i class="fas fa-user-cog text-secondary-600 dark:text-secondary-400 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-semibold mb-2 text-[var(--text-primary)] dark:text-white">Admin Panel
+                <h3 class="text-xl font-semibold mb-2 text-[var(--text-primary)] dark:text-white">Admin Panel</h3>
+                <p class="text-[var(--text-secondary)] dark:text-gray-300">
+                    Comprehensive admin interface for user and content management with detailed analytics.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+{% include "footer.njk" %}
