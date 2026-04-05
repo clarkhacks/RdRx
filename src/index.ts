@@ -1,5 +1,5 @@
 import cronDelete from './helpers/cronDelete';
-import { initializeTables } from './utils/database';
+import { initializeTables } from './database';
 import { router } from './routes';
 import { Env } from './types';
 

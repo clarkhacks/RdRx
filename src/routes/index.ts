@@ -10,7 +10,7 @@ import { renderAccountPage } from '../components/pages/AccountPage';
 import { renderDashboardPage } from '../components/pages/DashboardPage';
 import { renderAdminPage } from '../components/pages/AdminPage';
 import { authMiddleware } from '../middleware/auth';
-import { getBioPage } from '../utils/database';
+import { getBioPage } from '../database';
 
 /**
  * Main router that delegates to specific route handlers based on the request

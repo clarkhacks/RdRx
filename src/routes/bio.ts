@@ -9,7 +9,7 @@ import {
 	getBioLinks,
 	isBioShortcodeAvailable,
 	getBioSocialMedia,
-} from '../utils/database';
+} from '../database';
 import { isAuthenticated, getUserID } from '../utils/auth';
 
 /**

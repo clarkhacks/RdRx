@@ -1,5 +1,6 @@
 import { Env, CreateShortUrlRequest } from '../types';
-import { saveUrlToDatabase, saveDeletionEntry, hashPassword } from '../utils/database';
+import { saveUrlToDatabase, saveDeletionEntry } from '../database';
+import { hashPassword } from '../utils/crypto';
 import { generateShortcode } from '../utils/shortcode';
 import { unauthorizedResponseIfNotAuthenticated } from '../middleware/auth';
 

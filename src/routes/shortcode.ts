@@ -3,7 +3,7 @@ import { renderCreateFormPage as renderCreateForm } from '../components/pages/Cr
 import { renderSnippetFormPage as renderSnippetForm } from '../components/pages/SnippetFormPage';
 import { renderUploadFormPage as renderUploadForm } from '../components/pages/UploadFormPage';
 import { renderViewFiles } from '../components/viewFiles';
-import { fetchUrlByShortcode, trackView, isShortcodePasswordProtected, verifyShortcodePassword } from '../utils/database';
+import { fetchUrlByShortcode, trackView, isShortcodePasswordProtected, verifyShortcodePassword } from '../database';
 import { isSnippetShortcode, isFileShortcode, getContentTypeForExtension } from '../utils/shortcode';
 import { redirectToLoginIfNotAuthenticated } from '../middleware/auth';
 

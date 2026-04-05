@@ -40,7 +40,7 @@ export async function renderDashboardPage(request: Request, env: Env): Promise<R
 		<body class="bg-gray-50">
 			${renderPageLayout({
 				title: 'Dashboard - RDRX',
-				content: renderDashboardContent(user, recentLinks, recentSnippets, recentFiles, analyticsSummary),
+				content: renderDashboardContent(user as User, recentLinks, recentSnippets, recentFiles, analyticsSummary),
 				activeNavItem: 'dashboard',
 			})}
 			<script>
