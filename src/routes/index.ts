@@ -111,12 +111,18 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		}
 	}
 
-	// Handle API routes for POST requests
-	if (request.method === 'POST') {
-		// Special case for the temporary URL endpoint which doesn't require auth
-		if (url.pathname === '/api/temp') {
-			return handleApiRoutes(request, env);
-		}
+	// Handle API routes for POST requests to root path
+	if (request.method === 'POST' && url.pathname === '/') {
+		return handleApiRoutes(enhancedRequest, env);
+	}
+
+	// Handle API routes for POST requests to /api/temp (no auth required)
+	if (request.method === 'POST' && url.pathname === '/api/temp') {
+		return handleApiRoutes(request, env);
+	}
+
+	// Handle API routes for POST requests to /upload
+	if (request.method === 'POST' && url.pathname === '/upload') {
 		return handleApiRoutes(enhancedRequest, env);
 	}
 
