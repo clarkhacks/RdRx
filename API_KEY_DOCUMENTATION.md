@@ -100,7 +100,7 @@ Add the following actions to your shortcut:
    - Replace `[Provided Input]` with the output from step 1
 
 3. **Get Contents of URL**
-   - URL: `https://rdrx.co/`
+   - URL: `https://rdrx.co/api/create`
    - Method: `POST`
    - Headers:
      - Add Header: `Authorization` = `Bearer rdrx_live_YOUR_API_KEY_HERE`
