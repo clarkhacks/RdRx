@@ -254,16 +254,16 @@
         }
     </style>
 </head>
-<body class="{% if page.url == "/" %}bg-[var(--bg-primary)] text-[var(--text-primary)]{% else %}bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col{% endif %}">
+<body class="dark {% if page.url == "/" %}bg-[var(--bg-primary)] text-[var(--text-primary)]{% else %}bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col{% endif %}">
     {{ content | safe }}
     <!-- Dark mode toggle button -->
-    <button 
+    <!-- <button 
         class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300"
         @click="darkMode = !darkMode"
         aria-label="Toggle dark mode"
     >
         <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
-    </button>
+    </button> NEEDS WORK-->
 
     <!-- Force dark mode styles to apply immediately -->
     <script>
