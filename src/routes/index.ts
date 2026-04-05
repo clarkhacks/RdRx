@@ -111,8 +111,8 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		}
 	}
 
-	// Handle API routes for POST requests to root path
-	if (request.method === 'POST' && url.pathname === '/') {
+	// Handle API routes for POST requests to /api/create
+	if (request.method === 'POST' && url.pathname === '/api/create') {
 		return handleApiRoutes(enhancedRequest, env);
 	}
 

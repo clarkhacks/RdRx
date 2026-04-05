@@ -35,7 +35,7 @@ Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE
 
 ### Creating a Short URL
 
-**Endpoint:** `POST https://rdrx.co/`
+**Endpoint:** `POST https://rdrx.co/api/create`
 
 **Headers:**
 ```
@@ -133,7 +133,7 @@ Add the following actions to your shortcut:
 ## Example: cURL
 
 ```bash
-curl -X POST https://rdrx.co/ \
+curl -X POST https://rdrx.co/api/create \
   -H "Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE" \
   -H "Content-Type: application/json" \
   -d '{
@@ -165,7 +165,7 @@ def create_short_url(long_url, custom_code=None):
         data["custom_code"] = custom_code
     
     response = requests.post(
-        BASE_URL,
+        f"{BASE_URL}/api/create",
         headers=headers,
         json=data
     )
@@ -188,7 +188,7 @@ const API_KEY = "rdrx_live_YOUR_API_KEY_HERE";
 const BASE_URL = "https://rdrx.co";
 
 async function createShortUrl(longUrl, customCode = null) {
-  const response = await fetch(BASE_URL, {
+  const response = await fetch(`${BASE_URL}/api/create`, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${API_KEY}`,
@@ -263,14 +263,14 @@ createShortUrl("https://example.com/very/long/url")
 
 ### Create Short URL
 - **Method**: `POST`
-- **Endpoint**: `/`
+- **Endpoint**: `/api/create`
 - **Auth**: Required (API Key or Session)
 - **Body**: `{ "url": string, "custom"?: boolean, "custom_code"?: string }`
 - **Response**: `{ "shortcode": string }`
 
 ### Create Code Snippet
 - **Method**: `POST`
-- **Endpoint**: `/`
+- **Endpoint**: `/api/create`
 - **Auth**: Required (API Key or Session)
 - **Body**: `{ "snippet": string, "custom"?: boolean, "custom_code"?: string }`
 - **Response**: `{ "shortcode": string }`
