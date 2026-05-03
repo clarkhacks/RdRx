@@ -1,50 +1,69 @@
-<footer class="bg-gray-900 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8 mt-auto">
-    <div class="max-w-5xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+<!-- Footer -->
+<footer class="bg-[var(--bg-secondary)] border-t border-[var(--border-color)] mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <!-- Brand -->
-            <div>
-                <div class="flex items-center mb-3">
-                    <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-10 h-10 mr-3">
-                    <span class="text-2xl font-bold gradient-text">RdRx</span>
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center space-x-2 mb-4">
+                    <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8">
+                    <span class="text-xl font-bold text-[var(--text-primary)]">RdRx</span>
                 </div>
-                <p class="text-gray-400 dark:text-gray-300 text-sm">
-                    Modern URL shortening & content sharing platform built on Cloudflare Workers.
+                <p class="text-[var(--text-secondary)] text-sm mb-4">
+                    Modern URL shortening and content sharing platform built on Cloudflare Workers.
                 </p>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors" aria-label="GitHub">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
             </div>
             
-            <!-- Quick Links -->
+            <!-- Product -->
             <div>
-                <h3 class="text-lg font-semibold mb-3">Quick Links</h3>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Product</h3>
                 <ul class="space-y-2">
-                    <li><a href="/docs/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Documentation</a></li>
-                    <li><a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">GitHub</a></li>
-                    <li><a href="/terms/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Terms of Service</a></li>
-                    <li><a href="/privacy/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200 text-sm">Privacy Policy</a></li>
+                    <li><a href="#features" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Features</a></li>
+                    <li><a href="#technology" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Technology</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/changelog.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Changelog</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/issues" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Roadmap</a></li>
                 </ul>
             </div>
             
-            <!-- Connect -->
+            <!-- Resources -->
             <div>
-                <h3 class="text-lg font-semibold mb-3">Connect</h3>
-                <div class="flex gap-4 mb-4">
-                    <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">
-                        <i class="fab fa-github text-2xl"></i>
-                    </a>
-                </div>
-                <p class="text-gray-400 dark:text-gray-300 text-sm">
-                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">GPL-3.0 License</a>
-                </p>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Resources</h3>
+                <ul class="space-y-2">
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/README.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Documentation</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/api/README.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">API Reference</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/getting-started.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Getting Started</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/deployment.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Deployment Guide</a></li>
+                </ul>
+            </div>
+            
+            <!-- Community -->
+            <div>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Community</h3>
+                <ul class="space-y-2">
+                    <li><a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">GitHub</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/discussions" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Discussions</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/issues" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Issues</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/contributing.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Contributing</a></li>
+                </ul>
             </div>
         </div>
         
         <!-- Bottom Bar -->
-        <div class="border-t border-gray-800 dark:border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-gray-500 dark:text-gray-400 text-sm text-center md:text-left">
-                &copy; 2025 RdRx. All rights reserved.
-            </p>
-            <p class="text-gray-500 dark:text-gray-400 text-sm text-center md:text-right">
-                A <a href="https://www.clark.today/" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition font-medium">Clark Today</a> product • Made with <i class="fas fa-heart text-red-500"></i> by <a href="https://www.clark.today/" target="_blank" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">Clark</a>
-            </p>
+        <div class="mt-12 pt-8 border-t border-[var(--border-color)]">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="text-[var(--text-secondary)] text-sm">
+                    © 2026 RdRx. Licensed under <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" target="_blank" class="hover:text-[var(--primary-500)] transition-colors">GPL-3.0</a>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="/privacy" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Privacy Policy</a>
+                    <a href="/terms" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Terms of Service</a>
+                    <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/code-of-conduct.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Code of Conduct</a>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

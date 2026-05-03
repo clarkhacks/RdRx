@@ -1,93 +1,85 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
-      x-init="
-        $watch('darkMode', val => {
-          localStorage.setItem('darkMode', val);
-          if (val) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        });
-        
-        // Initialize on page load
-        if (localStorage.getItem('darkMode') === 'true') {
-          document.documentElement.classList.add('dark');
-        }
-      " 
-      :class="{ 'dark': darkMode }">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | RdRx</title>
-    <meta name="description" content="Privacy Policy for RdRx">
-    <meta name="keywords" content="URL shortener, short URLs, share links, modern URL shortener">
-    <meta name="author" content="RdRx Team">
-    <meta name="robots" content="noindex, nofollow">
     
-    <!-- Open Graph -->
+    <!-- Primary Meta Tags -->
+    <title>Privacy Policy | RdRx</title>
+    <meta name="title" content="Privacy Policy | RdRx">
+    <meta name="description" content="Privacy Policy for RdRx">
+    <meta name="keywords" content="URL shortener, link shortener, Cloudflare Workers, code snippets, file sharing, bio pages, analytics, open source, edge computing">
+    <meta name="author" content="RdRx">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rdrx.co/privacy/">
     <meta property="og:title" content="Privacy Policy | RdRx">
     <meta property="og:description" content="Privacy Policy for RdRx">
-    <meta property="og:image" content="/assets/banner.jpg">
-    <meta property="og:url" content="https://rdrx.co/privacy/">
-    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://rdrx.co/assets/banner.jpg">
     <meta property="og:site_name" content="RdRx">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rdrx.co/privacy/">
     <meta property="twitter:title" content="Privacy Policy | RdRx">
     <meta property="twitter:description" content="Privacy Policy for RdRx">
-    <meta property="twitter:image" content="/assets/banner.jpg">
+    <meta property="twitter:image" content="https://rdrx.co/assets/banner.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://rdrx.co/privacy/">
     
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/assets/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/assets/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/assets/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/assets/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="manifest" href="/assets/manifest.json">
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="/assets/built.css" />
+    <link rel="stylesheet" href="/assets/built.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Alpine.js for all pages -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "RdRx",
+      "applicationCategory": "WebApplication",
+      "description": "Open-source URL shortener and content sharing platform built on Cloudflare Workers",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "RdRx"
+      }
+    }
+    </script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
-        
-        /* Base styles */
-        body {
-            font-family: 'Poppins', 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        /* Light mode (default) */
+        /* CSS Variables for theming */
         :root {
             --bg-primary: #FFFFFF;
             --bg-secondary: #F8FAFC;
             --bg-tertiary: #F1F5F9;
-            --text-primary: #1E293B;
+            --text-primary: #0F172A;
             --text-secondary: #475569;
             --text-tertiary: #64748B;
             --border-color: #E2E8F0;
             --card-bg: #FFFFFF;
-            --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             
-            /* Orange accent colors for light mode */
-            --accent-orange: #EA580C;
-            --accent-orange-light: #FB923C;
-            --accent-orange-dark: #C2410C;
-            
+            /* Orange accent colors */
             --primary-50: #FFF7ED;
             --primary-100: #FFEDD5;
             --primary-200: #FED7AA;
@@ -98,233 +90,262 @@
             --primary-700: #C2410C;
             --primary-800: #9A3412;
             --primary-900: #7C2D12;
-            
-            --secondary-50: #F8FAFC;
-            --secondary-100: #F1F5F9;
-            --secondary-200: #E2E8F0;
-            --secondary-300: #CBD5E1;
-            --secondary-400: #94A3B8;
-            --secondary-500: #64748B;
-            --secondary-600: #475569;
-            --secondary-700: #334155;
-            --secondary-800: #1E293B;
-            --secondary-900: #0F172A;
         }
         
-        /* Dark mode */
         .dark {
-            --bg-primary: #111827;
-            --bg-secondary: #1F2937;
-            --bg-tertiary: #374151;
-            --text-primary: #F9FAFB;
-            --text-secondary: #E5E7EB;
-            --text-tertiary: #D1D5DB;
-            --border-color: #374151;
-            --card-bg: #1F2937;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            --bg-primary: #0F172A;
+            --bg-secondary: #1E293B;
+            --bg-tertiary: #334155;
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-tertiary: #94A3B8;
+            --border-color: #475569;
+            --card-bg: #1E293B;
             
-            --primary-50: #433600;
-            --primary-100: #664D00;
-            --primary-200: #8C6900;
-            --primary-300: #B38600;
-            --primary-400: #D9A200;
-            --primary-500: #FFBF00;
-            --primary-600: #FFCC33;
-            --primary-700: #FFD966;
-            --primary-800: #FFE699;
-            --primary-900: #FFF2CC;
-            
-            --secondary-50: #4A0D2B;
-            --secondary-100: #731342;
-            --secondary-200: #9C1A59;
-            --secondary-300: #C52170;
-            --secondary-400: #E91E63;
-            --secondary-500: #ED4B82;
-            --secondary-600: #F178A1;
-            --secondary-700: #F5A5C0;
-            --secondary-800: #F9D2DF;
-            --secondary-900: #FCE8EF;
+            /* Brighter orange for dark mode */
+            --primary-50: #7C2D12;
+            --primary-100: #9A3412;
+            --primary-200: #C2410C;
+            --primary-300: #EA580C;
+            --primary-400: #F97316;
+            --primary-500: #FB923C;
+            --primary-600: #FDBA74;
+            --primary-700: #FED7AA;
+            --primary-800: #FFEDD5;
+            --primary-900: #FFF7ED;
         }
         
-        /* Common styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+        
+        /* Gradient text effect */
         .gradient-text {
-            background: linear-gradient(90deg, var(--accent-orange, var(--primary-500)), var(--secondary-500));
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
-        /* Light mode specific gradient for "Simplify" */
-        :root .gradient-text {
-            background: linear-gradient(90deg, #EA580C, #F97316);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        /* Dark mode keeps the original gradient */
-        .dark .gradient-text {
-            background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
+        /* Hero gradient background */
         .hero-gradient {
-            background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 50%, #FFFFFF 100%);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
         }
         
         .dark .hero-gradient {
-            background: radial-gradient(circle at 30% 30%, rgba(255, 191, 0, 0.1), transparent 40%),
-                        radial-gradient(circle at 70% 70%, rgba(237, 75, 130, 0.1), transparent 40%);
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
         }
         
+        /* Animated gradient orbs for dark mode */
+        .hero-gradient::before,
+        .hero-gradient::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .dark .hero-gradient::before {
+            opacity: 0.15;
+            width: 500px;
+            height: 500px;
+            background: var(--primary-500);
+            top: -100px;
+            left: -100px;
+        }
+        
+        .dark .hero-gradient::after {
+            opacity: 0.1;
+            width: 400px;
+            height: 400px;
+            background: var(--primary-600);
+            bottom: -100px;
+            right: -100px;
+        }
+        
+        /* Feature cards */
         .feature-card {
-            transition: all 0.3s ease;
-            border-radius: 1rem;
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            box-shadow: var(--card-shadow);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
         }
         
         .feature-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
-            border-color: var(--primary-200);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: var(--primary-500);
         }
         
         .dark .feature-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-            border-color: var(--primary-600);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
         }
         
-        .playful-shadow {
-            box-shadow: 5px 5px 0px var(--secondary-500);
-        }
-        
-        .btn-playful {
-            transition: all 0.2s ease;
-            transform-origin: center;
-        }
-        
-        .btn-playful:hover {
-            transform: scale(1.05) rotate(1deg);
-        }
-        
-        .btn-playful:active {
-            transform: scale(0.98);
-        }
-        
-        .logo-bounce {
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        
-        /* Dark mode toggle */
+        /* Dark mode toggle button */
         .dark-mode-toggle {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            width: 56px;
-            height: 56px;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
             border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         
         .dark-mode-toggle:hover {
             transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
         }
         
         .dark .dark-mode-toggle {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            border-color: var(--border-color);
-        }
-        
-        .dark .dark-mode-toggle:hover {
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
         }
         
         .dark-mode-toggle i {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            color: var(--text-primary);
             transition: transform 0.3s ease;
         }
         
         .dark-mode-toggle:hover i {
             transform: rotate(-15deg);
         }
+        
+        /* Smooth transitions */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-duration: 0.3s;
+            transition-timing-function: ease;
+        }
+        
+        /* Override transition for transforms and other properties */
+        .feature-card,
+        .dark-mode-toggle,
+        button,
+        a {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
-<body class="bg-[var(--bg-secondary)] text-[var(--text-primary)] min-h-screen flex flex-col">
+<body x-data="{ darkMode: false }" 
+      x-init="
+        // Check localStorage and system preference
+        darkMode = localStorage.getItem('darkMode') === 'true' || 
+                   (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        
+        // Watch for changes
+        $watch('darkMode', value => {
+            localStorage.setItem('darkMode', value);
+            if (value) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+        
+        // Apply initial state
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+        }
+      "
+      :class="{ 'dark': darkMode }">
+    
     
 <!-- Navigation -->
-<nav 
-  x-data="{ open: false }"
-  class="bg-[var(--card-bg)] max-w-5xl mx-auto dark:bg-gray-800 shadow-md py-3 px-6 flex items-center justify-between sticky top-0 z-50 rounded-full mx-4 my-3 card-container backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90"
->
-    <a href="/" class="flex items-center gap-2">
-        <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8">
-        <span class="text-xl font-bold text-[var(--text-primary)] dark:text-white">RdRx</span>
-    </a>
+<!-- Navigation -->
+<nav x-data="{ mobileMenuOpen: false }" class="sticky top-0 z-50 bg-[var(--card-bg)] border-b border-[var(--border-color)] backdrop-blur-lg bg-opacity-90">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="/" class="flex items-center space-x-2 group">
+                    <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8 transition-transform group-hover:scale-110">
+                    <span class="text-xl font-bold text-[var(--text-primary)]">RdRx</span>
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium">Features</a>
+                <a href="#technology" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium">Technology</a>
+                <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/README.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium">Docs</a>
+                <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium inline-flex items-center">
+                    <i class="fab fa-github mr-1"></i> GitHub
+                </a>
+                <a href="/login" class="px-4 py-2 rounded-lg bg-[var(--primary-500)] text-white hover:bg-[var(--primary-600)] transition-colors font-medium">
+                    Get Started
+                </a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-[var(--text-primary)] hover:text-[var(--primary-500)] transition-colors" aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
     
-    <!-- Mobile menu button -->
-    <button 
-      @click="open = !open"
-      class="md:hidden ml-auto text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 focus:outline-none"
-      aria-label="Open Menu"
-    >
-      <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-      <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-
-    <!-- Desktop & mobile nav links -->
-    <div 
-      class="flex items-center gap-4"
-      :class="{'hidden': !open, 'flex flex-col absolute top-16 left-0 w-full bg-[var(--card-bg)] dark:bg-gray-800 shadow-md rounded-b-2xl z-50 py-4': open, 'md:flex md:static md:flex-row md:gap-4 md:py-0': true}"
-    >
-        <a href="/login" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Login</a>
-        <a href="/coming-soon" class="text-[var(--text-secondary)] dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200">Sign Up</a>
-        <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="btn-playful bg-white dark:bg-gray-700 text-[var(--text-primary)] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg text-sm py-2 px-4">
-            <i class="fab fa-github mr-1"></i> GitHub
-        </a>
+    <!-- Mobile Navigation -->
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95"
+         class="md:hidden border-t border-[var(--border-color)]">
+        <div class="px-4 py-4 space-y-3 bg-[var(--card-bg)]">
+            <a href="#features" @click="mobileMenuOpen = false" class="block text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium py-2">Features</a>
+            <a href="#technology" @click="mobileMenuOpen = false" class="block text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium py-2">Technology</a>
+            <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/README.md" target="_blank" class="block text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium py-2">Docs</a>
+            <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="block text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors font-medium py-2">
+                <i class="fab fa-github mr-1"></i> GitHub
+            </a>
+            <a href="/login" class="block px-4 py-2 rounded-lg bg-[var(--primary-500)] text-white hover:bg-[var(--primary-600)] transition-colors font-medium text-center">
+                Get Started
+            </a>
+        </div>
     </div>
 </nav>
-<style>
-  @media (max-width: 768px) {
-    nav .flex.items-center.gap-4 {
-      display: none;
-    }
-    nav .flex.items-center.gap-4.flex {
-      display: flex !important;
-    }
-  }
-</style>
 
 
 <!-- Main Content -->
 <main class="flex-grow p-4 md:p-8">
   <div class="container mx-auto px-4 py-8 max-w-4xl mt-8">
-    <h1 class="text-3xl font-bold mb-6 text-[var(--text-primary)] dark:text-white">Privacy Policy | RdRx</h1>
+    <h1 class="text-3xl font-bold mb-6">Privacy Policy | RdRx</h1>
     
-<div class="prose prose-lg max-w-none prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary-600 dark:prose-li:marker:text-primary-400 prose-ol:list-decimal prose-ol:pl-6 prose-li:pl-2 prose-headings:text-[var(--text-primary)] dark:prose-headings:text-white prose-p:text-[var(--text-secondary)] dark:prose-p:text-gray-300 prose-strong:text-[var(--text-primary)] dark:prose-strong:text-white prose-li:text-[var(--text-secondary)] dark:prose-li:text-gray-300">
+<div class="prose prose-lg max-w-none prose-ul:list-disc prose-ul:pl-6 prose-li:marker:text-primary-500 prose-ol:list-decimal prose-ol:pl-6 prose-li:pl-2">
       <p>This Privacy Policy describes how we collect, use, and handle your information when you use our services.</p>
 <h2>1. Information We Collect</h2>
 <p>We collect information in the following ways:</p>
@@ -392,70 +413,97 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-gray-900 dark:bg-gray-950 text-white py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="mb-8 md:mb-0">
-                <div class="flex items-center">
-                    <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-10 h-10 mr-3">
-                    <span class="text-2xl font-bold gradient-text">RdRx</span>
+<!-- Footer -->
+<footer class="bg-[var(--bg-secondary)] border-t border-[var(--border-color)] mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Brand -->
+            <div class="col-span-1 md:col-span-1">
+                <div class="flex items-center space-x-2 mb-4">
+                    <img src="/assets/RdRx.png" alt="RdRx Logo" class="w-8 h-8">
+                    <span class="text-xl font-bold text-[var(--text-primary)]">RdRx</span>
                 </div>
-                <p class="text-gray-400 dark:text-gray-300 mt-2">Modern URL shortening & content sharing</p>
+                <p class="text-[var(--text-secondary)] text-sm mb-4">
+                    Modern URL shortening and content sharing platform built on Cloudflare Workers.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors" aria-label="GitHub">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
             </div>
             
-            <div class="flex flex-col items-end">
-                <div class="flex gap-4 mb-3">
-                    <a href="/terms/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Terms of Service</a>
-                    <a href="/privacy/" class="text-gray-300 hover:text-primary-300 dark:hover:text-primary-400 transition-colors duration-200">Privacy Policy</a>
+            <!-- Product -->
+            <div>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Product</h3>
+                <ul class="space-y-2">
+                    <li><a href="#features" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Features</a></li>
+                    <li><a href="#technology" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Technology</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/changelog.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Changelog</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/issues" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Roadmap</a></li>
+                </ul>
+            </div>
+            
+            <!-- Resources -->
+            <div>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Resources</h3>
+                <ul class="space-y-2">
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/README.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Documentation</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/api/README.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">API Reference</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/getting-started.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Getting Started</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/deployment.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Deployment Guide</a></li>
+                </ul>
+            </div>
+            
+            <!-- Community -->
+            <div>
+                <h3 class="text-[var(--text-primary)] font-semibold mb-4">Community</h3>
+                <ul class="space-y-2">
+                    <li><a href="https://github.com/clarkhacks/RdRx" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">GitHub</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/discussions" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Discussions</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/issues" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Issues</a></li>
+                    <li><a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/contributing.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Contributing</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Bottom Bar -->
+        <div class="mt-12 pt-8 border-t border-[var(--border-color)]">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div class="text-[var(--text-secondary)] text-sm">
+                    © 2026 RdRx. Licensed under <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" target="_blank" class="hover:text-[var(--primary-500)] transition-colors">GPL-3.0</a>
                 </div>
-                <p class="text-gray-400 dark:text-gray-300 mb-2">
-                    Released under the <a href="https://github.com/clarkhacks/RdRx/blob/main/LICENSE" class="text-primary-400 hover:text-primary-300 dark:text-primary-300 dark:hover:text-primary-400 transition">GPL-3.0</a>
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 text-sm">
-                    &copy; 2025 RdRx. All rights reserved.
-                </p>
+                <div class="flex space-x-6">
+                    <a href="/privacy" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Privacy Policy</a>
+                    <a href="/terms" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Terms of Service</a>
+                    <a href="https://github.com/clarkhacks/RdRx/blob/main/static/docs/code-of-conduct.md" target="_blank" class="text-[var(--text-secondary)] hover:text-[var(--primary-500)] transition-colors text-sm">Code of Conduct</a>
+                </div>
             </div>
         </div>
     </div>
 </footer>
 
 
+    
     <!-- Dark mode toggle button -->
     <button 
-        class="dark-mode-toggle bg-white dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300"
+        class="dark-mode-toggle"
         @click="darkMode = !darkMode"
         aria-label="Toggle dark mode"
+        type="button"
     >
         <i class="fas" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
     </button>
-
-    <!-- Force dark mode styles to apply immediately -->
+    
     <script>
-      // Check if dark mode is enabled in localStorage
-      if (localStorage.getItem('darkMode') === 'true') {
-        // Apply dark mode class to html element
-        document.documentElement.classList.add('dark');
-      }
-      
-      // Function to copy install command
-      function copyInstallCommand() {
-        const command = document.getElementById('install-command').textContent.trim();
-        navigator.clipboard.writeText(command).then(function() {
-          // Show success feedback
-          const button = event.target.closest('button');
-          const originalText = button.innerHTML;
-          button.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
-          button.classList.add('text-green-400');
-          
-          setTimeout(function() {
-            button.innerHTML = originalText;
-            button.classList.remove('text-green-400');
-          }, 2000);
-        }).catch(function(err) {
-          console.error('Failed to copy: ', err);
-          alert('Failed to copy to clipboard');
-        });
-      }
+        // Prevent FOUC (Flash of Unstyled Content)
+        (function() {
+            const darkMode = localStorage.getItem('darkMode') === 'true' || 
+                           (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (darkMode) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
     </script>
 </body>
 </html>
