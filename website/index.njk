@@ -100,8 +100,8 @@ keywords: "URL shortener, link shortener, Cloudflare Workers, code snippets, fil
                              navigator.clipboard.writeText(this.shortUrl);
                              const btn = $event.target;
                              const originalHTML = btn.innerHTML;
-                             btn.innerHTML = '<i class=\"fas fa-check\"></i>';
-                             setTimeout(() => btn.innerHTML = originalHTML, 2000);
+                             btn.innerHTML = '<i class=&quot;fas fa-check&quot;></i>';
+                             setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
                          }
                      }">
                     
