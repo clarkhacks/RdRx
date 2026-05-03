@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Primary Meta Tags -->
     <title>{{ title or "RdRx - Modern URL Shortener & Content Sharing Platform" }}</title>
     <meta name="title" content="{{ title or "RdRx - Modern URL Shortener & Content Sharing Platform" }}">
@@ -186,8 +186,9 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 1rem;
-            padding: 1.5rem;
+            padding: 2rem;
             transition: all 0.3s ease;
+            height: 100%;
         }
         
         .feature-card:hover {
