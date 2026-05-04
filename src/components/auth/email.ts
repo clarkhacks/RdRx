@@ -8,34 +8,33 @@ export interface EmailOptions {
 }
 
 /**
- * Send email using Mailgun API
+ * Send email using Resend API
  */
 export async function sendEmail(env: Env, options: EmailOptions): Promise<boolean> {
 	try {
-		const mailgunDomain = env.MAILGUN_DOMAIN;
-		const mailgunApiKey = env.MAILGUN_API_KEY;
-		const fromEmail = env.FROM_EMAIL || `noreply@${mailgunDomain}`;
+		const resendApiKey = env.RESEND_API_KEY;
+		const fromEmail = env.FROM_EMAIL || 'noreply@rdrx.co';
 
-		if (!mailgunDomain || !mailgunApiKey) {
-			console.error('Mailgun configuration missing');
+		if (!resendApiKey) {
+			console.error('Resend API key missing');
 			return false;
 		}
 
-		const formData = new FormData();
-		formData.append('from', fromEmail);
-		formData.append('to', options.to);
-		formData.append('subject', options.subject);
-		formData.append('html', options.html);
-		if (options.text) {
-			formData.append('text', options.text);
-		}
+		const payload = {
+			from: fromEmail,
+			to: options.to,
+			subject: options.subject,
+			html: options.html,
+			...(options.text && { text: options.text }),
+		};
 
-		const response = await fetch(`https://api.mailgun.net/v3/${mailgunDomain}/messages`, {
+		const response = await fetch('https://api.resend.com/emails', {
 			method: 'POST',
 			headers: {
-				Authorization: `Basic ${btoa(`api:${mailgunApiKey}`)}`,
+				Authorization: `Bearer ${resendApiKey}`,
+				'Content-Type': 'application/json',
 			},
-			body: formData,
+			body: JSON.stringify(payload),
 		});
 
 		if (response.ok) {

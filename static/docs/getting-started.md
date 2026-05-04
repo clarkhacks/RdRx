@@ -38,8 +38,7 @@ Edit `.dev.vars` and add your configuration:
 
 ```env
 JWT_SECRET=your-secret-key-here
-MAILGUN_DOMAIN=your-mailgun-domain
-MAILGUN_API_KEY=your-mailgun-api-key
+RESEND_API_KEY=your-resend-api-key
 SHORT_DOMAIN=localhost:8787
 R2_URL=http://localhost:8787/r2
 ```

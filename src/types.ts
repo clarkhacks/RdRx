@@ -4,8 +4,7 @@
 export interface Env {
 	// Authentication
 	JWT_SECRET: string;
-	MAILGUN_DOMAIN: string;
-	MAILGUN_API_KEY: string;
+	RESEND_API_KEY: string;
 	FROM_EMAIL?: string;
 	FRONTEND_URL?: string;
 	SHORT_DOMAIN: string;

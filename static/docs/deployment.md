@@ -10,7 +10,6 @@ This document provides a comprehensive checklist for deploying RdRx to productio
   - [ ] Set correct `name` for your worker
   - [ ] Update `FRONTEND_URL` to your production domain
   - [ ] Update `SHORT_DOMAIN` to your production domain
-  - [ ] Update `MAILGUN_DOMAIN` to your email domain
   - [ ] Update `FROM_EMAIL` to your sender email
   - [ ] Update `R2_URL` to your CDN domain
   - [ ] Set `DISABLE_SIGNUPS` as needed (true/false)
@@ -25,7 +24,7 @@ Set all required secrets using Wrangler CLI:
 ```bash
 # Required secrets
 npx wrangler secret put JWT_SECRET
-npx wrangler secret put MAILGUN_API_KEY
+npx wrangler secret put RESEND_API_KEY
 npx wrangler secret put API_KEY
 npx wrangler secret put API_KEY_ADMIN
 npx wrangler secret put ADMIN_UID
@@ -258,9 +257,9 @@ npx wrangler d1 export rdrx-shorturls --output=backup.sql
    - Check file size limits
 
 3. **Emails not sending**
-   - Verify MAILGUN_API_KEY is set
-   - Check MAILGUN_DOMAIN configuration
-   - Verify FROM_EMAIL is authorized
+   - Verify RESEND_API_KEY is set
+   - Verify FROM_EMAIL is authorized in Resend dashboard
+   - Check Resend API logs for errors
 
 4. **Admin panel not accessible**
    - Verify ADMIN_UID matches your user ID

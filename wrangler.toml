@@ -13,7 +13,6 @@ binding = "STATIC"
 [vars]
 FRONTEND_URL = "https://rdrx.co"
 SHORT_DOMAIN = "rdrx.co"
-MAILGUN_DOMAIN = "go.rdrx.co"
 FROM_EMAIL = "no-reply@go.rdrx.co"
 R2_URL = "https://cdn.rdrx.co"
 DISABLE_SIGNUPS = "true"
