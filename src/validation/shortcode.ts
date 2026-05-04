@@ -1,25 +1,25 @@
-/**
- * Shortcode validation utilities
- * 
- * Provides functions for validating shortcodes and custom codes.
- * 
- * @module validation/shortcode
- */
-
 import { ValidationError } from '../errors';
-import { ERROR_MESSAGES, REGEX_PATTERNS } from '../config/constants';
-import { ValidationResult } from './url';
+import {
+	ERROR_MESSAGES,
+	SHORTCODE_REGEX,
+	SHORTCODE_MIN_LENGTH,
+	SHORTCODE_MAX_LENGTH,
+	RESERVED_SHORTCODES,
+} from '../config/constants';
 
 /**
- * Validates a shortcode format
- * 
- * Shortcodes must be:
- * - 3-50 characters long
- * - Contain only letters, numbers, hyphens, and underscores
+ * Validation result interface
+ */
+export interface ValidationResult {
+	valid: boolean;
+	error?: string;
+}
+
+/**
+ * Validate a shortcode string
  * 
  * @param code - The shortcode to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @returns Validation result with error message if invalid
  * 
  * @example
  * const result = validateShortcode('my-link');
@@ -27,61 +27,79 @@ import { ValidationResult } from './url';
  *   console.error(result.error);
  * }
  */
-export function validateShortcode(code: string, throwOnError: boolean = false): ValidationResult {
-	// Check length
-	if (code.length < 3 || code.length > 50) {
-		const error = 'Shortcode must be 3-50 characters';
-		if (throwOnError) {
-			throw new ValidationError(error, 'shortcode');
-		}
-		return { valid: false, error };
+export function validateShortcode(code: string): ValidationResult {
+	if (!code || typeof code !== 'string') {
+		return { valid: false, error: ERROR_MESSAGES.REQUIRED_FIELD };
 	}
 
-	// Check format
-	if (!REGEX_PATTERNS.SHORTCODE.test(code)) {
-		const error = 'Shortcode can only contain letters, numbers, hyphens, and underscores';
-		if (throwOnError) {
-			throw new ValidationError(error, 'shortcode');
-		}
-		return { valid: false, error };
+	// Check length
+	if (code.length < SHORTCODE_MIN_LENGTH) {
+		return { valid: false, error: ERROR_MESSAGES.SHORTCODE_TOO_SHORT };
+	}
+
+	if (code.length > SHORTCODE_MAX_LENGTH) {
+		return { valid: false, error: ERROR_MESSAGES.SHORTCODE_TOO_LONG };
+	}
+
+	// Check format (alphanumeric, hyphens, underscores only)
+	if (!SHORTCODE_REGEX.test(code)) {
+		return { valid: false, error: ERROR_MESSAGES.SHORTCODE_INVALID };
+	}
+
+	// Check if reserved
+	if (isReservedShortcode(code)) {
+		return { valid: false, error: ERROR_MESSAGES.SHORTCODE_RESERVED };
 	}
 
 	return { valid: true };
 }
 
 /**
- * Validates a custom shortcode (user-provided)
+ * Check if a shortcode is valid (boolean version)
  * 
- * Same as validateShortcode but also checks for reserved words
+ * @param code - The shortcode to check
+ * @returns True if valid, false otherwise
  * 
- * @param code - The custom shortcode to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @example
+ * if (isValidShortcode('my-link')) {
+ *   // Shortcode is valid
+ * }
  */
-export function validateCustomShortcode(code: string, throwOnError: boolean = false): ValidationResult {
-	// First validate basic format
-	const basicValidation = validateShortcode(code, false);
-	if (!basicValidation.valid) {
-		if (throwOnError) {
-			throw new ValidationError(basicValidation.error!, 'custom_code');
-		}
-		return basicValidation;
+export function isValidShortcode(code: string): boolean {
+	return validateShortcode(code).valid;
+}
+
+/**
+ * Check if a shortcode is reserved
+ * 
+ * @param code - The shortcode to check
+ * @returns True if reserved, false otherwise
+ * 
+ * @example
+ * if (isReservedShortcode('admin')) {
+ *   console.log('This shortcode is reserved');
+ * }
+ */
+export function isReservedShortcode(code: string): boolean {
+	return RESERVED_SHORTCODES.includes(code.toLowerCase());
+}
+
+/**
+ * Validate shortcode and throw error if invalid
+ * 
+ * @param code - The shortcode to validate
+ * @throws {ValidationError} If shortcode is invalid
+ * 
+ * @example
+ * try {
+ *   assertValidShortcode(userInput);
+ * } catch (error) {
+ *   // Handle validation error
+ * }
+ */
+export function assertValidShortcode(code: string): void {
+	const result = validateShortcode(code);
+	if (!result.valid) {
+		throw new ValidationError(result.error || ERROR_MESSAGES.SHORTCODE_INVALID, 'shortcode');
 	}
-
-	// Check for reserved words
-	const reservedWords = [
-		'api', 'admin', 'dashboard', 'login', 'logout', 'register',
-		'verify', 'reset-password', 'account', 'bio', 'analytics',
-		'upload', 'temp', 'static', 'assets', 'privacy', 'terms',
-	];
-
-	if (reservedWords.includes(code.toLowerCase())) {
-		const error = 'This shortcode is reserved and cannot be used';
-		if (throwOnError) {
-			throw new ValidationError(error, 'custom_code');
-		}
-		return { valid: false, error };
-	}
-
-	return { valid: true };
 }

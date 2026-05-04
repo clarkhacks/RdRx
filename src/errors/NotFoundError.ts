@@ -1,33 +1,33 @@
-/**
- * Not Found error class
- * 
- * Thrown when a requested resource cannot be found.
- * Always returns HTTP 404 (Not Found).
- * 
- * @module errors/NotFoundError
- */
-
 import { AppError } from './AppError';
 
 /**
- * Error thrown when a resource is not found
+ * Not found error for missing resources
  * 
- * @example
- * throw new NotFoundError('Shortcode not found');
- * throw new NotFoundError('User', 'user123'); // "User user123 not found"
+ * Used when a requested resource does not exist.
+ * Returns HTTP 404 Not Found.
  */
 export class NotFoundError extends AppError {
 	/**
-	 * Creates a new NotFoundError
+	 * Create a new not found error
 	 * 
-	 * @param resource - Type of resource that wasn't found (e.g., 'User', 'Shortcode')
-	 * @param identifier - Optional identifier of the resource
+	 * @param message - Description of what was not found
+	 * @param resource - Optional resource type (e.g., 'User', 'Shortcode')
 	 */
-	constructor(resource: string, identifier?: string) {
-		const message = identifier 
-			? `${resource} ${identifier} not found`
-			: `${resource} not found`;
+	constructor(message: string = 'Resource not found', public resource?: string) {
 		super(message, 404, 'NOT_FOUND');
 		this.name = 'NotFoundError';
+	}
+
+	/**
+	 * Convert error to JSON response format
+	 */
+	toJSON() {
+		return {
+			success: false,
+			error: this.message,
+			code: this.code,
+			resource: this.resource,
+			statusCode: this.statusCode,
+		};
 	}
 }

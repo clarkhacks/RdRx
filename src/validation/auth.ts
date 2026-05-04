@@ -1,22 +1,19 @@
-/**
- * Authentication validation utilities
- * 
- * Provides functions for validating authentication-related data
- * such as emails, passwords, and tokens.
- * 
- * @module validation/auth
- */
-
 import { ValidationError } from '../errors';
-import { ERROR_MESSAGES, PASSWORD_MIN_LENGTH, REGEX_PATTERNS } from '../config/constants';
-import { ValidationResult } from './url';
+import { ERROR_MESSAGES, EMAIL_REGEX, PASSWORD_MIN_LENGTH } from '../config/constants';
 
 /**
- * Validates an email address
+ * Validation result interface
+ */
+export interface ValidationResult {
+	valid: boolean;
+	error?: string;
+}
+
+/**
+ * Validate an email address
  * 
- * @param email - The email address to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @param email - The email to validate
+ * @returns Validation result with error message if invalid
  * 
  * @example
  * const result = validateEmail('user@example.com');
@@ -24,68 +21,110 @@ import { ValidationResult } from './url';
  *   console.error(result.error);
  * }
  */
-export function validateEmail(email: string, throwOnError: boolean = false): ValidationResult {
-	if (!REGEX_PATTERNS.EMAIL.test(email)) {
-		const error = ERROR_MESSAGES.INVALID_EMAIL;
-		if (throwOnError) {
-			throw new ValidationError(error, 'email');
-		}
-		return { valid: false, error };
+export function validateEmail(email: string): ValidationResult {
+	if (!email || typeof email !== 'string') {
+		return { valid: false, error: ERROR_MESSAGES.REQUIRED_FIELD };
+	}
+
+	// Check format
+	if (!EMAIL_REGEX.test(email)) {
+		return { valid: false, error: ERROR_MESSAGES.INVALID_EMAIL };
 	}
 
 	return { valid: true };
 }
 
 /**
- * Validates a password
+ * Check if an email is valid (boolean version)
  * 
- * Password must be at least PASSWORD_MIN_LENGTH characters long
+ * @param email - The email to check
+ * @returns True if valid, false otherwise
+ * 
+ * @example
+ * if (isValidEmail('user@example.com')) {
+ *   // Email is valid
+ * }
+ */
+export function isValidEmail(email: string): boolean {
+	return validateEmail(email).valid;
+}
+
+/**
+ * Validate email and throw error if invalid
+ * 
+ * @param email - The email to validate
+ * @throws {ValidationError} If email is invalid
+ * 
+ * @example
+ * try {
+ *   assertValidEmail(userInput);
+ * } catch (error) {
+ *   // Handle validation error
+ * }
+ */
+export function assertValidEmail(email: string): void {
+	const result = validateEmail(email);
+	if (!result.valid) {
+		throw new ValidationError(result.error || ERROR_MESSAGES.INVALID_EMAIL, 'email');
+	}
+}
+
+/**
+ * Validate a password
  * 
  * @param password - The password to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @returns Validation result with error message if invalid
  * 
  * @example
- * const result = validatePassword('mySecurePassword123');
+ * const result = validatePassword('mypassword123');
  * if (!result.valid) {
  *   console.error(result.error);
  * }
  */
-export function validatePassword(password: string, throwOnError: boolean = false): ValidationResult {
+export function validatePassword(password: string): ValidationResult {
+	if (!password || typeof password !== 'string') {
+		return { valid: false, error: ERROR_MESSAGES.REQUIRED_FIELD };
+	}
+
+	// Check length
 	if (password.length < PASSWORD_MIN_LENGTH) {
-		const error = ERROR_MESSAGES.PASSWORD_TOO_SHORT;
-		if (throwOnError) {
-			throw new ValidationError(error, 'password');
-		}
-		return { valid: false, error };
+		return { valid: false, error: ERROR_MESSAGES.PASSWORD_TOO_SHORT };
 	}
 
 	return { valid: true };
 }
 
 /**
- * Validates an API key format
+ * Check if a password is valid (boolean version)
  * 
- * API keys must match the pattern: rdrx_live_[24 alphanumeric characters]
- * 
- * @param apiKey - The API key to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @param password - The password to check
+ * @returns True if valid, false otherwise
  * 
  * @example
- * const result = validateApiKey('rdrx_live_A7xK9mP2nQ8vR4wS6tY1zB3c');
- * if (!result.valid) {
- *   console.error(result.error);
+ * if (isValidPassword('mypassword123')) {
+ *   // Password is valid
  * }
  */
-export function validateApiKey(apiKey: string, throwOnError: boolean = false): ValidationResult {
-	if (!REGEX_PATTERNS.API_KEY.test(apiKey)) {
-		const error = 'Invalid API key format';
-		if (throwOnError) {
-			throw new ValidationError(error, 'apiKey');
-		}
-		return { valid: false, error };
-	}
+export function isValidPassword(password: string): boolean {
+	return validatePassword(password).valid;
+}
 
-	return { valid: true };
+/**
+ * Validate password and throw error if invalid
+ * 
+ * @param password - The password to validate
+ * @throws {ValidationError} If password is invalid
+ * 
+ * @example
+ * try {
+ *   assertValidPassword(userInput);
+ * } catch (error) {
+ *   // Handle validation error
+ * }
+ */
+export function assertValidPassword(password: string): void {
+	const result = validatePassword(password);
+	if (!result.valid) {
+		throw new ValidationError(result.error || ERROR_MESSAGES.PASSWORD_TOO_SHORT, 'password');
+	}
 }

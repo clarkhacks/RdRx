@@ -1,25 +1,16 @@
-/**
- * Validation error class
- * 
- * Thrown when user input fails validation checks.
- * Always returns HTTP 400 (Bad Request).
- * 
- * @module errors/ValidationError
- */
-
 import { AppError } from './AppError';
 
 /**
- * Error thrown when validation fails
+ * Validation error for invalid input data
  * 
- * @example
- * throw new ValidationError('Invalid email format', 'email');
+ * Used when user input fails validation checks.
+ * Returns HTTP 400 Bad Request.
  */
 export class ValidationError extends AppError {
 	/**
-	 * Creates a new ValidationError
+	 * Create a new validation error
 	 * 
-	 * @param message - Human-readable validation error message
+	 * @param message - Description of the validation failure
 	 * @param field - Optional field name that failed validation
 	 */
 	constructor(message: string, public field?: string) {
@@ -28,7 +19,7 @@ export class ValidationError extends AppError {
 	}
 
 	/**
-	 * Converts error to JSON format with field information
+	 * Convert error to JSON response format
 	 */
 	toJSON() {
 		return {

@@ -1,40 +1,15 @@
 # RdRx Codebase Refactoring Plan
 
-## Executive Summary
 
-Based on comprehensive analysis of the RdRx codebase, this document outlines a strategic refactoring plan to improve code readability, maintainability, and organization. The project currently has **38 TypeScript files** with several files exceeding 500 lines, code duplication across modules, and inconsistent patterns.
+## 🚧 In Progress
 
----
+### Priority 2: File Organization & Structure
 
-## Priority 1: Critical Security & Architecture Issues
-
-### 1.1 Password Hashing Inconsistency ⚠️ **SECURITY RISK**
-**Problem:** Two different password hashing implementations:
-- `src/utils/database.ts` - Uses weak SHA-256 without salt for shortcode passwords
-- `src/components/auth/utils.ts` - Uses secure PBKDF2 with 100,000 iterations
-
-**Solution:**
-- Create `src/utils/crypto.ts` with unified secure hashing
-- Migrate all password hashing to PBKDF2
-- Add migration script for existing shortcode passwords
-
-### 1.2 CORS Headers Duplication
-**Problem:** CORS headers repeated in 5+ files
-
-**Solution:**
-- Create `src/middleware/cors.ts`
-- Centralize CORS configuration
-- Apply middleware globally
-
----
-
-## Priority 2: File Organization & Structure
-
-### 2.1 Split Large Route Files
+#### 2.1 Split Large Route Files
 
 **Files to Split:**
 
-#### `src/routes/customAuth.ts` (821 lines) → Split into:
+##### `src/routes/customAuth.ts` (821 lines) → Split into:
 ```
 src/routes/auth/
   ├── login.ts          # POST /login
@@ -45,7 +20,7 @@ src/routes/auth/
   └── index.ts          # Route aggregator
 ```
 
-#### `src/routes/admin.ts` (454 lines) → Split into:
+##### `src/routes/admin.ts` (454 lines) → Split into:
 ```
 src/routes/admin/
   ├── users.ts          # User management
@@ -54,7 +29,7 @@ src/routes/admin/
   └── index.ts          # Route aggregator
 ```
 
-#### `src/routes/bio.ts` (435 lines) → Split into:
+##### `src/routes/bio.ts` (435 lines) → Split into:
 ```
 src/routes/bio/
   ├── view.ts           # GET /bio-view/:shortcode
@@ -64,25 +39,11 @@ src/routes/bio/
   └── index.ts          # Route aggregator
 ```
 
-### 2.2 Split Database Utilities
-
-**`src/utils/database.ts` (538 lines) → Split into:**
-```
-src/database/
-  ├── urls.ts           # URL operations (saveUrlToDatabase, getUrlFromDatabase)
-  ├── users.ts          # User operations (getUserById, updateUser)
-  ├── bio.ts            # Bio operations (saveBioProfile, getBioPage)
-  ├── analytics.ts      # Analytics operations (saveAnalytics, getAnalytics)
-  ├── deletion.ts       # Deletion operations (saveDeletionEntry, deleteDeletionEntry)
-  ├── init.ts           # Database initialization (initializeTables)
-  └── index.ts          # Re-export all functions
-```
-
-### 2.3 Component Organization
+#### 2.3 Component Organization
 
 **Large Components to Refactor:**
 
-#### `src/components/ui/BioEditorUI.ts` (986 lines) → Extract:
+##### `src/components/ui/BioEditorUI.ts` (986 lines) → Extract:
 ```
 src/components/bio/
   ├── BioEditor.ts      # Main editor component
@@ -93,7 +54,7 @@ src/components/bio/
       └── bioEditor.css # Extracted CSS
 ```
 
-#### `src/components/auth/ResetPasswordForm.ts` (807 lines) → Extract:
+##### `src/components/auth/ResetPasswordForm.ts` (807 lines) → Extract:
 ```
 src/components/auth/
   ├── ResetPasswordForm.ts  # Main form (200 lines)
@@ -104,9 +65,11 @@ src/components/auth/
 
 ---
 
-## Priority 3: Code Duplication Elimination
+## 📋 Pending
 
-### 3.1 Extract Common UI Patterns
+### Priority 3: Code Duplication Elimination
+
+#### 3.1 Extract Common UI Patterns
 
 **Create `src/components/common/`:**
 ```typescript
@@ -135,7 +98,7 @@ export function Input(props: {
 }) { /* ... */ }
 ```
 
-### 3.2 Extract Common Styles
+#### 3.2 Extract Common Styles
 
 **Create `src/styles/`:**
 ```
@@ -146,37 +109,11 @@ src/styles/
   └── themes.css        # Dark/light theme definitions
 ```
 
-### 3.3 Centralize Constants
-
-**Create `src/config/constants.ts`:**
-```typescript
-export const PASSWORD_MIN_LENGTH = 8;
-export const SHORTCODE_LENGTH = 6;
-export const SESSION_COOKIE_NAME = 'session';
-export const SESSION_EXPIRY_DAYS = 7;
-export const RESET_TOKEN_EXPIRY_HOURS = 1;
-export const PBKDF2_ITERATIONS = 100000;
-export const SALT_LENGTH = 16;
-
-export const ERROR_MESSAGES = {
-  INVALID_CREDENTIALS: 'Invalid email or password',
-  USER_NOT_FOUND: 'User not found',
-  SHORTCODE_EXISTS: 'Shortcode already exists',
-  // ... etc
-};
-
-export const SUCCESS_MESSAGES = {
-  LOGIN_SUCCESS: 'Login successful',
-  REGISTRATION_SUCCESS: 'Registration successful',
-  // ... etc
-};
-```
-
 ---
 
-## Priority 4: Documentation & Comments
+### Priority 4: Documentation & Comments
 
-### 4.1 Add JSDoc Comments
+#### 4.1 Add JSDoc Comments
 
 **Example for `src/utils/shortcode.ts`:**
 ```typescript
@@ -198,7 +135,7 @@ export function generateShortcode(): string {
 }
 ```
 
-### 4.2 Add README Files
+#### 4.2 Add README Files
 
 **Create documentation in each major directory:**
 ```
@@ -210,9 +147,9 @@ src/middleware/README.md
 
 ---
 
-## Priority 5: Type Safety Improvements
+### Priority 5: Type Safety Improvements
 
-### 5.1 Create Comprehensive Type Definitions
+#### 5.1 Create Comprehensive Type Definitions
 
 **Enhance `src/types.ts`:**
 ```typescript
@@ -263,133 +200,23 @@ export interface User {
 }
 ```
 
-### 5.2 Add Validation Schemas
-
-**Create `src/validation/`:**
-```typescript
-// src/validation/url.ts
-export function validateUrl(url: string): { valid: boolean; error?: string } {
-  try {
-    new URL(url);
-    return { valid: true };
-  } catch {
-    return { valid: false, error: 'Invalid URL format' };
-  }
-}
-
-// src/validation/shortcode.ts
-export function validateShortcode(code: string): { valid: boolean; error?: string } {
-  if (code.length < 3 || code.length > 50) {
-    return { valid: false, error: 'Shortcode must be 3-50 characters' };
-  }
-  if (!/^[a-zA-Z0-9_-]+$/.test(code)) {
-    return { valid: false, error: 'Shortcode can only contain letters, numbers, hyphens, and underscores' };
-  }
-  return { valid: true };
-}
-```
-
----
-
-## Priority 6: Error Handling Improvements
-
-### 6.1 Create Error Classes
-
-**Create `src/errors/`:**
-```typescript
-// src/errors/AppError.ts
-export class AppError extends Error {
-  constructor(
-    public message: string,
-    public statusCode: number = 500,
-    public code?: string
-  ) {
-    super(message);
-    this.name = 'AppError';
-  }
-}
-
-// src/errors/ValidationError.ts
-export class ValidationError extends AppError {
-  constructor(message: string, public field?: string) {
-    super(message, 400, 'VALIDATION_ERROR');
-    this.name = 'ValidationError';
-  }
-}
-
-// src/errors/AuthenticationError.ts
-export class AuthenticationError extends AppError {
-  constructor(message: string = 'Authentication required') {
-    super(message, 401, 'AUTH_ERROR');
-    this.name = 'AuthenticationError';
-  }
-}
-```
-
-### 6.2 Centralized Error Handler
-
-**Create `src/middleware/errorHandler.ts`:**
-```typescript
-export function handleError(error: unknown): Response {
-  console.error('Error:', error);
-
-  if (error instanceof AppError) {
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error.message,
-        code: error.code,
-      }),
-      {
-        status: error.statusCode,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  }
-
-  // Unknown error
-  return new Response(
-    JSON.stringify({
-      success: false,
-      error: 'Internal server error',
-    }),
-    {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    }
-  );
-}
-```
-
 ---
 
 ## Implementation Roadmap
 
-### Phase 1: Foundation (Week 1)
-- [ ] Create new directory structure
-- [ ] Extract constants to `src/config/constants.ts`
-- [ ] Create unified crypto utilities in `src/utils/crypto.ts`
-- [ ] Set up error classes in `src/errors/`
-
-### Phase 2: Database Layer (Week 2)
-- [ ] Split `src/utils/database.ts` into `src/database/` modules
-- [ ] Add comprehensive JSDoc comments
-- [ ] Implement type-safe database operations
-- [ ] Add validation layer
-
-### Phase 3: Routes Refactoring (Week 3)
+### Phase 3: Routes Refactoring (Current)
 - [ ] Split `customAuth.ts` into `src/routes/auth/`
 - [ ] Split `admin.ts` into `src/routes/admin/`
 - [ ] Split `bio.ts` into `src/routes/bio/`
 - [ ] Extract middleware to separate files
 
-### Phase 4: Components (Week 4)
+### Phase 4: Components
 - [ ] Extract common UI components
 - [ ] Split large component files
 - [ ] Extract inline CSS to separate files
 - [ ] Create component documentation
 
-### Phase 5: Testing & Documentation (Week 5)
+### Phase 5: Testing & Documentation
 - [ ] Add unit tests for utilities
 - [ ] Add integration tests for routes
 - [ ] Write comprehensive README files
@@ -407,6 +234,140 @@ export function handleError(error: unknown): Response {
 
 ---
 
+## ✅ Completed
+
+### Priority 1: Critical Security & Architecture Issues
+
+#### 1.1 Password Hashing Inconsistency ✅ **RESOLVED**
+**Problem:** Two different password hashing implementations:
+- `src/utils/database.ts` - Uses weak SHA-256 without salt for shortcode passwords
+- `src/components/auth/utils.ts` - Uses secure PBKDF2 with 100,000 iterations
+
+**Solution Implemented:**
+- ✅ Created `src/utils/crypto.ts` with unified secure hashing
+- ✅ All password hashing now uses PBKDF2 with 100,000 iterations
+- ✅ Secure salt generation implemented
+- ✅ Token generation for email verification/password reset
+
+#### 1.2 CORS Headers Duplication ✅ **RESOLVED**
+**Problem:** CORS headers repeated in 5+ files
+
+**Solution Implemented:**
+- ✅ Created `src/middleware/cors.ts`
+- ✅ Centralized CORS configuration
+- ✅ Preflight request handling
+- ✅ CORS middleware wrapper
+- ✅ Helper functions for adding CORS headers
+
+---
+
+### Priority 2: File Organization & Structure
+
+#### 2.2 Split Database Utilities ✅ **COMPLETED**
+
+**`src/utils/database.ts` (538 lines) → Split into:**
+```
+src/database/
+  ✅ urls.ts           # URL operations (saveUrlToDatabase, getUrlFromDatabase)
+  ✅ bio.ts            # Bio operations (saveBioProfile, getBioPage)
+  ✅ analytics.ts      # Analytics operations (saveAnalytics, getAnalytics)
+  ✅ deletion.ts       # Deletion operations (saveDeletionEntry, deleteDeletionEntry)
+  ✅ init.ts           # Database initialization (initializeTables)
+  ✅ passwords.ts      # Password operations
+  ✅ index.ts          # Re-export all functions
+```
+
+---
+
+### Priority 3: Code Duplication Elimination
+
+#### 3.3 Centralize Constants ✅ **COMPLETED**
+
+**Created `src/config/constants.ts`:**
+- ✅ Authentication & security constants (PASSWORD_MIN_LENGTH, PBKDF2_ITERATIONS, etc.)
+- ✅ Shortcode configuration (length, charset, reserved words)
+- ✅ File upload limits and allowed types
+- ✅ Rate limiting configuration
+- ✅ Pagination defaults
+- ✅ Analytics settings
+- ✅ Centralized ERROR_MESSAGES object
+- ✅ Centralized SUCCESS_MESSAGES object
+- ✅ HTTP status codes
+- ✅ Regular expressions (EMAIL_REGEX, SHORTCODE_REGEX, URL_REGEX)
+- ✅ Feature flags for gradual rollout
+
+---
+
+### Priority 5: Type Safety Improvements
+
+#### 5.2 Add Validation Schemas ✅ **COMPLETED**
+
+**Created `src/validation/`:**
+```typescript
+✅ src/validation/url.ts        # URL validation with error messages
+✅ src/validation/shortcode.ts  # Shortcode validation with reserved words
+✅ src/validation/auth.ts       # Email and password validation
+✅ src/validation/index.ts      # Centralized exports
+```
+
+Features:
+- ✅ Boolean validation functions (isValidUrl, isValidShortcode, isValidEmail)
+- ✅ Detailed validation results with error messages
+- ✅ Assert functions that throw ValidationError
+- ✅ Reserved shortcode checking
+- ✅ Integration with centralized error messages
+
+---
+
+### Priority 6: Error Handling Improvements
+
+#### 6.1 Create Error Classes ✅ **COMPLETED**
+
+**Created `src/errors/`:**
+```typescript
+✅ src/errors/AppError.ts            # Base error class with HTTP status codes
+✅ src/errors/ValidationError.ts     # Input validation errors (400)
+✅ src/errors/AuthenticationError.ts # Auth failures (401)
+✅ src/errors/NotFoundError.ts       # Missing resources (404)
+✅ src/errors/ConflictError.ts       # Duplicate resources (409)
+✅ src/errors/index.ts               # Centralized exports
+```
+
+Features:
+- ✅ Proper stack traces
+- ✅ HTTP status codes
+- ✅ Machine-readable error codes
+- ✅ JSON serialization
+- ✅ TypeScript type safety
+
+#### 6.2 Centralized Error Handler ✅ **COMPLETED**
+
+**Created `src/middleware/errorHandler.ts`:**
+- ✅ Centralized error handling function
+- ✅ Consistent error responses
+- ✅ Async error wrapper utility
+- ✅ Proper logging
+- ✅ Handles AppError instances and unknown errors
+
+---
+
+### Phase 1: Foundation ✅ **COMPLETED**
+- ✅ Create new directory structure
+- ✅ Extract constants to `src/config/constants.ts`
+- ✅ Create unified crypto utilities in `src/utils/crypto.ts` (already existed)
+- ✅ Set up error classes in `src/errors/`
+- ✅ Create CORS middleware in `src/middleware/cors.ts`
+- ✅ Create error handler middleware in `src/middleware/errorHandler.ts`
+- ✅ Create validation utilities in `src/validation/`
+
+### Phase 2: Database Layer ✅ **COMPLETED**
+- ✅ Split `src/utils/database.ts` into `src/database/` modules
+- ✅ Add comprehensive JSDoc comments
+- ✅ Implement type-safe database operations
+- ✅ Add validation layer
+
+---
+
 ## Notes
 
 - All refactoring should be done incrementally with tests
@@ -416,5 +377,9 @@ export function handleError(error: unknown): Response {
 
 ---
 
-**Last Updated:** April 4, 2026  
-**Status:** Draft - Pending Review
+**Last Updated:** May 3, 2026  
+**Status:** In Progress - Phase 3 (Routes Refactoring)
+
+**Completed:** Phases 1 & 2 (Foundation & Database Layer)  
+**Current:** Phase 3 (Routes Refactoring)  
+**Remaining:** Phases 4 & 5 (Components & Testing/Documentation)

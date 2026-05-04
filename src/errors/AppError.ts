@@ -2,20 +2,11 @@
  * Base application error class
  * 
  * All custom errors in the application should extend this class.
- * Provides consistent error handling with HTTP status codes and error codes.
- * 
- * @module errors/AppError
- */
-
-/**
- * Base error class for application-specific errors
- * 
- * @example
- * throw new AppError('Something went wrong', 500, 'INTERNAL_ERROR');
+ * Provides consistent error handling with HTTP status codes.
  */
 export class AppError extends Error {
 	/**
-	 * Creates a new AppError
+	 * Create a new application error
 	 * 
 	 * @param message - Human-readable error message
 	 * @param statusCode - HTTP status code (default: 500)
@@ -29,12 +20,14 @@ export class AppError extends Error {
 		super(message);
 		this.name = 'AppError';
 		
-		// Maintains proper stack trace for where error was thrown
-		Object.setPrototypeOf(this, new.target.prototype);
+		// Maintains proper stack trace for where error was thrown (V8 only)
+		if ((Error as any).captureStackTrace) {
+			(Error as any).captureStackTrace(this, this.constructor);
+		}
 	}
 
 	/**
-	 * Converts error to JSON format for API responses
+	 * Convert error to JSON response format
 	 */
 	toJSON() {
 		return {

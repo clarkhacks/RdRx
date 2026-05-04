@@ -1,13 +1,5 @@
-/**
- * URL validation utilities
- * 
- * Provides functions for validating URLs and related data.
- * 
- * @module validation/url
- */
-
 import { ValidationError } from '../errors';
-import { ERROR_MESSAGES } from '../config/constants';
+import { ERROR_MESSAGES, URL_REGEX } from '../config/constants';
 
 /**
  * Validation result interface
@@ -18,69 +10,73 @@ export interface ValidationResult {
 }
 
 /**
- * Validates a URL string
+ * Validate a URL string
  * 
- * @param url - The URL string to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @param url - The URL to validate
+ * @returns Validation result with error message if invalid
  * 
  * @example
  * const result = validateUrl('https://example.com');
  * if (!result.valid) {
  *   console.error(result.error);
  * }
- * 
- * @example
- * // Throws ValidationError if invalid
- * validateUrl('invalid-url', true);
  */
-export function validateUrl(url: string, throwOnError: boolean = false): ValidationResult {
+export function validateUrl(url: string): ValidationResult {
+	if (!url || typeof url !== 'string') {
+		return { valid: false, error: ERROR_MESSAGES.REQUIRED_FIELD };
+	}
+
+	// Basic regex check
+	if (!URL_REGEX.test(url)) {
+		return { valid: false, error: ERROR_MESSAGES.INVALID_URL };
+	}
+
+	// Try to parse as URL
 	try {
-		new URL(url);
+		const parsedUrl = new URL(url);
+		
+		// Ensure it's http or https
+		if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+			return { valid: false, error: 'URL must use HTTP or HTTPS protocol' };
+		}
+
 		return { valid: true };
 	} catch {
-		const error = ERROR_MESSAGES.INVALID_URL;
-		if (throwOnError) {
-			throw new ValidationError(error, 'url');
-		}
-		return { valid: false, error };
+		return { valid: false, error: ERROR_MESSAGES.INVALID_URL };
 	}
 }
 
 /**
- * Validates that a URL uses HTTPS protocol
+ * Check if a URL is valid (boolean version)
  * 
- * @param url - The URL string to validate
- * @param throwOnError - If true, throws ValidationError instead of returning result
- * @returns Validation result object
+ * @param url - The URL to check
+ * @returns True if valid, false otherwise
  * 
  * @example
- * const result = validateHttpsUrl('https://example.com');
- * if (!result.valid) {
- *   console.error(result.error);
+ * if (isValidUrl('https://example.com')) {
+ *   // URL is valid
  * }
  */
-export function validateHttpsUrl(url: string, throwOnError: boolean = false): ValidationResult {
-	const urlValidation = validateUrl(url, throwOnError);
-	if (!urlValidation.valid) {
-		return urlValidation;
-	}
+export function isValidUrl(url: string): boolean {
+	return validateUrl(url).valid;
+}
 
-	try {
-		const parsedUrl = new URL(url);
-		if (parsedUrl.protocol !== 'https:') {
-			const error = 'URL must use HTTPS protocol';
-			if (throwOnError) {
-				throw new ValidationError(error, 'url');
-			}
-			return { valid: false, error };
-		}
-		return { valid: true };
-	} catch {
-		const error = ERROR_MESSAGES.INVALID_URL;
-		if (throwOnError) {
-			throw new ValidationError(error, 'url');
-		}
-		return { valid: false, error };
+/**
+ * Validate URL and throw error if invalid
+ * 
+ * @param url - The URL to validate
+ * @throws {ValidationError} If URL is invalid
+ * 
+ * @example
+ * try {
+ *   assertValidUrl(userInput);
+ * } catch (error) {
+ *   // Handle validation error
+ * }
+ */
+export function assertValidUrl(url: string): void {
+	const result = validateUrl(url);
+	if (!result.valid) {
+		throw new ValidationError(result.error || ERROR_MESSAGES.INVALID_URL, 'url');
 	}
 }

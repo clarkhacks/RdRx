@@ -1,10 +1,8 @@
 /**
- * Error classes for the application
+ * Centralized error classes for the application
  * 
- * This module exports all custom error classes used throughout the application.
- * All errors extend the base AppError class and provide consistent error handling.
- * 
- * @module errors
+ * This module exports all custom error types used throughout the application.
+ * All errors extend the base AppError class for consistent handling.
  */
 
 export { AppError } from './AppError';
