@@ -38,6 +38,11 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
             .table-container {
                 width: 100%;
                 border-collapse: collapse;
+                overflow-x: auto;
+            }
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
             }
             .table-header {
                 background: #000;
@@ -158,25 +163,43 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
             }
             /* Responsive cards for mobile */
             @media (max-width: 768px) {
+                .table-wrapper {
+                    overflow-x: visible;
+                }
                 .table-container {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
+                    display: block;
                 }
                 .table-row {
-                    display: flex;
-                    flex-direction: column;
+                    display: block;
                     background: #fff;
                     border: 1px solid #e5e7eb;
                     border-radius: 12px;
                     padding: 1rem;
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+                    margin-bottom: 1rem;
                 }
                 .table-cell {
-                    margin-bottom: 0.5rem;
+                    display: block;
+                    padding: 0.5rem 0;
+                    border: none;
                 }
                 .table-cell:last-child {
-                    margin-bottom: 0;
+                    padding-bottom: 0;
+                }
+                .table-cell strong {
+                    display: inline-block;
+                    min-width: 80px;
+                    color: #374151;
+                }
+                /* Hide desktop table on mobile */
+                table.table-container {
+                    display: none !important;
+                }
+            }
+            /* Show desktop table only on larger screens */
+            @media (min-width: 769px) {
+                .table-container.md\\:hidden {
+                    display: none !important;
                 }
             }
         </style>
@@ -435,12 +458,12 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 	</div>
 
 	<!-- URLs Table -->
-	<div class="table-container">
+	<div class="table-wrapper">
 		${
 			paginatedUrls.items.length > 0
 				? `
-		<table class="table-container hidden md:table">
-			<thead class="hidden md:block">
+		<table class="table-container w-full">
+			<thead>
 				<tr class="table-header">
 					<th class="table-cell">Short URL</th>
 					<th class="table-cell">Target</th>
@@ -461,7 +484,7 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 						</a>
 					</td>
 					<td class="table-cell">
-						<div class="max-w-xs truncate">
+						<div class="max-w-xs truncate" title="${url.target_url}">
 							${url.target_url.includes('[') && url.target_url.includes(']') ? 'File Bin ' + url.shortcode : url.target_url}
 						</div>
 					</td>
@@ -487,34 +510,35 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 					.join('')}
 			</tbody>
 		</table>
-		<div class="table-container md:hidden">
+		<!-- Mobile Card View -->
+		<div class="md:hidden">
 			${paginatedUrls.items
 				.map(
 					(url) => `
 			<div class="table-row">
 				<div class="table-cell">
 					<strong>Short URL:</strong>
-					<a href="/${url.shortcode}" target="_blank" class="text-amber-500 hover:text-amber-600 font-medium">
+					<a href="/${url.shortcode}" target="_blank" class="text-amber-500 hover:text-amber-600 font-medium ml-2">
 						${url.shortcode}
 					</a>
 				</div>
 				<div class="table-cell">
 					<strong>Target:</strong>
-					<div class="max-w-xs truncate">
+					<div class="break-words mt-1 text-sm text-gray-600">
 						${url.target_url.includes('[') && url.target_url.includes(']') ? 'File Bin ' + url.shortcode : url.target_url}
 					</div>
 				</div>
 				<div class="table-cell">
-					<strong>Type:</strong> ${getUrlType(url)}
+					<strong>Type:</strong> <span class="ml-2">${getUrlType(url)}</span>
 				</div>
 				<div class="table-cell">
-					<strong>Created:</strong> ${formatDate(url.created_at)}
+					<strong>Created:</strong> <span class="ml-2">${formatDate(url.created_at)}</span>
 				</div>
 				<div class="table-cell">
-					<strong>Clicks:</strong> ${url.clicks}
+					<strong>Clicks:</strong> <span class="ml-2">${url.clicks}</span>
 				</div>
 				<div class="table-cell">
-					<div class="flex space-x-2">
+					<div class="flex flex-wrap gap-2 mt-2">
 						<a href="/analytics/${url.shortcode}" class="text-amber-500 hover:text-amber-600 font-medium text-sm">
 							View
 						</a>
