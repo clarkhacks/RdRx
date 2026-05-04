@@ -70,6 +70,16 @@ export const SHORTCODE_MAX_LENGTH = 50;
 export const SHORTCODE_CHARSET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
 /**
+ * API key prefix
+ */
+export const API_KEY_PREFIX = 'rdrx_live_';
+
+/**
+ * API key length (excluding prefix)
+ */
+export const API_KEY_LENGTH = 24;
+
+/**
  * Reserved shortcodes that cannot be used by users
  */
 export const RESERVED_SHORTCODES = [
