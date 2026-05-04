@@ -21,8 +21,8 @@ export class AppError extends Error {
 		this.name = 'AppError';
 		
 		// Maintains proper stack trace for where error was thrown (V8 only)
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, this.constructor);
+		if ((Error as any).captureStackTrace) {
+			(Error as any).captureStackTrace(this, this.constructor);
 		}
 	}
 
