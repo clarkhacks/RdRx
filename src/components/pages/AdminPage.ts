@@ -152,6 +152,9 @@ function renderAdminContent(): string {
                     <button class="admin-tab px-6 py-3 rounded-full font-medium transition duration-300" data-tab="analytics">
                         System Analytics
                     </button>
+                    <button class="admin-tab px-6 py-3 rounded-full font-medium transition duration-300" data-tab="email">
+                        Email Testing
+                    </button>
                 </div>
             </div>
             
@@ -293,6 +296,138 @@ function renderAdminContent(): string {
                         <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
                             <h3 class="text-lg font-semibold mb-2">Storage Used</h3>
                             <p class="text-3xl font-bold" id="analytics-storage">0 MB</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Testing Tab -->
+            <div id="email-tab" class="tab-content hidden">
+                <div class="bg-white shadow-xl rounded-xl p-6 md:p-8 form-card">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">Email Testing</h2>
+                    <p class="text-gray-600 mb-6">Test your Resend email configuration by sending test emails.</p>
+                    
+                    <!-- Email Test Results -->
+                    <div id="email-test-result" class="hidden mb-6 p-4 rounded-lg"></div>
+                    
+                    <!-- Test Email Forms -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Welcome Email Test -->
+                        <div class="border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Welcome Email</h3>
+                            <p class="text-sm text-gray-600 mb-4">Send a test welcome email to verify new user registration emails work correctly.</p>
+                            <form id="test-welcome-email-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
+                                    <input type="email" name="email" required placeholder="test@example.com"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                                    <input type="text" name="name" required placeholder="Test User"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <button type="submit" class="btn-gradient w-full text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                    Send Welcome Email
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Password Reset Email Test -->
+                        <div class="border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Password Reset Email</h3>
+                            <p class="text-sm text-gray-600 mb-4">Send a test password reset email with a sample reset token.</p>
+                            <form id="test-reset-email-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
+                                    <input type="email" name="email" required placeholder="test@example.com"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                                    <input type="text" name="name" required placeholder="Test User"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <button type="submit" class="btn-gradient w-full text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                    Send Reset Email
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Email Verification Test -->
+                        <div class="border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Email Verification</h3>
+                            <p class="text-sm text-gray-600 mb-4">Send a test email verification message with a sample token.</p>
+                            <form id="test-verification-email-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
+                                    <input type="email" name="email" required placeholder="test@example.com"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">User Name</label>
+                                    <input type="text" name="name" required placeholder="Test User"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <button type="submit" class="btn-gradient w-full text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                    Send Verification Email
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Custom Email Test -->
+                        <div class="border border-gray-200 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Custom Email</h3>
+                            <p class="text-sm text-gray-600 mb-4">Send a custom test email with your own subject and message.</p>
+                            <form id="test-custom-email-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Recipient Email</label>
+                                    <input type="email" name="email" required placeholder="test@example.com"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                    <input type="text" name="subject" required placeholder="Test Email"
+                                           class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <textarea name="message" required rows="3" placeholder="Your test message..."
+                                              class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition"></textarea>
+                                </div>
+                                <button type="submit" class="btn-gradient w-full text-white font-medium py-3 px-6 rounded-full transition duration-300">
+                                    Send Custom Email
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Configuration Status -->
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Email Configuration Status</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Email Service</p>
+                                    <p class="text-sm text-gray-500">Resend API</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">From Email</p>
+                                    <p class="text-sm text-gray-500" id="from-email-display">Loading...</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -736,6 +871,121 @@ function renderAdminScripts(): string {
             document.getElementById('urls-next').addEventListener('click', () => {
                 loadUrls(currentUrlsPage + 1);
             });
+            
+            // Email testing functionality
+            function showEmailResult(success, message) {
+                const resultDiv = document.getElementById('email-test-result');
+                resultDiv.className = success 
+                    ? 'mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800'
+                    : 'mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-800';
+                resultDiv.textContent = message;
+                resultDiv.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    resultDiv.classList.add('hidden');
+                }, 5000);
+            }
+            
+            // Welcome email test
+            document.getElementById('test-welcome-email-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const name = formData.get('name');
+                
+                try {
+                    const response = await fetch('/api/admin/test-email/welcome', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, name })
+                    });
+                    
+                    const data = await response.json();
+                    showEmailResult(data.success, data.message || (data.success ? 'Welcome email sent successfully!' : 'Failed to send email'));
+                } catch (error) {
+                    showEmailResult(false, 'Error sending email: ' + error.message);
+                }
+            });
+            
+            // Password reset email test
+            document.getElementById('test-reset-email-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const name = formData.get('name');
+                
+                try {
+                    const response = await fetch('/api/admin/test-email/reset', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, name })
+                    });
+                    
+                    const data = await response.json();
+                    showEmailResult(data.success, data.message || (data.success ? 'Password reset email sent successfully!' : 'Failed to send email'));
+                } catch (error) {
+                    showEmailResult(false, 'Error sending email: ' + error.message);
+                }
+            });
+            
+            // Email verification test
+            document.getElementById('test-verification-email-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const name = formData.get('name');
+                
+                try {
+                    const response = await fetch('/api/admin/test-email/verification', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, name })
+                    });
+                    
+                    const data = await response.json();
+                    showEmailResult(data.success, data.message || (data.success ? 'Verification email sent successfully!' : 'Failed to send email'));
+                } catch (error) {
+                    showEmailResult(false, 'Error sending email: ' + error.message);
+                }
+            });
+            
+            // Custom email test
+            document.getElementById('test-custom-email-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const subject = formData.get('subject');
+                const message = formData.get('message');
+                
+                try {
+                    const response = await fetch('/api/admin/test-email/custom', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, subject, message })
+                    });
+                    
+                    const data = await response.json();
+                    showEmailResult(data.success, data.message || (data.success ? 'Custom email sent successfully!' : 'Failed to send email'));
+                } catch (error) {
+                    showEmailResult(false, 'Error sending email: ' + error.message);
+                }
+            });
+            
+            // Load email configuration on page load
+            async function loadEmailConfig() {
+                try {
+                    const response = await fetch('/api/admin/email-config');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        document.getElementById('from-email-display').textContent = data.fromEmail || 'Not configured';
+                    }
+                } catch (error) {
+                    console.error('Error loading email config:', error);
+                }
+            }
+            
+            loadEmailConfig();
         </script>
     `;
 }
