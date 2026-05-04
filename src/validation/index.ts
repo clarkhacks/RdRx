@@ -1,11 +1,10 @@
 /**
- * Validation utilities
+ * Centralized validation utilities
  * 
- * This module exports all validation functions used throughout the application.
- * 
- * @module validation
+ * This module provides validation functions for common data types
+ * used throughout the application.
  */
 
-export { validateUrl, validateHttpsUrl, type ValidationResult } from './url';
-export { validateShortcode, validateCustomShortcode } from './shortcode';
-export { validateEmail, validatePassword, validateApiKey } from './auth';
+export { validateUrl, isValidUrl } from './url';
+export { validateShortcode, isValidShortcode, isReservedShortcode } from './shortcode';
+export { validateEmail, isValidEmail } from './auth';

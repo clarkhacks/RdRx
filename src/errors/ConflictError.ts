@@ -1,30 +1,33 @@
-/**
- * Conflict error class
- * 
- * Thrown when a resource already exists or there's a conflict
- * with the current state of the resource.
- * Always returns HTTP 409 (Conflict).
- * 
- * @module errors/ConflictError
- */
-
 import { AppError } from './AppError';
 
 /**
- * Error thrown when there's a resource conflict
+ * Conflict error for duplicate resources
  * 
- * @example
- * throw new ConflictError('Shortcode already exists');
- * throw new ConflictError('Email already registered');
+ * Used when attempting to create a resource that already exists.
+ * Returns HTTP 409 Conflict.
  */
 export class ConflictError extends AppError {
 	/**
-	 * Creates a new ConflictError
+	 * Create a new conflict error
 	 * 
-	 * @param message - Human-readable conflict error message
+	 * @param message - Description of the conflict
+	 * @param resource - Optional resource type that conflicts
 	 */
-	constructor(message: string) {
+	constructor(message: string = 'Resource already exists', public resource?: string) {
 		super(message, 409, 'CONFLICT');
 		this.name = 'ConflictError';
+	}
+
+	/**
+	 * Convert error to JSON response format
+	 */
+	toJSON() {
+		return {
+			success: false,
+			error: this.message,
+			code: this.code,
+			resource: this.resource,
+			statusCode: this.statusCode,
+		};
 	}
 }

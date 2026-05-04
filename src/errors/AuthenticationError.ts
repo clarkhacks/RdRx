@@ -1,27 +1,16 @@
-/**
- * Authentication error class
- * 
- * Thrown when authentication is required but not provided,
- * or when authentication credentials are invalid.
- * Always returns HTTP 401 (Unauthorized).
- * 
- * @module errors/AuthenticationError
- */
-
 import { AppError } from './AppError';
 
 /**
- * Error thrown when authentication fails or is required
+ * Authentication error for unauthorized access
  * 
- * @example
- * throw new AuthenticationError('Invalid credentials');
- * throw new AuthenticationError(); // Uses default message
+ * Used when a user is not authenticated or their session is invalid.
+ * Returns HTTP 401 Unauthorized.
  */
 export class AuthenticationError extends AppError {
 	/**
-	 * Creates a new AuthenticationError
+	 * Create a new authentication error
 	 * 
-	 * @param message - Human-readable error message (default: 'Authentication required')
+	 * @param message - Description of the authentication failure
 	 */
 	constructor(message: string = 'Authentication required') {
 		super(message, 401, 'AUTH_ERROR');
