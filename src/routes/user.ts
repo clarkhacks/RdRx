@@ -45,6 +45,11 @@ export async function handleUserRoutes(request: Request, env: Env): Promise<Resp
 			return handleDeleteUserFile(request, env, path, userId);
 		}
 
+		// Check shortcode availability
+		if (path.startsWith('check-availability/') && request.method === 'GET') {
+			return handleCheckShortcodeAvailability(request, env, path);
+		}
+
 		// Delete operations
 		if (path.startsWith('delete/') && request.method === 'DELETE') {
 			return handleDeleteUserItem(request, env, path, userId);
@@ -367,6 +372,54 @@ async function handleUploadUserFiles(request: Request, env: Env, path: string, u
 			status: 500,
 			headers: { 'Content-Type': 'application/json' },
 		});
+	}
+}
+
+/**
+ * Check if a shortcode is available
+ */
+async function handleCheckShortcodeAvailability(request: Request, env: Env, path: string): Promise<Response> {
+	try {
+		const shortcode = path.split('/')[1];
+
+		if (!shortcode || shortcode.trim() === '') {
+			return new Response(
+				JSON.stringify({
+					available: true,
+					message: '',
+				}),
+				{
+					headers: { 'Content-Type': 'application/json' },
+				}
+			);
+		}
+
+		// Check if shortcode exists in database
+		const existing = await env.DB.prepare('SELECT shortcode FROM short_urls WHERE shortcode = ?').bind(shortcode).first();
+
+		const available = !existing;
+
+		return new Response(
+			JSON.stringify({
+				available: available,
+				message: available ? '' : 'This shortcode is already taken',
+			}),
+			{
+				headers: { 'Content-Type': 'application/json' },
+			}
+		);
+	} catch (error) {
+		console.error('Error checking shortcode availability:', error);
+		return new Response(
+			JSON.stringify({
+				available: false,
+				message: 'Error checking availability',
+			}),
+			{
+				status: 500,
+				headers: { 'Content-Type': 'application/json' },
+			}
+		);
 	}
 }
 

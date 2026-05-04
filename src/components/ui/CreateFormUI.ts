@@ -104,9 +104,10 @@ function renderCreateFormUI({ shortcode, shortcodeValue, isAdmin = false, shortD
             ${shortcode ? `value="${shortcode}"` : ''}
             placeholder="your-custom-path"
             class="pl-[72px] block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition">
+          <p id="availability-message" class="text-sm mt-1 hidden"></p>
         </div>
         <button type="button" class="ml-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-300"
-          onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 6);">
+          onclick="document.querySelector('#customCode').value = Math.random().toString(36).substr(2, 6); checkShortcodeAvailability();">
           Random
         </button>
       </div>
@@ -353,6 +354,51 @@ function renderCreateFormScripts(shortDomain: string): string {
   deleteAfterCheck.addEventListener('change', () => {
     deleteAfter.disabled = !deleteAfterCheck.checked;
   });
+
+  // Real-time shortcode availability check
+  let availabilityTimeout;
+  const customCodeInput = document.querySelector('#customCode');
+  const availabilityMessage = document.querySelector('#availability-message');
+  const submitButton = document.querySelector('button[type="submit"]');
+
+  async function checkShortcodeAvailability() {
+    const shortcode = customCodeInput.value.trim();
+    
+    if (!shortcode) {
+      availabilityMessage.classList.add('hidden');
+      submitButton.disabled = false;
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/user/check-availability/' + encodeURIComponent(shortcode));
+      const data = await response.json();
+
+      if (data.available) {
+        availabilityMessage.textContent = '✓ Available';
+        availabilityMessage.className = 'text-sm mt-1 text-green-600';
+        availabilityMessage.classList.remove('hidden');
+        submitButton.disabled = false;
+      } else {
+        availabilityMessage.textContent = '✗ ' + data.message;
+        availabilityMessage.className = 'text-sm mt-1 text-red-600';
+        availabilityMessage.classList.remove('hidden');
+        submitButton.disabled = true;
+      }
+    } catch (error) {
+      console.error('Error checking availability:', error);
+      availabilityMessage.classList.add('hidden');
+      submitButton.disabled = false;
+    }
+  }
+
+  customCodeInput.addEventListener('input', () => {
+    clearTimeout(availabilityTimeout);
+    availabilityTimeout = setTimeout(checkShortcodeAvailability, 500);
+  });
+
+  // Make function globally available for Random button
+  window.checkShortcodeAvailability = checkShortcodeAvailability;
   `;
 }
 
