@@ -5,38 +5,52 @@ All notable changes to RdRx will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.2] - 2026-05-03
 
 ### Added
 - Production-ready logging utility (`src/utils/logger.ts`) for better error tracking
 - CHANGELOG.md for tracking version history
 - Comprehensive UI improvements with unified design system
-- Bio page editor with drag-and-drop link management
+- Bio page editor with drag-and-drop link management and live preview
 - File gallery management with R2 storage integration
 - Admin panel for user and content management
 - Profile picture upload functionality
 - Password reset via email
 - Analytics tracking and visualization
 - Custom authentication system with JWT tokens
+- Real-time shortcode availability checking for all forms
+- Centralized constants in `src/config/constants.ts`
+- Error class hierarchy (`src/errors/`) for consistent error handling
+- CORS middleware (`src/middleware/cors.ts`)
+- Error handler middleware (`src/middleware/errorHandler.ts`)
+- Validation utilities (`src/validation/`) for URLs, shortcodes, and auth
 
 ### Changed
 - Improved README.md with better structure and clearer instructions
 - Updated UI components to use shared design system
 - Simplified form interactions across the application
-- Enhanced mobile responsiveness
+- Enhanced mobile responsiveness across all pages
 - Improved error handling and validation
+- Bio page route changed from `/bio/edit` to `/bio` for better UX
+- Bio page redesigned as Linktree-style interface with live preview panel
+- Analytics table now fully responsive with card layout on mobile
+- Migrated email service from Mailgun to Resend API
+- Refactored database layer into modular files (`src/database/`)
 
 ### Fixed
 - Typo in `.dev.vars.example` (htps -> https)
 - Removed redundant `loginForm.ts` file (consolidated into `auth/LoginForm.ts`)
 - Consistent styling across all components
 - Better error messages for user feedback
+- Analytics table overflow issues on mobile devices
+- TypeScript compilation errors in error classes
 
 ### Security
 - Implemented secure password hashing with PBKDF2 and salt
 - HTTP-only cookies for session management
 - JWT-based authentication
 - Input validation and sanitization
+- Unified crypto utilities for consistent security practices
 
 ## [1.2.1] - 2025-05-29
 

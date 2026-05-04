@@ -8,9 +8,14 @@ This document outlines the tasks, improvements, and exciting features planned fo
 
 ### 🧹 Codebase Cleanup
 
-- [ ] **Organize the file structure**
-  - Group related files into appropriate directories
-  - Remove unnecessary clutter, such as files that only import and export another file without modifications
+- [x] **Organize the file structure** (Phase 1 & 2 Complete)
+  - ✅ Created `src/config/` for centralized constants
+  - ✅ Created `src/errors/` for error class hierarchy
+  - ✅ Created `src/middleware/` for CORS and error handling
+  - ✅ Created `src/validation/` for input validation
+  - ✅ Database already modular in `src/database/`
+  - [ ] Phase 3: Split large route files (customAuth.ts, admin.ts, bio.ts)
+  - [ ] Phase 4: Refactor large UI components
 - [ ] **Remove unused or redundant files**
   - Identify and delete files that are no longer needed
   - Consolidate similar files to reduce duplication
@@ -45,11 +50,16 @@ This document outlines the tasks, improvements, and exciting features planned fo
 
 ### 🌳 Link Trees / Bio Pages
 
-- [ ] **Micro landing pages**
-  - Let users group short links/snippets/files into bio pages (like Linktree)
-  - Add themes, logos, contact buttons, and analytics
-  - Custom branding and personalization options
-  - CURRENTLY: The user is able to create these, however they are not able to edit them.
+- [x] **Micro landing pages** (Completed May 2026)
+  - ✅ Users can create and edit bio pages (Linktree-style)
+  - ✅ Drag-and-drop link reordering
+  - ✅ Live preview panel with phone mockup
+  - ✅ Toggle switches for link visibility
+  - ✅ Collapsible SEO settings
+  - ✅ Custom branding and personalization options
+  - [ ] Add themes and color customization
+  - [ ] Add contact buttons and social media integration
+  - [ ] Add analytics for bio page views
 
 ### 🔐 Encrypted Pastebin / FileVault
 
@@ -214,10 +224,37 @@ This document outlines the tasks, improvements, and exciting features planned fo
 - [x] **Document configuration options**
   - ✅ Provided examples and explanations for each configuration option
 
+### 🎨 UI/UX Improvements (May 2026)
+
+- [x] **Bio page redesign**
+  - ✅ Linktree-style interface with live preview
+  - ✅ Drag-and-drop link management
+  - ✅ Mobile-responsive design
+- [x] **Analytics improvements**
+  - ✅ Fixed table overflow on mobile
+  - ✅ Card-based layout for small screens
+  - ✅ Responsive design across all devices
+- [x] **Real-time validation**
+  - ✅ Shortcode availability checking
+  - ✅ Instant feedback for users
+  - ✅ Prevents duplicate shortcode submissions
+
+### 🔧 Code Quality (May 2026)
+
+- [x] **Refactoring Phase 1 & 2**
+  - ✅ Centralized constants and configuration
+  - ✅ Error class hierarchy
+  - ✅ Middleware for CORS and error handling
+  - ✅ Validation utilities
+  - ✅ Modular database layer
+- [x] **Email service migration**
+  - ✅ Migrated from Mailgun to Resend API
+  - ✅ Improved email deliverability
+
 ---
 
 ## 🤝 Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
 
-_Last updated: 29 May, 2025_
+_Last updated: 3 May, 2026_
