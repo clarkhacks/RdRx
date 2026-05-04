@@ -81,7 +81,7 @@ export async function sendWelcomeEmail(env: Env, userEmail: string, userName: st
 				<p>Get started by logging into your account and exploring all the features we have to offer.</p>
 				<div style="text-align: center; margin: 30px 0;">
 					<a href="${
-						env.FRONTEND_URL || 'https://rdrx.app'
+						env.FRONTEND_URL || 'https://rdrx.co'
 					}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Get Started</a>
 				</div>
 				<p style="color: #666; font-size: 14px;">If you have any questions, feel free to reach out to our support team.</p>
@@ -105,7 +105,7 @@ export async function sendWelcomeEmail(env: Env, userEmail: string, userName: st
 		
 		Get started by logging into your account and exploring all the features we have to offer.
 		
-		Visit: ${env.FRONTEND_URL || 'https://rdrx.app'}
+		Visit: ${env.FRONTEND_URL || 'https://rdrx.co'}
 		
 		If you have any questions, feel free to reach out to our support team.
 	`;
@@ -122,7 +122,7 @@ export async function sendWelcomeEmail(env: Env, userEmail: string, userName: st
  * Send password reset email
  */
 export async function sendPasswordResetEmail(env: Env, userEmail: string, userName: string, resetToken: string): Promise<boolean> {
-	const resetUrl = `${env.FRONTEND_URL || 'https://rdrx.app'}/reset-password?token=${resetToken}`;
+	const resetUrl = `${env.FRONTEND_URL || 'https://rdrx.co'}/reset-password?token=${resetToken}`;
 	const subject = 'Reset Your RDRX Password';
 
 	const html = `
@@ -186,7 +186,7 @@ export async function sendEmailVerificationEmail(
 	userName: string,
 	verificationToken: string,
 ): Promise<boolean> {
-	const verificationUrl = `${env.FRONTEND_URL || 'https://rdrx.app'}/verify-email?token=${verificationToken}`;
+	const verificationUrl = `${env.FRONTEND_URL || 'https://rdrx.co'}/verify-email?token=${verificationToken}`;
 	const subject = 'Verify Your RDRX Email Address';
 
 	const html = `
