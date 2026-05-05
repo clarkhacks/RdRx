@@ -16,7 +16,7 @@
 		"start": "wrangler dev",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
-		"build:css": "npx @tailwindcss/cli -i ./tailwind.input.css -o ./static/assets/built.css --minify",
+		"build:css": "npx @tailwindcss/cli -i ./tailwind.input.css -o ./static/assets/built.css --debug",
 		"build:site": "npx @11ty/eleventy --input=./website --output=./static",
 		"build": "pnpm run build:css && pnpm run build:site && wrangler build",
 		"format": "prettier --write ."
@@ -28,14 +28,14 @@
 		"autoprefixer": "^10.4.21",
 		"concurrently": "^8.2.2",
 		"postcss": "^8.5.3",
-		"tailwindcss": "^4.1.7",
+		"tailwindcss": "^3.4.19",
 		"typescript": "^5.5.2",
 		"vitest": "2.1.8",
 		"wrangler": "^3.60.3"
 	},
 	"dependencies": {
 		"@11ty/eleventy": "^3.1.0",
-		"@tailwindcss/cli": "^4.1.7",
+		"@tailwindcss/cli": "^4.2.4",
 		"@tailwindcss/postcss": "^4.1.7",
 		"jose": "^6.0.10",
 		"jsonwebtoken": "^9.0.2"
