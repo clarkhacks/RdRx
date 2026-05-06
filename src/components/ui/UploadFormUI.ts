@@ -381,7 +381,13 @@ function renderUploadFormScripts(): string {
                 }
             };
             initClipboard();
+            // Show success modal with link
+            const linkUrl = 'https://rdrx.co/' + response.shortcode;
+            showModal('Upload Complete', 'All ' + files.length + ' file' + (files.length > 1 ? 's' : '') + ' uploaded successfully.', linkUrl);
             
+            // Scroll to top to show success message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             // Clear form
             document.querySelector('#files').value = '';
             document.querySelector('#customCode').value = '';
@@ -394,12 +400,6 @@ function renderUploadFormScripts(): string {
             document.querySelector('#deleteAfter').value = defaultDate.toISOString().split('T')[0];
             document.querySelector('#deleteAfter').disabled = false;
 
-            // Show success modal with link
-            const linkUrl = 'https://rdrx.co/' + response.shortcode;
-            showModal('Upload Complete', 'All ' + files.length + ' file' + (files.length > 1 ? 's' : '') + ' uploaded successfully.', linkUrl);
-            
-            // Scroll to top to show success message
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (error) {
             console.error('Upload failed:', error);
         } finally {
