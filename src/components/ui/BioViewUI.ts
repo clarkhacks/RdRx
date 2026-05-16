@@ -3,6 +3,8 @@
  * Renders a user's bio page with links
  */
 
+import { getTheme } from '../../config/bioThemes';
+
 interface BioViewUIProps {
 	bioPage: any;
 	links: any[];
@@ -16,6 +18,10 @@ function renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl = null
 	const title = bioPage && bioPage.title ? bioPage.title : 'Bio Page';
 	const description = bioPage && bioPage.description ? bioPage.description : 'Check out my bio page';
 	const shortcode = bioPage && bioPage.shortcode ? bioPage.shortcode : '';
+	const themeName = bioPage && bioPage.theme ? bioPage.theme : 'default';
+
+	// Get theme configuration
+	const theme = getTheme(themeName);
 
 	// Ensure links is an array
 	const safeLinks = Array.isArray(links) ? links : [];
@@ -84,12 +90,14 @@ function renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl = null
     `;
 }
 
-function renderBioViewStyles(): string {
+function renderBioViewStyles(themeName: string = 'default'): string {
+	const theme = getTheme(themeName);
+	
 	return `
     <style>
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            background: linear-gradient(to bottom, #e2d9c2 0%, #65635a 100%);
+            background: ${theme.background};
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -98,9 +106,9 @@ function renderBioViewStyles(): string {
             margin: 0;
         }
         .container {
-            background: white;
+            background: ${theme.containerBg};
             border-radius: 16px;
-            box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px, rgba(15, 15, 15, 0.1) 0px 8px 16px;
+            box-shadow: ${theme.containerShadow};
             width: 100%;
             max-width: 600px;
             padding: 40px;
@@ -128,9 +136,10 @@ function renderBioViewStyles(): string {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 5px;
+            color: ${theme.textPrimary};
         }
         .bio {
-            color: #666;
+            color: ${theme.textSecondary};
             text-align: center;
             margin-bottom: 15px;
         }
@@ -140,23 +149,23 @@ function renderBioViewStyles(): string {
             gap: 12px;
         }
         .link-card {
-            background: #f5f5f5;
+            background: ${theme.linkCardBg};
             border-radius: 12px;
             padding: 16px;
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: #333;
+            color: ${theme.textPrimary};
             transition: all 0.2s ease;
         }
         .link-card:hover {
             transform: translateY(-2px);
-            box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px, rgba(15, 15, 15, 0.05) 0px 8px 16px;
+            box-shadow: ${theme.linkCardHover};
         }
         .link-icon {
             width: 48px;
             height: 48px;
-            background: white;
+            background: ${theme.linkIconBg};
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -176,9 +185,10 @@ function renderBioViewStyles(): string {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: ${theme.textPrimary};
         }
         .link-description {
-            color: #666;
+            color: ${theme.textSecondary};
             font-size: 0.875rem;
             white-space: nowrap;
             overflow: hidden;
@@ -203,43 +213,11 @@ function renderBioViewStyles(): string {
             text-align: center;
             margin-top: 30px;
             font-size: 0.75rem;
-            color: #999;
+            color: ${theme.textSecondary};
         }
-        
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(to bottom, #2d2c2a 0%, #1a1a1a 100%);
-            }
-            .container {
-                background: #222;
-                box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px, rgba(0, 0, 0, 0.3) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 8px 16px;
-            }
-            .username {
-                color: #fff;
-            }
-            .bio {
-                color: #aaa;
-            }
-            .link-card {
-                background: #333;
-                color: #eee;
-            }
-            .link-icon {
-                background: #444;
-            }
-            .link-description {
-                color: #aaa;
-            }
-            .social-icon {
-                color: #ddd;
-            }
-            .footer {
-                color: #777;
-            }
-            .footer a {
-                color: #999 !important;
-            }
+        .footer a {
+            color: ${theme.accentColor};
+            text-decoration: underline;
         }
     </style>
     `;

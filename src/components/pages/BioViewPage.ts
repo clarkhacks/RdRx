@@ -35,6 +35,9 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 		keywords: metaTags
 	};
 
+	// Get theme name from bioPage
+	const themeName = bioPage?.theme || 'default';
+
 	return `
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +47,7 @@ ${renderDocumentHead({
 	noMeta: false 
 })}
 <body>
-  ${renderBioViewStyles()}
+  ${renderBioViewStyles(themeName)}
   ${renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl, socialMedia })}
 </body>
 </html>
