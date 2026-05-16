@@ -61,8 +61,8 @@ This document outlines the tasks, improvements, and exciting features planned fo
   - ✅ Collapsible SEO settings
   - ✅ Custom branding and personalization options
   - ✅ Social media integration (contact buttons)
-  - [x] Add themes and color customization (8 themes available)
-  - [ ] Add theme selector to bio editor UI
+  - ✅ Add themes and color customization (8 themes available)
+  - ✅ Add theme selector to bio editor UI
   - [ ] Add analytics for bio page views
 
 ### 🔐 Encrypted Pastebin / FileVault

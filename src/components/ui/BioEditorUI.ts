@@ -313,6 +313,23 @@ function renderBioEditorUI(props: BioEditorUIProps = {}): string {
                         </div>
                     </div>
                     
+                    <!-- Theme Selector -->
+                    <div class="mt-4">
+                        <label for="bioTheme" class="block text-sm font-medium text-gray-700 mb-1">Theme</label>
+                        <select id="bioTheme" name="bioTheme"
+                            class="block w-full px-4 py-3 border border-gray-300 rounded-2xl input-focus text-gray-900 transition bg-white">
+                            <option value="default">Classic Beige</option>
+                            <option value="dark">Dark Mode</option>
+                            <option value="ocean">Ocean Blue</option>
+                            <option value="sunset">Sunset Orange</option>
+                            <option value="forest">Forest Green</option>
+                            <option value="midnight">Midnight Purple</option>
+                            <option value="minimal">Minimal White</option>
+                            <option value="candy">Candy Pink</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Choose a color theme for your bio page</p>
+                    </div>
+                    
                     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                         <p class="text-sm text-blue-800">
                             <strong>Profile Picture:</strong> Update your profile picture in <a href="/account" class="underline font-semibold">Account Settings</a>
@@ -513,6 +530,7 @@ function renderBioEditorScripts(shortDomain: string): string {
         document.getElementById('customCode').value = bioPage.shortcode || '';
         document.getElementById('bioTitle').value = bioPage.title || '';
         document.getElementById('bioDescription').value = bioPage.description || '';
+        document.getElementById('bioTheme').value = bioPage.theme || 'default';
         
         // Update preview
         updatePreview();
@@ -807,10 +825,13 @@ function renderBioEditorScripts(shortDomain: string): string {
                 }
             }
 
+            const bioTheme = document.querySelector('#bioTheme').value || 'default';
+            
             const body = JSON.stringify({
                 shortcode: customCode,
                 title: bioTitle,
                 description: bioDescription,
+                theme: bioTheme,
                 links: links,
                 socialMedia: socialMedia,
                 metaTitle: metaTitle || null,
