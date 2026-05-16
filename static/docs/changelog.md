@@ -5,6 +5,26 @@ All notable changes to RdRx will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Bio Page Themes**: 8 beautiful color themes for bio pages (Classic Beige, Dark Mode, Ocean Blue, Sunset Orange, Forest Green, Midnight Purple, Minimal White, Candy Pink)
+- **Theme Selector**: Dropdown in bio editor to choose page theme with live preview
+- **SEO Noindex Option**: "Don't show in search results" checkbox to add noindex meta tag to bio pages
+- **Live Theme Preview**: Real-time theme switching in bio editor preview panel
+
+### Changed
+- **Route Organization**: Split large route files into modular subdirectories for better maintainability
+  - `src/routes/customAuth.ts` → `src/routes/auth/` (api.ts, pages.ts, index.ts)
+  - `src/routes/admin.ts` → `src/routes/admin/` (users.ts, urls.ts, stats.ts, email.ts, index.ts)
+  - `src/routes/bio.ts` → `src/routes/bio/` (handlers.ts, upload.ts, index.ts)
+- **Bio Page Styling**: Dynamic theme application based on user selection
+- **Code Organization**: Improved maintainability with smaller, focused modules (average file size reduced from 600+ to 100-400 lines)
+
+### Fixed
+- **Theme Persistence**: Themes now properly save and load from database
+- **Theme Preview**: Live preview accurately reflects selected theme colors
+
 ## [1.2.2] - 2026-05-03
 
 ### Added
