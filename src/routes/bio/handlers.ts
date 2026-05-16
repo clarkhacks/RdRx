@@ -127,6 +127,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			shortcode: string;
 			title: string;
 			description?: string;
+			theme?: string;
 			links: Array<{
 				title: string;
 				url: string;
@@ -141,7 +142,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			ogImageUrl?: string;
 		};
 
-		let { shortcode, title, description, links, socialMedia, metaTitle, metaDescription, metaTags, ogImageUrl } = body;
+		let { shortcode, title, description, theme, links, socialMedia, metaTitle, metaDescription, metaTags, ogImageUrl } = body;
 
 		if (!shortcode || !title) {
 			return new Response(JSON.stringify({ success: false, message: 'Shortcode and title are required' }), {
@@ -182,7 +183,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				title, 
 				description, 
 				null, // profile picture URL
-				'default', // theme
+				theme || 'default', // theme
 				links, // bio links array
 				socialMediaArray, // social media links array
 				metaTitle, // meta title
