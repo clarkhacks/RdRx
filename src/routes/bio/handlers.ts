@@ -128,6 +128,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			title: string;
 			description?: string;
 			theme?: string;
+			noIndex?: boolean;
 			links: Array<{
 				title: string;
 				url: string;
@@ -142,7 +143,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			ogImageUrl?: string;
 		};
 
-		let { shortcode, title, description, theme, links, socialMedia, metaTitle, metaDescription, metaTags, ogImageUrl } = body;
+		let { shortcode, title, description, theme, noIndex, links, socialMedia, metaTitle, metaDescription, metaTags, ogImageUrl } = body;
 
 		if (!shortcode || !title) {
 			return new Response(JSON.stringify({ success: false, message: 'Shortcode and title are required' }), {
@@ -189,7 +190,8 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				metaTitle, // meta title
 				metaDescription, // meta description
 				metaTags, // meta tags
-				ogImageUrl // OG image URL
+				ogImageUrl, // OG image URL
+				noIndex || false // no index flag
 			);
 		} catch (error) {
 			console.error('Error in bio save operations:', error);

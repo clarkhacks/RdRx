@@ -25,6 +25,9 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 	const ogImage = bioPage?.og_image_url || profilePictureUrl || '/assets/banner.jpg';
 	const pageUrl = `https://${shortDomain}/${shortcode}`;
 
+	// Check if noindex is set
+	const noIndex = bioPage?.no_index === 1 || bioPage?.no_index === true;
+	
 	// Prepare custom meta data for DocumentHead
 	const customMeta = {
 		description: metaDescription,
@@ -32,7 +35,8 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 		ogDescription: metaDescription,
 		ogImage: ogImage,
 		ogUrl: pageUrl,
-		keywords: metaTags
+		keywords: metaTags,
+		robots: noIndex ? 'noindex, nofollow' : undefined
 	};
 
 	// Get theme name from bioPage

@@ -373,6 +373,15 @@ function renderBioEditorUI(props: BioEditorUIProps = {}): string {
                     </div>
                     <div id="seo-content" class="collapsible-content">
                         <div class="space-y-4">
+                            <!-- No Index Checkbox -->
+                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                <input type="checkbox" id="noIndex" name="noIndex" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                                <label for="noIndex" class="ml-2 text-sm font-medium text-gray-700">
+                                    Don't show in search results
+                                    <span class="block text-xs text-gray-500 font-normal mt-1">Adds noindex meta tag to prevent search engines from indexing this page</span>
+                                </label>
+                            </div>
+                            
                             <div>
                                 <label for="metaTitle" class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
                                 <input type="text" id="metaTitle" name="metaTitle" placeholder="SEO title for search engines"
@@ -539,6 +548,7 @@ function renderBioEditorScripts(shortDomain: string): string {
         updatePreview();
         
         // Populate meta fields
+        document.getElementById('noIndex').checked = bioPage.no_index === 1 || bioPage.no_index === true;
         if (bioPage.meta_title) document.getElementById('metaTitle').value = bioPage.meta_title;
         if (bioPage.meta_description) document.getElementById('metaDescription').value = bioPage.meta_description;
         if (bioPage.meta_tags) document.getElementById('metaTags').value = bioPage.meta_tags;

@@ -120,7 +120,8 @@ export async function saveBioProfile(
 	metaTitle: string | null = null,
 	metaDescription: string | null = null,
 	metaTags: string | null = null,
-	ogImageUrl: string | null = null
+	ogImageUrl: string | null = null,
+	noIndex: boolean = false
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
