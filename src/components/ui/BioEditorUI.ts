@@ -532,6 +532,9 @@ function renderBioEditorScripts(shortDomain: string): string {
         document.getElementById('bioDescription').value = bioPage.description || '';
         document.getElementById('bioTheme').value = bioPage.theme || 'default';
         
+        // Apply theme to preview
+        applyThemeToPreview(bioPage.theme || 'default');
+        
         // Update preview
         updatePreview();
         
@@ -722,6 +725,89 @@ function renderBioEditorScripts(shortDomain: string): string {
         return icons[platform.toLowerCase()] || '🔗';
     }
 
+    // Apply theme to preview
+    function applyThemeToPreview(themeName) {
+        const themes = {
+            default: {
+                background: 'linear-gradient(to bottom, #e2d9c2 0%, #65635a 100%)',
+                textPrimary: '#ffffff',
+                textSecondary: 'rgba(255, 255, 255, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#333333',
+            },
+            dark: {
+                background: 'linear-gradient(to bottom, #2d2c2a 0%, #1a1a1a 100%)',
+                textPrimary: '#ffffff',
+                textSecondary: 'rgba(255, 255, 255, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#333333',
+            },
+            ocean: {
+                background: 'linear-gradient(to bottom, #667eea 0%, #764ba2 100%)',
+                textPrimary: '#ffffff',
+                textSecondary: 'rgba(255, 255, 255, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#1a202c',
+            },
+            sunset: {
+                background: 'linear-gradient(to bottom, #f093fb 0%, #f5576c 100%)',
+                textPrimary: '#ffffff',
+                textSecondary: 'rgba(255, 255, 255, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#2d3748',
+            },
+            forest: {
+                background: 'linear-gradient(to bottom, #56ab2f 0%, #a8e063 100%)',
+                textPrimary: '#ffffff',
+                textSecondary: 'rgba(255, 255, 255, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#1a202c',
+            },
+            midnight: {
+                background: 'linear-gradient(to bottom, #232526 0%, #414345 100%)',
+                textPrimary: '#eaeaea',
+                textSecondary: 'rgba(234, 234, 234, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#333333',
+            },
+            minimal: {
+                background: '#f8f9fa',
+                textPrimary: '#212529',
+                textSecondary: 'rgba(33, 37, 41, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#212529',
+            },
+            candy: {
+                background: 'linear-gradient(to bottom, #ffecd2 0%, #fcb69f 100%)',
+                textPrimary: '#5a3e36',
+                textSecondary: 'rgba(90, 62, 54, 0.9)',
+                linkBg: 'rgba(255, 255, 255, 0.95)',
+                linkText: '#5a3e36',
+            },
+        };
+
+        const theme = themes[themeName] || themes.default;
+        const previewContent = document.getElementById('preview-content');
+        const previewTitle = document.getElementById('preview-title');
+        const previewDescription = document.getElementById('preview-description');
+        
+        if (previewContent) {
+            previewContent.style.background = theme.background;
+        }
+        if (previewTitle) {
+            previewTitle.style.color = theme.textPrimary;
+        }
+        if (previewDescription) {
+            previewDescription.style.color = theme.textSecondary;
+        }
+        
+        // Update link colors
+        document.querySelectorAll('.preview-link').forEach(link => {
+            link.style.background = theme.linkBg;
+            link.querySelector('.font-semibold').style.color = theme.linkText;
+        });
+    }
+
     // OG Image preview
     document.getElementById('ogImage').addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -891,6 +977,12 @@ function renderBioEditorScripts(shortDomain: string): string {
             submitButton.textContent = originalButtonText;
             submitButton.disabled = false;
         }
+    });
+
+    // Theme change listener to update preview
+    document.getElementById('bioTheme').addEventListener('change', function() {
+        const themeName = this.value || 'default';
+        applyThemeToPreview(themeName);
     });
 
     // Event listeners
