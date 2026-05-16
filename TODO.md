@@ -8,13 +8,16 @@ This document outlines the tasks, improvements, and exciting features planned fo
 
 ### 🧹 Codebase Cleanup
 
-- [x] **Organize the file structure** (Phase 1 & 2 Complete)
+- [x] **Organize the file structure** (Phase 1, 2 & 3 Complete)
   - ✅ Created `src/config/` for centralized constants
   - ✅ Created `src/errors/` for error class hierarchy
   - ✅ Created `src/middleware/` for CORS and error handling
   - ✅ Created `src/validation/` for input validation
   - ✅ Database already modular in `src/database/`
-  - [ ] Phase 3: Split large route files (customAuth.ts, admin.ts, bio.ts)
+  - ✅ Phase 3: Split large route files (customAuth.ts, admin.ts, bio.ts)
+    - ✅ Split `customAuth.ts` into `src/routes/auth/` (api.ts, pages.ts, index.ts)
+    - ✅ Split `admin.ts` into `src/routes/admin/` (users.ts, urls.ts, stats.ts, email.ts, index.ts)
+    - ✅ Split `bio.ts` into `src/routes/bio/` (handlers.ts, upload.ts, index.ts)
   - [ ] Phase 4: Refactor large UI components
 - [ ] **Remove unused or redundant files**
   - Identify and delete files that are no longer needed

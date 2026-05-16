@@ -204,11 +204,22 @@ export interface User {
 
 ## Implementation Roadmap
 
-### Phase 3: Routes Refactoring (Current)
-- [ ] Split `customAuth.ts` into `src/routes/auth/`
-- [ ] Split `admin.ts` into `src/routes/admin/`
-- [ ] Split `bio.ts` into `src/routes/bio/`
-- [ ] Extract middleware to separate files
+### Phase 3: Routes Refactoring ✅ **COMPLETED**
+- ✅ Split `customAuth.ts` into `src/routes/auth/`
+  - ✅ `src/routes/auth/api.ts` - All API endpoint handlers
+  - ✅ `src/routes/auth/pages.ts` - All page rendering handlers
+  - ✅ `src/routes/auth/index.ts` - Route aggregator
+- ✅ Split `admin.ts` into `src/routes/admin/`
+  - ✅ `src/routes/admin/users.ts` - User management handlers
+  - ✅ `src/routes/admin/urls.ts` - URL management handlers
+  - ✅ `src/routes/admin/stats.ts` - Statistics and analytics handlers
+  - ✅ `src/routes/admin/email.ts` - Email configuration and testing
+  - ✅ `src/routes/admin/index.ts` - Route aggregator
+- ✅ Split `bio.ts` into `src/routes/bio/`
+  - ✅ `src/routes/bio/handlers.ts` - Bio page handlers (form, editor, view, save, get)
+  - ✅ `src/routes/bio/upload.ts` - OG image upload handler
+  - ✅ `src/routes/bio/index.ts` - Re-exports all handlers
+- ✅ Maintained backward compatibility with re-exports
 
 ### Phase 4: Components
 - [ ] Extract common UI components
