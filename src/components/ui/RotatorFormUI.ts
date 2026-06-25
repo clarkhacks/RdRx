@@ -266,6 +266,15 @@ function renderRotatorFormScripts(shortDomain: string): string {
         
         // Remove button handler
         destinationItem.querySelector('.remove-destination').addEventListener('click', function() {
+            const container = document.getElementById('destinationsContainer');
+            const itemCount = container.querySelectorAll('.destination-item').length;
+            
+            // Prevent removing if only 2 destinations left
+            if (itemCount <= 2) {
+                alert('You must have at least 2 destinations');
+                return;
+            }
+            
             destinationItem.remove();
         });
         
