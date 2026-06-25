@@ -386,12 +386,11 @@ function renderRecentFiles(files: any[]): string {
 async function getUserRecentLinks(env: Env, uid: string): Promise<any[]> {
 	try {
 		const stmt = env.DB.prepare(`
-			SELECT s.shortcode, s.target_url as url, COUNT(a.id) as visits
+			SELECT s.shortcode, s.target_url, COUNT(a.id) as visits
 			FROM short_urls s
 			LEFT JOIN analytics a ON s.shortcode = a.shortcode
 			WHERE s.creator_id = ?
-			AND s.is_snippet = 0
-			AND s.is_file = 0
+			AND s.type = 'url'
 			GROUP BY s.shortcode
 			ORDER BY s.created_at DESC
 			LIMIT 5
@@ -415,7 +414,7 @@ async function getUserRecentSnippets(env: Env, uid: string): Promise<any[]> {
 			FROM short_urls s
 			LEFT JOIN analytics a ON s.shortcode = a.shortcode
 			WHERE s.creator_id = ?
-			AND s.is_snippet = 1
+			AND s.type = 'snippet'
 			GROUP BY s.shortcode
 			ORDER BY s.created_at DESC
 			LIMIT 5
@@ -440,7 +439,7 @@ async function getUserRecentFiles(env: Env, uid: string): Promise<any[]> {
 			FROM short_urls s
 			LEFT JOIN analytics a ON s.shortcode = a.shortcode
 			WHERE s.creator_id = ?
-			AND s.is_file = 1
+			AND s.type = 'file'
 			GROUP BY s.shortcode
 			ORDER BY s.created_at DESC
 			LIMIT 5
@@ -486,8 +485,7 @@ async function getUserAnalyticsSummary(env: Env, uid: string): Promise<any> {
 			SELECT COUNT(*) as count
 			FROM short_urls
 			WHERE creator_id = ?
-			AND is_snippet = 0
-			AND is_file = 0
+			AND type = 'url'
 		`);
 		const linksResult = await linksStmt.bind(uid).first();
 		const totalLinks = linksResult?.count || 0;
@@ -507,7 +505,7 @@ async function getUserAnalyticsSummary(env: Env, uid: string): Promise<any> {
 			SELECT COUNT(*) as count
 			FROM short_urls
 			WHERE creator_id = ?
-			AND is_file = 1
+			AND type = 'file'
 		`);
 		const filesResult = await filesStmt.bind(uid).first();
 		const totalFiles = filesResult?.count || 0;

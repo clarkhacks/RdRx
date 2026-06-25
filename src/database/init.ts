@@ -6,11 +6,12 @@ import { initializeRotatorTables } from './rotator';
  * Initialize all database tables
  *
  * Creates the necessary database tables for the application if they don't exist:
- * - short_urls: Stores URL shortcodes and their targets
- * - bio_profiles: Stores user bio page data
+ * - short_urls: Stores URL shortcodes and their targets (with type enum)
+ * - bio_pages: Stores user bio page data
  * - analytics: Tracks shortcode usage statistics
  * - deletions: Manages scheduled deletion of shortcodes
  * - users: Stores user authentication data (via auth module)
+ * - rotator tables: For A/B testing and link rotation
  *
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise that resolves when all tables are initialized
@@ -27,35 +28,35 @@ import { initializeRotatorTables } from './rotator';
  */
 export async function initializeTables(env: Env): Promise<void> {
 	try {
-		// Create short_urls table
+		// Create short_urls table with type enum
 		await env.DB.prepare(
 			`CREATE TABLE IF NOT EXISTS short_urls (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         shortcode TEXT NOT NULL UNIQUE,
         target_url TEXT NOT NULL,
+        type TEXT NOT NULL CHECK(type IN ('url', 'snippet', 'file', 'bio', 'rotator')) DEFAULT 'url',
         created_at TEXT NOT NULL,
         creator_id TEXT,
-        is_snippet BOOLEAN NOT NULL DEFAULT 0,
-        is_file BOOLEAN NOT NULL DEFAULT 0,
-        is_bio BOOLEAN NOT NULL DEFAULT 0,
         password_hash TEXT,
         is_password_protected BOOLEAN NOT NULL DEFAULT 0
       )`,
 		).run();
 
-		// Create comprehensive bio_profiles table for storing all bio page data
+		// Create bio_pages table (consolidated from bio_profiles)
 		await env.DB.prepare(
-			`CREATE TABLE IF NOT EXISTS bio_profiles (
-        id TEXT PRIMARY KEY,
-        short_id TEXT NOT NULL,
+			`CREATE TABLE IF NOT EXISTS bio_pages (
+        shortcode TEXT PRIMARY KEY,
         title TEXT NOT NULL,
         description TEXT,
         profile_picture_url TEXT,
         theme TEXT DEFAULT 'default',
-        bio_links TEXT,
-        social_media_links TEXT,
+        meta_title TEXT,
+        meta_description TEXT,
+        meta_tags TEXT,
+        og_image_url TEXT,
         created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (shortcode) REFERENCES short_urls(shortcode)
       )`,
 		).run();
 

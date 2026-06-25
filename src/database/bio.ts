@@ -45,7 +45,7 @@ export interface BioProfile {
  */
 export async function isBioShortcodeAvailable(env: Env, shortcode: string, userId: string): Promise<boolean> {
 	try {
-		const result = await env.DB.prepare(`SELECT creator_id, is_bio FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
+		const result = await env.DB.prepare(`SELECT creator_id, type FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
 		// Available if doesn't exist or belongs to the same user
 		// For bio pages, we need to ensure the shortcode is not used for other types of content
@@ -55,7 +55,7 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
 
 		if (result.creator_id === userId) {
 			// If it belongs to the same user, make sure it's a bio page
-			return result.is_bio === 1;
+			return result.type === 'bio';
 		}
 
 		return false; // Belongs to another user, so it's not available
@@ -127,7 +127,7 @@ export async function saveBioProfile(
 		const now = new Date().toISOString();
 
 		// Check if user already has a bio page
-		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).first();
+		const existingBio = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND type = 'bio'`).bind(userId).first();
 
 		if (existingBio) {
 			if (existingBio.shortcode !== shortcode) {
@@ -301,7 +301,7 @@ export async function getBioPage(env: Env, shortcode: string): Promise<any | nul
 		}
 
 		// Otherwise, get the user ID from the shortcode redirect
-		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`)
+		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND type = 'bio'`)
 			.bind(shortcode)
 			.first();
 
@@ -462,7 +462,7 @@ export async function deleteBioProfile(env: Env, userId: string): Promise<void> 
 		await env.DB.prepare(`DELETE FROM bio_profiles WHERE id = ?`).bind(userId).run();
 
 		// Delete the shortcode redirect
-		await env.DB.prepare(`DELETE FROM short_urls WHERE creator_id = ? AND is_bio = 1`).bind(userId).run();
+		await env.DB.prepare(`DELETE FROM short_urls WHERE creator_id = ? AND type = 'bio'`).bind(userId).run();
 
 		console.log(`Deleted bio profile for user: ${userId}`);
 	} catch (error) {

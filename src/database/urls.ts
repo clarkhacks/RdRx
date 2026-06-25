@@ -39,25 +39,30 @@ export async function saveUrlToDatabase(
 	isPasswordProtected: boolean = false,
 ): Promise<void> {
 	try {
-		// Determine if it's a snippet, file, or bio
-		const isSnippet = shortcode.startsWith('c-');
-		const isFile = shortcode.startsWith('f-');
-		const isBio = shortcode.startsWith('b-');
+		// Determine type based on shortcode prefix
+		let type = 'url';
+		if (shortcode.startsWith('c-')) {
+			type = 'snippet';
+		} else if (shortcode.startsWith('f-')) {
+			type = 'file';
+		} else if (shortcode.startsWith('b-')) {
+			type = 'bio';
+		} else if (url.startsWith('/bio-view/')) {
+			type = 'bio';
+		}
 
 		// Insert into D1
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO short_urls 
-      (shortcode, target_url, created_at, creator_id, is_snippet, is_file, is_bio, password_hash, is_password_protected)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (shortcode, target_url, type, created_at, creator_id, password_hash, is_password_protected)
+      VALUES (?, ?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(
 				shortcode,
 				url,
+				type,
 				new Date().toISOString(),
 				creatorId,
-				isSnippet ? 1 : 0,
-				isFile ? 1 : 0,
-				isBio ? 1 : 0,
 				passwordHash,
 				isPasswordProtected ? 1 : 0,
 			)

@@ -10,9 +10,10 @@ interface UrlAnalytics {
 	shortcode: string;
 	target_url: string;
 	created_at: string;
-	is_snippet: number;
-	is_file: number;
-	is_bio: number;
+	type?: string; // New type field
+	is_snippet: number; // Kept for backward compatibility
+	is_file: number; // Kept for backward compatibility
+	is_bio: number; // Kept for backward compatibility
 	clicks: number;
 }
 

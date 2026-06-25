@@ -111,7 +111,7 @@ async function handleGetUserSnippet(request: Request, env: Env, path: string, us
 		const shortcode = path.split('/')[1];
 
 		// Verify the user owns this shortcode and it's a snippet
-		const existing = await env.DB.prepare('SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND is_snippet = 1')
+		const existing = await env.DB.prepare("SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND type = 'snippet'")
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -149,7 +149,7 @@ async function handleUpdateUserSnippet(request: Request, env: Env, path: string,
 		const { content } = body;
 
 		// Verify the user owns this shortcode and it's a snippet
-		const existing = await env.DB.prepare('SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_snippet = 1')
+		const existing = await env.DB.prepare("SELECT creator_id FROM short_urls WHERE shortcode = ? AND type = 'snippet'")
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -188,7 +188,7 @@ async function handleGetUserFiles(request: Request, env: Env, path: string, user
 		const shortcode = path.split('/')[1];
 
 		// Verify the user owns this shortcode and it's a file upload
-		const existing = await env.DB.prepare('SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND is_file = 1')
+		const existing = await env.DB.prepare("SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND type = 'file'")
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -238,7 +238,7 @@ async function handleDeleteUserFile(request: Request, env: Env, path: string, us
 		const filename = decodeURIComponent(pathParts[2]);
 
 		// Verify the user owns this shortcode and it's a file upload
-		const existing = await env.DB.prepare('SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND is_file = 1')
+		const existing = await env.DB.prepare("SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND type = 'file'")
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -311,7 +311,7 @@ async function handleUploadUserFiles(request: Request, env: Env, path: string, u
 		const shortcode = path.split('/')[1];
 
 		// Verify the user owns this shortcode and it's a file upload
-		const existing = await env.DB.prepare('SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND is_file = 1')
+		const existing = await env.DB.prepare("SELECT creator_id, target_url FROM short_urls WHERE shortcode = ? AND type = 'file'")
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -431,7 +431,7 @@ async function handleDeleteUserItem(request: Request, env: Env, path: string, us
 		const shortcode = path.split('/')[1];
 
 		// Verify the user owns this shortcode
-		const existing = await env.DB.prepare('SELECT creator_id, target_url, is_file FROM short_urls WHERE shortcode = ?')
+		const existing = await env.DB.prepare('SELECT creator_id, target_url, type FROM short_urls WHERE shortcode = ?')
 			.bind(shortcode)
 			.first();
 		if (!existing || existing.creator_id !== userId) {
@@ -442,7 +442,7 @@ async function handleDeleteUserItem(request: Request, env: Env, path: string, us
 		}
 
 		// If it's a file upload, delete files from R2
-		if (existing.is_file === 1) {
+		if (existing.type === 'file') {
 			try {
 				const fileUrls = JSON.parse(existing.target_url as string);
 				for (const url of fileUrls) {

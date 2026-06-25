@@ -15,12 +15,7 @@ export async function handleGetUrls(request: Request, env: Env): Promise<Respons
 
 		// Build query based on filters
 		let query = `
-			SELECT s.shortcode, s.target_url as url, s.created_at, u.name as user_name,
-			CASE 
-				WHEN s.is_snippet = 1 THEN 'snippet'
-				WHEN s.is_file = 1 THEN 'file'
-				ELSE 'url'
-			END as type
+			SELECT s.shortcode, s.target_url as url, s.type, s.created_at, u.name as user_name
 			FROM short_urls s
 			LEFT JOIN users u ON s.creator_id = u.uid
 		`;
@@ -36,11 +31,11 @@ export async function handleGetUrls(request: Request, env: Env): Promise<Respons
 		}
 
 		if (filter === 'url') {
-			whereClause += whereClause ? ' AND s.is_snippet = 0 AND s.is_file = 0' : ' WHERE s.is_snippet = 0 AND s.is_file = 0';
+			whereClause += whereClause ? " AND s.type = 'url'" : " WHERE s.type = 'url'";
 		} else if (filter === 'snippet') {
-			whereClause += whereClause ? ' AND s.is_snippet = 1' : ' WHERE s.is_snippet = 1';
+			whereClause += whereClause ? " AND s.type = 'snippet'" : " WHERE s.type = 'snippet'";
 		} else if (filter === 'file') {
-			whereClause += whereClause ? ' AND s.is_file = 1' : ' WHERE s.is_file = 1';
+			whereClause += whereClause ? " AND s.type = 'file'" : " WHERE s.type = 'file'";
 		}
 
 		query += whereClause + ' ORDER BY s.created_at DESC LIMIT ? OFFSET ?';
