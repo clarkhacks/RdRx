@@ -96,4 +96,4 @@ src/
 
 ## License
 
-RdRx is open source software licensed under the [MIT License](https://github.com/clarkhacks/RdRx/blob/main/LICENSE).
+RdRx is open source software licensed under the [GNU General Public License v3.0](https://github.com/clarkhacks/RdRx/blob/main/LICENSE).
