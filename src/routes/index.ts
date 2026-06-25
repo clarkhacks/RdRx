@@ -111,8 +111,8 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return handleApiRoutes(request, env);
 	}
 
-	// Handle API routes for POST requests to /upload
-	if (request.method === 'POST' && url.pathname === '/upload') {
+	// Handle API routes for POST requests to /api/upload
+	if (request.method === 'POST' && url.pathname === '/api/upload') {
 		return handleApiRoutes(enhancedRequest, env);
 	}
 

@@ -322,7 +322,7 @@ function renderUploadFormScripts(): string {
         try {
             const response = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', '/upload');
+                xhr.open('POST', '/api/upload');
 
                 xhr.upload.addEventListener('progress', (e) => {
                     if (e.lengthComputable) {

@@ -259,7 +259,7 @@ function renderCreateFormScripts(shortDomain: string): string {
     submitButton.classList.add('opacity-75');
 
     try {
-      const response = await fetch('/api', {
+      const response = await fetch('/api/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
