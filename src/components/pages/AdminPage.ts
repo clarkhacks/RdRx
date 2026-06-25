@@ -751,12 +751,17 @@ function renderAdminScripts(): string {
                         method: 'DELETE'
                     });
                     
-                    if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (response.ok && data.success) {
                         loadUrls(currentUrlsPage);
                         loadSystemStats();
+                    } else {
+                        alert('Error deleting URL: ' + (data.message || 'Unknown error'));
                     }
                 } catch (error) {
                     console.error('Error deleting URL:', error);
+                    alert('Error deleting URL: ' + error.message);
                 }
             }
             

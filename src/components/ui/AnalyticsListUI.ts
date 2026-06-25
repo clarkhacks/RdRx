@@ -321,6 +321,10 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 							} else {
 								alert('Error deleting item: ' + data.message);
 							}
+						})
+						.catch(error => {
+							console.error('Delete error:', error);
+							alert('Error deleting item: ' + error.message);
 						});
 				}
 			}
