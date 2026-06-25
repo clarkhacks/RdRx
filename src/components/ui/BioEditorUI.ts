@@ -731,6 +731,9 @@ function renderBioEditorScripts(shortDomain: string): string {
             'youtube': '📺',
             'tiktok': '🎵',
             'github': '💻',
+            'x': 'X',
+            'onlyfans': '🌶️',
+            'pornhub': '🟠⚫️'
         };
         return icons[platform.toLowerCase()] || '🔗';
     }
