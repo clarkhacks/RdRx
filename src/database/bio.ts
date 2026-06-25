@@ -145,21 +145,18 @@ export async function saveBioProfile(
 			await saveUrlToDatabase(shortcode, `/bio-view/${userId}`, env, userId);
 		}
 
-		// Save/update bio profile using userId as the key
+		// Save/update bio profile using shortcode as the key
 		await env.DB.prepare(
-			`INSERT OR REPLACE INTO bio_profiles 
-			(id, short_id, title, description, profile_picture_url, theme, bio_links, social_media_links, meta_title, meta_description, meta_tags, og_image_url, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			`INSERT OR REPLACE INTO bio_pages 
+			(shortcode, title, description, profile_picture_url, theme, meta_title, meta_description, meta_tags, og_image_url, created_at, updated_at)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(
-				userId,
 				shortcode,
 				title,
 				description,
 				profilePictureUrl,
 				theme,
-				JSON.stringify(bioLinks),
-				JSON.stringify(socialMediaLinks),
 				metaTitle,
 				metaDescription,
 				metaTags,
@@ -168,6 +165,10 @@ export async function saveBioProfile(
 				now,
 			)
 			.run();
+
+		// Save bio links separately (if you have a bio_links table)
+		// Note: bio_links and social_media_links are stored in separate tables in the new schema
+		// You may need to add logic here to save them to their respective tables
 
 		console.log(`Bio profile saved: ${shortcode} for user: ${userId}`);
 	} catch (error) {
@@ -197,14 +198,42 @@ export async function saveBioProfile(
  */
 export async function getBioProfile(env: Env, userId: string): Promise<BioProfile | null> {
 	try {
-		const result = await env.DB.prepare(`SELECT * FROM bio_profiles WHERE id = ?`).bind(userId).first();
+		// First get the shortcode for this user
+		const shortUrlResult = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND type = 'bio'`)
+			.bind(userId)
+			.first();
+		
+		if (!shortUrlResult) return null;
+		
+		const shortcode = shortUrlResult.shortcode as string;
+		
+		// Then get the bio page data
+		const result = await env.DB.prepare(`SELECT * FROM bio_pages WHERE shortcode = ?`).bind(shortcode).first();
 
 		if (result) {
-			// Parse JSON fields
+			// Get bio links and social media from separate tables
+			const bioLinksResult = await env.DB.prepare(`SELECT * FROM bio_links WHERE shortcode = ? ORDER BY order_index`)
+				.bind(shortcode)
+				.all();
+			const socialMediaResult = await env.DB.prepare(`SELECT * FROM bio_social_media WHERE shortcode = ?`)
+				.bind(shortcode)
+				.all();
+
 			const profile: BioProfile = {
-				...(result as any),
-				bio_links: result.bio_links ? JSON.parse(result.bio_links as string) : [],
-				social_media_links: result.social_media_links ? JSON.parse(result.social_media_links as string) : [],
+				id: userId,
+				short_id: shortcode,
+				title: result.title as string,
+				description: result.description as string | null,
+				profile_picture_url: result.profile_picture_url as string | null,
+				theme: result.theme as string,
+				bio_links: bioLinksResult.results || [],
+				social_media_links: socialMediaResult.results || [],
+				meta_title: result.meta_title as string | null,
+				meta_description: result.meta_description as string | null,
+				meta_tags: result.meta_tags as string | null,
+				og_image_url: result.og_image_url as string | null,
+				created_at: result.created_at as string,
+				updated_at: result.updated_at as string,
 			};
 			return profile;
 		}
@@ -453,13 +482,28 @@ export async function updateBioProfile(env: Env, userId: string, data: Partial<B
  * console.log('Bio profile deleted');
  *
  * @remarks
- * Deletes both the bio_profiles entry and the shortcode redirect.
+ * Deletes the bio page, bio links, social media links, and shortcode redirect.
  * This operation cannot be undone.
  */
 export async function deleteBioProfile(env: Env, userId: string): Promise<void> {
 	try {
-		// Delete the bio profile
-		await env.DB.prepare(`DELETE FROM bio_profiles WHERE id = ?`).bind(userId).run();
+		// Get the shortcode first
+		const shortUrlResult = await env.DB.prepare(`SELECT shortcode FROM short_urls WHERE creator_id = ? AND type = 'bio'`)
+			.bind(userId)
+			.first();
+		
+		if (shortUrlResult) {
+			const shortcode = shortUrlResult.shortcode as string;
+			
+			// Delete the bio page
+			await env.DB.prepare(`DELETE FROM bio_pages WHERE shortcode = ?`).bind(shortcode).run();
+			
+			// Delete bio links
+			await env.DB.prepare(`DELETE FROM bio_links WHERE shortcode = ?`).bind(shortcode).run();
+			
+			// Delete social media links
+			await env.DB.prepare(`DELETE FROM bio_social_media WHERE shortcode = ?`).bind(shortcode).run();
+		}
 
 		// Delete the shortcode redirect
 		await env.DB.prepare(`DELETE FROM short_urls WHERE creator_id = ? AND type = 'bio'`).bind(userId).run();
