@@ -17,6 +17,7 @@ RdRx now supports API key authentication, allowing you to create short URLs prog
 ## API Key Format
 
 API keys follow this format:
+
 ```
 rdrx_live_[24 random characters]
 ```
@@ -38,39 +39,44 @@ Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE
 **Endpoint:** `POST https://rdrx.co/api/create`
 
 **Headers:**
+
 ```
 Authorization: Bearer rdrx_live_YOUR_API_KEY_HERE
 Content-Type: application/json
 ```
 
 **Request Body (Random Shortcode):**
+
 ```json
 {
-  "url": "https://example.com/very/long/url",
-  "custom": false
+	"url": "https://example.com/very/long/url",
+	"custom": false
 }
 ```
 
 **Request Body (Custom Shortcode):**
+
 ```json
 {
-  "url": "https://example.com/very/long/url",
-  "custom": true,
-  "custom_code": "mylink"
+	"url": "https://example.com/very/long/url",
+	"custom": true,
+	"custom_code": "mylink"
 }
 ```
 
 **Response (Success):**
+
 ```json
 {
-  "shortcode": "abc123"
+	"shortcode": "abc123"
 }
 ```
 
 **Response (Error - Shortcode Exists):**
+
 ```json
 {
-  "message": "Shortcode already exists"
+	"message": "Shortcode already exists"
 }
 ```
 
@@ -93,9 +99,10 @@ Add the following actions to your shortcut:
    - Input Type: `URL`
 
 2. **Text**
-   - Content: 
+   - Content:
+
    ```json
-   {"url":"[Provided Input]","custom":false}
+   { "url": "[Provided Input]", "custom": false }
    ```
    - Replace `[Provided Input]` with the output from step 1
 
@@ -155,21 +162,21 @@ def create_short_url(long_url, custom_code=None):
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
-    
+
     data = {
         "url": long_url,
         "custom": custom_code is not None
     }
-    
+
     if custom_code:
         data["custom_code"] = custom_code
-    
+
     response = requests.post(
         f"{BASE_URL}/api/create",
         headers=headers,
         json=data
     )
-    
+
     if response.status_code == 200:
         result = response.json()
         return f"{BASE_URL}/{result['shortcode']}"
@@ -184,35 +191,35 @@ print(f"Short URL: {short_url}")
 ## Example: JavaScript/Node.js
 
 ```javascript
-const API_KEY = "rdrx_live_YOUR_API_KEY_HERE";
-const BASE_URL = "https://rdrx.co";
+const API_KEY = 'rdrx_live_YOUR_API_KEY_HERE';
+const BASE_URL = 'https://rdrx.co';
 
 async function createShortUrl(longUrl, customCode = null) {
-  const response = await fetch(`${BASE_URL}/api/create`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      url: longUrl,
-      custom: customCode !== null,
-      custom_code: customCode
-    })
-  });
-  
-  if (response.ok) {
-    const data = await response.json();
-    return `${BASE_URL}/${data.shortcode}`;
-  } else {
-    throw new Error(`Error: ${await response.text()}`);
-  }
+	const response = await fetch(`${BASE_URL}/api/create`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			url: longUrl,
+			custom: customCode !== null,
+			custom_code: customCode,
+		}),
+	});
+
+	if (response.ok) {
+		const data = await response.json();
+		return `${BASE_URL}/${data.shortcode}`;
+	} else {
+		throw new Error(`Error: ${await response.text()}`);
+	}
 }
 
 // Usage
-createShortUrl("https://example.com/very/long/url")
-  .then(shortUrl => console.log(`Short URL: ${shortUrl}`))
-  .catch(error => console.error(error));
+createShortUrl('https://example.com/very/long/url')
+	.then((shortUrl) => console.log(`Short URL: ${shortUrl}`))
+	.catch((error) => console.error(error));
 ```
 
 ## Security Best Practices
@@ -262,6 +269,7 @@ createShortUrl("https://example.com/very/long/url")
 ## API Endpoints Reference
 
 ### Create Short URL
+
 - **Method**: `POST`
 - **Endpoint**: `/api/create`
 - **Auth**: Required (API Key or Session)
@@ -269,6 +277,7 @@ createShortUrl("https://example.com/very/long/url")
 - **Response**: `{ "shortcode": string }`
 
 ### Create Code Snippet
+
 - **Method**: `POST`
 - **Endpoint**: `/api/create`
 - **Auth**: Required (API Key or Session)
@@ -276,6 +285,7 @@ createShortUrl("https://example.com/very/long/url")
 - **Response**: `{ "shortcode": string }`
 
 ### Upload Files
+
 - **Method**: `POST`
 - **Endpoint**: `/upload`
 - **Auth**: Required (API Key or Session)
@@ -283,6 +293,7 @@ createShortUrl("https://example.com/very/long/url")
 - **Response**: `{ "urls": string[], "shortcode": string }`
 
 ### Create Temporary URL (No Auth Required)
+
 - **Method**: `POST`
 - **Endpoint**: `/temp`
 - **Auth**: Not required

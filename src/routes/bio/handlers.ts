@@ -2,14 +2,7 @@ import { Env } from '../../types';
 import { renderBioFormPage } from '../../components/pages/BioFormPage';
 import { renderBioEditorPage } from '../../components/pages/BioEditorPage';
 import { renderBioViewPage } from '../../components/pages/BioViewPage';
-import {
-	saveBioProfile,
-	getUserBioPage,
-	getBioPage,
-	getBioLinks,
-	isBioShortcodeAvailable,
-	getBioSocialMedia,
-} from '../../database';
+import { saveBioProfile, getUserBioPage, getBioPage, getBioLinks, isBioShortcodeAvailable, getBioSocialMedia } from '../../database';
 import { isAuthenticated, getUserID } from '../../utils/auth';
 
 /**
@@ -90,7 +83,7 @@ export async function handleGetUserBio(request: Request, env: Env): Promise<Resp
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error getting user bio:', error);
@@ -170,19 +163,21 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 
 		try {
 			// Convert social media object to array format
-			const socialMediaArray = socialMedia ? Object.entries(socialMedia).map(([platform, data]) => ({
-				platform,
-				url: data.url,
-				icon: data.icon || ''
-			})) : [];
+			const socialMediaArray = socialMedia
+				? Object.entries(socialMedia).map(([platform, data]) => ({
+						platform,
+						url: data.url,
+						icon: data.icon || '',
+					}))
+				: [];
 
 			// Save complete bio profile with all data
 			await saveBioProfile(
-				env, 
-				userId, 
-				shortcode, 
-				title, 
-				description, 
+				env,
+				userId,
+				shortcode,
+				title,
+				description,
 				null, // profile picture URL
 				theme || 'default', // theme
 				links, // bio links array
@@ -191,7 +186,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 				metaDescription, // meta description
 				metaTags, // meta tags
 				ogImageUrl, // OG image URL
-				noIndex || false // no index flag
+				noIndex || false, // no index flag
 			);
 		} catch (error) {
 			console.error('Error in bio save operations:', error);
@@ -210,7 +205,7 @@ export async function handleSaveBio(request: Request, env: Env): Promise<Respons
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error saving bio page:', error);
@@ -246,10 +241,12 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 
 		// Get the user ID for fetching links and social media
 		let userId = shortcode;
-		
+
 		// If this is a custom shortcode, get the user ID from the database
 		if (!shortcode.includes('-') || shortcode.length <= 20) {
-			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
+			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`)
+				.bind(shortcode)
+				.first();
 			if (shortUrlInfo && shortUrlInfo.creator_id) {
 				userId = shortUrlInfo.creator_id as string;
 			}

@@ -9,12 +9,10 @@
 export function generateApiKey(): string {
 	const array = new Uint8Array(24); // 24 bytes = 32 base64 characters
 	crypto.getRandomValues(array);
-	
+
 	// Convert to base64-like string (URL-safe)
-	const randomString = Array.from(array, byte => 
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'[byte % 62]
-	).join('');
-	
+	const randomString = Array.from(array, (byte) => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'[byte % 62]).join('');
+
 	return `rdrx_live_${randomString}`;
 }
 

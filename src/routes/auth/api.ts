@@ -655,9 +655,9 @@ async function handleRegenerateApiKeyAPI(request: Request, env: Env, corsHeaders
 		// Generate new API key
 		const { generateApiKey } = await import('../../components/auth/apiKey');
 		const { updateUserApiKey } = await import('../../components/auth/database');
-		
+
 		const newApiKey = generateApiKey();
-		
+
 		// Update in database
 		await updateUserApiKey(env, user.uid, newApiKey);
 

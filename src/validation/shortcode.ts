@@ -1,11 +1,5 @@
 import { ValidationError } from '../errors';
-import {
-	ERROR_MESSAGES,
-	SHORTCODE_REGEX,
-	SHORTCODE_MIN_LENGTH,
-	SHORTCODE_MAX_LENGTH,
-	RESERVED_SHORTCODES,
-} from '../config/constants';
+import { ERROR_MESSAGES, SHORTCODE_REGEX, SHORTCODE_MIN_LENGTH, SHORTCODE_MAX_LENGTH, RESERVED_SHORTCODES } from '../config/constants';
 
 /**
  * Validation result interface
@@ -17,10 +11,10 @@ export interface ValidationResult {
 
 /**
  * Validate a shortcode string
- * 
+ *
  * @param code - The shortcode to validate
  * @returns Validation result with error message if invalid
- * 
+ *
  * @example
  * const result = validateShortcode('my-link');
  * if (!result.valid) {
@@ -56,10 +50,10 @@ export function validateShortcode(code: string): ValidationResult {
 
 /**
  * Check if a shortcode is valid (boolean version)
- * 
+ *
  * @param code - The shortcode to check
  * @returns True if valid, false otherwise
- * 
+ *
  * @example
  * if (isValidShortcode('my-link')) {
  *   // Shortcode is valid
@@ -71,10 +65,10 @@ export function isValidShortcode(code: string): boolean {
 
 /**
  * Check if a shortcode is reserved
- * 
+ *
  * @param code - The shortcode to check
  * @returns True if reserved, false otherwise
- * 
+ *
  * @example
  * if (isReservedShortcode('admin')) {
  *   console.log('This shortcode is reserved');
@@ -86,10 +80,10 @@ export function isReservedShortcode(code: string): boolean {
 
 /**
  * Validate shortcode and throw error if invalid
- * 
+ *
  * @param code - The shortcode to validate
  * @throws {ValidationError} If shortcode is invalid
- * 
+ *
  * @example
  * try {
  *   assertValidShortcode(userInput);

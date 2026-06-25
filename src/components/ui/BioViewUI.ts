@@ -50,38 +50,48 @@ function renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl = null
                         ${link.description ? `<p class="link-description">${link.description}</p>` : ''}
                     </div>
                 </a>
-            `
+            `,
 							)
 							.join('')}
         </div>
 
-        ${Object.keys(socialMedia).some(platform => {
-            const data = socialMedia[platform];
-            return data && ((typeof data === 'object' && data.url) || (typeof data === 'string' && data));
-        }) ? `
+        ${
+					Object.keys(socialMedia).some((platform) => {
+						const data = socialMedia[platform];
+						return data && ((typeof data === 'object' && data.url) || (typeof data === 'string' && data));
+					})
+						? `
         <div class="social-icons">
-            ${Object.entries(socialMedia).map(([platform, data]) => {
-                if (!data) return '';
-                
-                const url = typeof data === 'object' ? data.url : data;
-                const icon = typeof data === 'object' ? data.icon : '';
-                
-                if (!url) return '';
-                
-                return `
+            ${Object.entries(socialMedia)
+							.map(([platform, data]) => {
+								if (!data) return '';
+
+								const url = typeof data === 'object' ? data.url : data;
+								const icon = typeof data === 'object' ? data.icon : '';
+
+								if (!url) return '';
+
+								return `
                 <a href="${url}" target="_blank" rel="noopener noreferrer" title="${platform}">
-                    ${icon ? `
+                    ${
+											icon
+												? `
                         <img src="https://icons.rdrx.co/png/${icon}" alt="${platform}" class="social-icon-img" style="width: 24px; height: 24px; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-                    ` : `
+                    `
+												: `
                         <div class="social-icon-fallback" style="width: 24px; height: 24px; background: #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
                             ${platform.charAt(0).toUpperCase()}
                         </div>
-                    `}
+                    `
+										}
                 </a>
                 `;
-            }).join('')}
+							})
+							.join('')}
         </div>
-        ` : ''}
+        `
+						: ''
+				}
 
         <div class="footer">
             Powered by <a href="https://${shortDomain}" style="color: #666; text-decoration: underline;">RdRx</a>
@@ -92,7 +102,7 @@ function renderBioViewUI({ bioPage, links, shortDomain, profilePictureUrl = null
 
 function renderBioViewStyles(themeName: string = 'default'): string {
 	const theme = getTheme(themeName);
-	
+
 	return `
     <style>
         body {

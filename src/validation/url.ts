@@ -11,10 +11,10 @@ export interface ValidationResult {
 
 /**
  * Validate a URL string
- * 
+ *
  * @param url - The URL to validate
  * @returns Validation result with error message if invalid
- * 
+ *
  * @example
  * const result = validateUrl('https://example.com');
  * if (!result.valid) {
@@ -34,7 +34,7 @@ export function validateUrl(url: string): ValidationResult {
 	// Try to parse as URL
 	try {
 		const parsedUrl = new URL(url);
-		
+
 		// Ensure it's http or https
 		if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
 			return { valid: false, error: 'URL must use HTTP or HTTPS protocol' };
@@ -48,10 +48,10 @@ export function validateUrl(url: string): ValidationResult {
 
 /**
  * Check if a URL is valid (boolean version)
- * 
+ *
  * @param url - The URL to check
  * @returns True if valid, false otherwise
- * 
+ *
  * @example
  * if (isValidUrl('https://example.com')) {
  *   // URL is valid
@@ -63,10 +63,10 @@ export function isValidUrl(url: string): boolean {
 
 /**
  * Validate URL and throw error if invalid
- * 
+ *
  * @param url - The URL to validate
  * @throws {ValidationError} If URL is invalid
- * 
+ *
  * @example
  * try {
  *   assertValidUrl(userInput);

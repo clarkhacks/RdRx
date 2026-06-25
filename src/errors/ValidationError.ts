@@ -2,18 +2,21 @@ import { AppError } from './AppError';
 
 /**
  * Validation error for invalid input data
- * 
+ *
  * Used when user input fails validation checks.
  * Returns HTTP 400 Bad Request.
  */
 export class ValidationError extends AppError {
 	/**
 	 * Create a new validation error
-	 * 
+	 *
 	 * @param message - Description of the validation failure
 	 * @param field - Optional field name that failed validation
 	 */
-	constructor(message: string, public field?: string) {
+	constructor(
+		message: string,
+		public field?: string,
+	) {
 		super(message, 400, 'VALIDATION_ERROR');
 		this.name = 'ValidationError';
 	}

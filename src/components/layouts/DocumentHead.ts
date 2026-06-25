@@ -1,27 +1,29 @@
 interface DocumentHeadProps {
 	title: string;
 	additionalScripts?: string;
-  noMeta?: boolean;
-  customMeta?: {
-    description?: string;
-    ogTitle?: string;
-    ogDescription?: string;
-    ogImage?: string;
-    ogUrl?: string;
-    keywords?: string;
-  };
+	noMeta?: boolean;
+	customMeta?: {
+		description?: string;
+		ogTitle?: string;
+		ogDescription?: string;
+		ogImage?: string;
+		ogUrl?: string;
+		keywords?: string;
+	};
 }
 
 function renderDocumentHead({ title, additionalScripts = '', noMeta = false, customMeta }: DocumentHeadProps): string {
-  // Use custom meta or defaults
-  const metaDescription = customMeta?.description || "RdRx is a modern URL shortener that allows you to create and share short URLs easily.";
-  const ogTitle = customMeta?.ogTitle || `${title} | RdRx`;
-  const ogDescription = customMeta?.ogDescription || metaDescription;
-  const ogImage = customMeta?.ogImage || "/assets/banner.jpg";
-  const ogUrl = customMeta?.ogUrl || "https://rdrx.co";
-  const keywords = customMeta?.keywords || "";
+	// Use custom meta or defaults
+	const metaDescription =
+		customMeta?.description || 'RdRx is a modern URL shortener that allows you to create and share short URLs easily.';
+	const ogTitle = customMeta?.ogTitle || `${title} | RdRx`;
+	const ogDescription = customMeta?.ogDescription || metaDescription;
+	const ogImage = customMeta?.ogImage || '/assets/banner.jpg';
+	const ogUrl = customMeta?.ogUrl || 'https://rdrx.co';
+	const keywords = customMeta?.keywords || '';
 
-	return `
+	return (
+		`
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +31,10 @@ function renderDocumentHead({ title, additionalScripts = '', noMeta = false, cus
   <title>${title}</title>
   <meta name="description" content="${metaDescription}">
   ${keywords ? `<meta name="keywords" content="${keywords}">` : ''}
-  `+ (noMeta ? '' : `
+  ` +
+		(noMeta
+			? ''
+			: `
   <meta property="og:title" content="${ogTitle}">
   <meta property="og:description" content="${ogDescription}">
   <meta property="og:image" content="${ogImage}">
@@ -40,7 +45,8 @@ function renderDocumentHead({ title, additionalScripts = '', noMeta = false, cus
   <meta property="twitter:title" content="${ogTitle}">
   <meta property="twitter:description" content="${ogDescription}">
   <meta property="twitter:image" content="${ogImage}">
-  `) + `
+  `) +
+		`
   <link rel="apple-touch-icon" sizes="57x57" href="/assets/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="/assets/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="/assets/apple-icon-72x72.png">
@@ -182,7 +188,8 @@ function renderDocumentHead({ title, additionalScripts = '', noMeta = false, cus
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   ${additionalScripts}
 </head>
-  `;
+  `
+	);
 }
 
 export { renderDocumentHead };

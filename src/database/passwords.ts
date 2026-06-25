@@ -3,14 +3,14 @@ import { verifyPassword } from '../utils/crypto';
 
 /**
  * Legacy password hashing function
- * 
+ *
  * @deprecated Use hashPassword from '../utils/crypto' instead.
  * This function uses SHA-256 which is not secure for password hashing.
  * The new crypto module uses PBKDF2 with 100,000 iterations.
- * 
+ *
  * @param password - The password to hash
  * @returns Promise resolving to the hashed password
- * 
+ *
  * @remarks
  * This function is kept for backward compatibility only.
  * New code should use the crypto module's hashPassword function.
@@ -32,19 +32,19 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Check if a shortcode is password protected
- * 
+ *
  * Queries the database to determine if a shortcode requires password authentication.
- * 
+ *
  * @param shortcode - The shortcode to check
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to true if password protected, false otherwise
- * 
+ *
  * @example
  * const isProtected = await isShortcodePasswordProtected('abc123', env);
  * if (isProtected) {
  *   // Prompt for password
  * }
- * 
+ *
  * @remarks
  * Returns false if the shortcode doesn't exist or on database errors.
  */
@@ -65,22 +65,22 @@ export async function isShortcodePasswordProtected(shortcode: string, env: Env):
 
 /**
  * Verify a password for a shortcode
- * 
+ *
  * Checks if the provided password matches the stored hash for a shortcode.
  * Supports both legacy SHA-256 hashes and new PBKDF2 hashes.
  * Automatically upgrades legacy hashes to the new format on successful verification.
- * 
+ *
  * @param shortcode - The shortcode to verify password for
  * @param password - The password to verify
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to true if password is correct, false otherwise
- * 
+ *
  * @example
  * const isValid = await verifyShortcodePassword('abc123', 'secret', env);
  * if (isValid) {
  *   // Grant access
  * }
- * 
+ *
  * @remarks
  * Password hash migration strategy:
  * - New hashes (PBKDF2) contain ':' separator

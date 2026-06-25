@@ -18,6 +18,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 **Purpose:** Centralized all magic strings, numbers, and configuration values
 
 **Contents:**
+
 - Authentication & Security constants (password length, iterations, session config)
 - URL Shortening constants (shortcode length, prefixes, charset)
 - Database configuration (retry settings)
@@ -30,6 +31,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 - Feature flags
 
 **Benefits:**
+
 - ✅ Eliminates magic numbers throughout codebase
 - ✅ Single source of truth for configuration
 - ✅ Easy to update messages and settings
@@ -42,6 +44,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 **Purpose:** Unified, secure cryptographic operations
 
 **Functions:**
+
 - `generateSalt()` - Cryptographically secure salt generation
 - `hashPassword()` - PBKDF2 password hashing with 100,000 iterations
 - `verifyPassword()` - Password verification against stored hash
@@ -51,6 +54,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 - `generateUid()` - User ID generation
 
 **Security Improvements:**
+
 - ✅ All password hashing uses PBKDF2 with 100,000 iterations (OWASP recommended)
 - ✅ Proper salt generation and storage (salt:hash format)
 - ✅ Replaces weak SHA-256 implementation
@@ -58,6 +62,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 - ✅ Type-safe with explicit return types
 
 **Migration Path:**
+
 - Existing code can gradually migrate to use these functions
 - Old `hashPassword()` in `src/utils/database.ts` should be deprecated
 - Password verification logic unified
@@ -67,6 +72,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 ### 3. Error Classes (`src/errors/`)
 
 **Files Created:**
+
 - `src/errors/AppError.ts` - Base error class
 - `src/errors/ValidationError.ts` - Validation errors (400)
 - `src/errors/AuthenticationError.ts` - Auth errors (401)
@@ -75,6 +81,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 - `src/errors/index.ts` - Barrel export
 
 **Features:**
+
 - ✅ Consistent error handling across application
 - ✅ Automatic HTTP status code mapping
 - ✅ Machine-readable error codes for clients
@@ -83,6 +90,7 @@ Phase 1 of the RdRx refactoring has been completed successfully. This phase focu
 - ✅ Field-specific validation errors
 
 **Usage Example:**
+
 ```typescript
 // Before
 return new Response('Invalid email', { status: 400 });
@@ -99,11 +107,13 @@ throw new ValidationError('Invalid email', 'email');
 **Purpose:** Centralized CORS handling
 
 **Functions:**
+
 - `addCorsHeaders()` - Adds CORS headers to any response
 - `handleCorsPreflightRequest()` - Handles OPTIONS requests
 - `corsMiddleware()` - Complete CORS middleware wrapper
 
 **Benefits:**
+
 - ✅ Eliminates CORS header duplication (was in 5+ files)
 - ✅ Consistent CORS policy across all endpoints
 - ✅ Easy to update CORS configuration
@@ -116,21 +126,24 @@ throw new ValidationError('Invalid email', 'email');
 **Purpose:** Centralized error handling
 
 **Functions:**
+
 - `handleError()` - Converts errors to HTTP responses
 - `withErrorHandling()` - Wraps handlers with automatic error catching
 
 **Features:**
+
 - ✅ Automatic error-to-response conversion
 - ✅ Proper logging of all errors
 - ✅ CORS headers added to error responses
 - ✅ Consistent error format across API
 
 **Usage Example:**
+
 ```typescript
 // Wrap any route handler
 export const myRoute = withErrorHandling(async (request, env) => {
-  // Any thrown error is automatically caught and converted to proper response
-  throw new ValidationError('Invalid input');
+	// Any thrown error is automatically caught and converted to proper response
+	throw new ValidationError('Invalid input');
 });
 ```
 
@@ -139,6 +152,7 @@ export const myRoute = withErrorHandling(async (request, env) => {
 ### 6. Validation Utilities (`src/validation/`)
 
 **Files Created:**
+
 - `src/validation/url.ts` - URL validation
 - `src/validation/shortcode.ts` - Shortcode validation
 - `src/validation/auth.ts` - Authentication validation
@@ -147,30 +161,35 @@ export const myRoute = withErrorHandling(async (request, env) => {
 **Functions:**
 
 **URL Validation:**
+
 - `validateUrl()` - Basic URL format validation
 - `validateHttpsUrl()` - HTTPS-only URL validation
 
 **Shortcode Validation:**
+
 - `validateShortcode()` - Basic shortcode format (3-50 chars, alphanumeric + hyphens/underscores)
 - `validateCustomShortcode()` - Includes reserved word checking
 
 **Auth Validation:**
+
 - `validateEmail()` - Email format validation
 - `validatePassword()` - Password strength validation
 - `validateApiKey()` - API key format validation
 
 **Features:**
+
 - ✅ Dual mode: return result object OR throw ValidationError
 - ✅ Consistent validation across application
 - ✅ Reserved word protection for shortcodes
 - ✅ Comprehensive JSDoc documentation
 
 **Usage Example:**
+
 ```typescript
 // Return result object
 const result = validateEmail(email);
 if (!result.valid) {
-  console.error(result.error);
+	console.error(result.error);
 }
 
 // Or throw error
@@ -211,6 +230,7 @@ src/
 ### For Existing Code
 
 **1. Replace Magic Strings:**
+
 ```typescript
 // Before
 if (password.length < 8) { ... }
@@ -221,6 +241,7 @@ if (password.length < PASSWORD_MIN_LENGTH) { ... }
 ```
 
 **2. Use New Error Classes:**
+
 ```typescript
 // Before
 return new Response('Not found', { status: 404 });
@@ -231,6 +252,7 @@ throw new NotFoundError('Shortcode');
 ```
 
 **3. Use Crypto Utilities:**
+
 ```typescript
 // Before
 import { hashPassword } from '../utils/database';
@@ -240,13 +262,14 @@ import { hashPassword } from '../utils/crypto';
 ```
 
 **4. Add CORS Headers:**
+
 ```typescript
 // Before
 return new Response(json, {
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-    // ... more CORS headers
-  }
+	headers: {
+		'Access-Control-Allow-Origin': '*',
+		// ... more CORS headers
+	},
 });
 
 // After
@@ -255,10 +278,11 @@ return addCorsHeaders(new Response(json));
 ```
 
 **5. Use Validation:**
+
 ```typescript
 // Before
 if (!email.includes('@')) {
-  return new Response('Invalid email', { status: 400 });
+	return new Response('Invalid email', { status: 400 });
 }
 
 // After
@@ -271,17 +295,20 @@ validateEmail(email, true); // Throws ValidationError if invalid
 ## Benefits Achieved
 
 ### Security
+
 - ✅ **Unified password hashing** - All passwords now use PBKDF2 with 100,000 iterations
 - ✅ **Proper salt generation** - Cryptographically secure random salts
 - ✅ **Secure token generation** - All tokens use crypto.getRandomValues()
 
 ### Code Quality
+
 - ✅ **Eliminated code duplication** - CORS headers, validation logic centralized
 - ✅ **Consistent error handling** - All errors follow same pattern
 - ✅ **Type safety** - All functions have explicit types and JSDoc
 - ✅ **Better documentation** - Comprehensive JSDoc comments on all functions
 
 ### Maintainability
+
 - ✅ **Single source of truth** - Constants in one place
 - ✅ **Easy to update** - Change error messages in one file
 - ✅ **Clear structure** - Organized by concern (errors, validation, middleware)

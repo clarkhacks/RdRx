@@ -1,8 +1,8 @@
 /**
  * Database operations module
- * 
+ *
  * This module provides all database operations organized by domain.
- * 
+ *
  * @module database
  */
 

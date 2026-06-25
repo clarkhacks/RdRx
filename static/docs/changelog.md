@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - **Bio Page Themes**: 8 beautiful color themes for bio pages (Classic Beige, Dark Mode, Ocean Blue, Sunset Orange, Forest Green, Midnight Purple, Minimal White, Candy Pink)
 - **Theme Selector**: Dropdown in bio editor to choose page theme with live preview
 - **SEO Noindex Option**: "Don't show in search results" checkbox to add noindex meta tag to bio pages
 - **Live Theme Preview**: Real-time theme switching in bio editor preview panel
 
 ### Changed
+
 - **Route Organization**: Split large route files into modular subdirectories for better maintainability
   - `src/routes/customAuth.ts` → `src/routes/auth/` (api.ts, pages.ts, index.ts)
   - `src/routes/admin.ts` → `src/routes/admin/` (users.ts, urls.ts, stats.ts, email.ts, index.ts)
@@ -22,12 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Code Organization**: Improved maintainability with smaller, focused modules (average file size reduced from 600+ to 100-400 lines)
 
 ### Fixed
+
 - **Theme Persistence**: Themes now properly save and load from database
 - **Theme Preview**: Live preview accurately reflects selected theme colors
 
 ## [1.2.2] - 2026-05-03
 
 ### Added
+
 - Production-ready logging utility (`src/utils/logger.ts`) for better error tracking
 - CHANGELOG.md for tracking version history
 - Comprehensive UI improvements with unified design system
@@ -46,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Validation utilities (`src/validation/`) for URLs, shortcodes, and auth
 
 ### Changed
+
 - Improved README.md with better structure and clearer instructions
 - Updated UI components to use shared design system
 - Simplified form interactions across the application
@@ -58,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored database layer into modular files (`src/database/`)
 
 ### Fixed
+
 - Typo in `.dev.vars.example` (htps -> https)
 - Removed redundant `loginForm.ts` file (consolidated into `auth/LoginForm.ts`)
 - Consistent styling across all components
@@ -66,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript compilation errors in error classes
 
 ### Security
+
 - Implemented secure password hashing with PBKDF2 and salt
 - HTTP-only cookies for session management
 - JWT-based authentication
@@ -75,21 +82,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.1] - 2025-05-29
 
 ### Added
+
 - TailwindCSS local build process
 - PostCSS configuration for optimized CSS
 - Configurable domain settings via environment variables
 
 ### Changed
+
 - Replaced TailwindCSS CDN with locally built files
 - Improved routing system for better maintainability
 - Enhanced documentation with step-by-step setup guide
 
 ### Fixed
+
 - Various bug fixes and performance improvements
 
 ## [1.2.0] - 2025-05-15
 
 ### Added
+
 - Bio pages / Link trees functionality
 - File upload and sharing capabilities
 - Password protection for links, snippets, and files
@@ -97,24 +108,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - User dashboard with analytics
 
 ### Changed
+
 - Improved database schema with new tables
 - Enhanced UI with modern design patterns
 
 ## [1.1.0] - 2025-04-01
 
 ### Added
+
 - Code snippet sharing with syntax highlighting
 - Analytics tracking for short links
 - User authentication system
 - Account management features
 
 ### Changed
+
 - Migrated to Cloudflare D1 database
 - Improved error handling
 
 ## [1.0.0] - 2025-03-01
 
 ### Added
+
 - Initial release
 - URL shortening functionality
 - Cloudflare Workers deployment

@@ -27,22 +27,24 @@ Create a new short URL.
 **Endpoint:** `POST /api/create`
 
 **Request Body:**
+
 ```json
 {
-  "url": "https://example.com",
-  "custom": false,
-  "custom_code": "optional-custom-code",
-  "delete_after": "2024-12-31T23:59:59Z",
-  "password_protected": false,
-  "password": "optional-password"
+	"url": "https://example.com",
+	"custom": false,
+	"custom_code": "optional-custom-code",
+	"delete_after": "2024-12-31T23:59:59Z",
+	"password_protected": false,
+	"password": "optional-password"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "shortcode": "abc123",
-  "url": "https://your-domain.com/abc123"
+	"shortcode": "abc123",
+	"url": "https://your-domain.com/abc123"
 }
 ```
 
@@ -53,19 +55,21 @@ Create a new code snippet.
 **Endpoint:** `POST /api/create`
 
 **Request Body:**
+
 ```json
 {
-  "snippet": "console.log('Hello, World!');",
-  "custom": false,
-  "custom_code": "optional-custom-code",
-  "delete_after": "2024-12-31T23:59:59Z"
+	"snippet": "console.log('Hello, World!');",
+	"custom": false,
+	"custom_code": "optional-custom-code",
+	"delete_after": "2024-12-31T23:59:59Z"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "shortcode": "c-abc123"
+	"shortcode": "c-abc123"
 }
 ```
 
@@ -76,6 +80,7 @@ Upload files for sharing.
 **Endpoint:** `POST /upload`
 
 **Request:** Multipart form data
+
 - `files`: File(s) to upload
 - `customCode`: Custom shortcode (optional)
 - `deleteAfter`: Expiration date (optional)
@@ -83,10 +88,11 @@ Upload files for sharing.
 - `password`: Password for protection (optional)
 
 **Response:**
+
 ```json
 {
-  "urls": ["https://r2.example.com/uploads/abc123-file.pdf"],
-  "shortcode": "f-abc123"
+	"urls": ["https://r2.example.com/uploads/abc123-file.pdf"],
+	"shortcode": "f-abc123"
 }
 ```
 
@@ -97,19 +103,21 @@ Create a temporary URL that expires in 2 days (no authentication required).
 **Endpoint:** `POST /api/temp`
 
 **Request Body:**
+
 ```json
 {
-  "url": "https://example.com"
+	"url": "https://example.com"
 }
 ```
 
 **Response:**
+
 ```json
 {
-  "shortcode": "xyz789",
-  "url": "https://example.com",
-  "expires_at": "2024-04-06T12:00:00Z",
-  "full_url": "https://your-domain.com/xyz789"
+	"shortcode": "xyz789",
+	"url": "https://example.com",
+	"expires_at": "2024-04-06T12:00:00Z",
+	"full_url": "https://your-domain.com/xyz789"
 }
 ```
 
@@ -119,7 +127,7 @@ All errors follow this format:
 
 ```json
 {
-  "error": "Error message description"
+	"error": "Error message description"
 }
 ```
 
@@ -168,16 +176,16 @@ curl -X POST https://your-domain.com/upload \
 ```javascript
 // Create short URL
 const response = await fetch('https://your-domain.com/api/create', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer rdrx_live_your_api_key',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    url: 'https://example.com',
-    custom: true,
-    custom_code: 'my-link'
-  })
+	method: 'POST',
+	headers: {
+		Authorization: 'Bearer rdrx_live_your_api_key',
+		'Content-Type': 'application/json',
+	},
+	body: JSON.stringify({
+		url: 'https://example.com',
+		custom: true,
+		custom_code: 'my-link',
+	}),
 });
 
 const data = await response.json();
@@ -211,6 +219,7 @@ print(data['shortcode'])
 ## Support
 
 For API support:
+
 - [GitHub Issues](https://github.com/clarkhacks/RdRx/issues)
 - [Documentation](/)
 - Email: support@rdrx.co

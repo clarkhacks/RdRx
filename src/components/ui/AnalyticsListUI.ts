@@ -266,14 +266,19 @@ function renderAnalyticsListUI(paginatedUrls: PaginationResult<UrlAnalytics>, sa
 	// Store URL data in a global variable to avoid escaping issues
 	const urlDataScript = `
 		<script>
-			window.urlData = ${JSON.stringify(paginatedUrls.items.reduce((acc, url) => {
-				acc[url.shortcode] = {
-					shortcode: url.shortcode,
-					target_url: url.target_url,
-					type: getUrlType(url)
-				};
-				return acc;
-			}, {} as Record<string, any>))};
+			window.urlData = ${JSON.stringify(
+				paginatedUrls.items.reduce(
+					(acc, url) => {
+						acc[url.shortcode] = {
+							shortcode: url.shortcode,
+							target_url: url.target_url,
+							type: getUrlType(url),
+						};
+						return acc;
+					},
+					{} as Record<string, any>,
+				),
+			)};
 		</script>
 	`;
 

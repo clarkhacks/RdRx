@@ -1,6 +1,6 @@
 /**
  * CORS (Cross-Origin Resource Sharing) middleware
- * 
+ *
  * Provides centralized CORS configuration for the application.
  * Handles preflight requests and adds appropriate CORS headers.
  */
@@ -13,27 +13,27 @@ export interface CorsOptions {
 	 * Allowed origins (use '*' for all origins)
 	 */
 	origin?: string | string[];
-	
+
 	/**
 	 * Allowed HTTP methods
 	 */
 	methods?: string[];
-	
+
 	/**
 	 * Allowed headers
 	 */
 	allowedHeaders?: string[];
-	
+
 	/**
 	 * Exposed headers
 	 */
 	exposedHeaders?: string[];
-	
+
 	/**
 	 * Allow credentials (cookies, authorization headers)
 	 */
 	credentials?: boolean;
-	
+
 	/**
 	 * Max age for preflight cache (in seconds)
 	 */
@@ -54,15 +54,12 @@ const DEFAULT_CORS_OPTIONS: CorsOptions = {
 
 /**
  * Get CORS headers based on configuration
- * 
+ *
  * @param options - CORS configuration options
  * @param requestOrigin - Origin from the request headers
  * @returns Headers object with CORS headers
  */
-export function getCorsHeaders(
-	options: CorsOptions = {},
-	requestOrigin?: string
-): Headers {
+export function getCorsHeaders(options: CorsOptions = {}, requestOrigin?: string): Headers {
 	const config = { ...DEFAULT_CORS_OPTIONS, ...options };
 	const headers = new Headers();
 
@@ -108,15 +105,12 @@ export function getCorsHeaders(
 
 /**
  * Handle CORS preflight request
- * 
+ *
  * @param request - The incoming request
  * @param options - CORS configuration options
  * @returns Response for preflight request or null if not a preflight
  */
-export function handleCorsPrefligh(
-	request: Request,
-	options: CorsOptions = {}
-): Response | null {
+export function handleCorsPrefligh(request: Request, options: CorsOptions = {}): Response | null {
 	// Check if this is a preflight request
 	if (request.method !== 'OPTIONS') {
 		return null;
@@ -133,17 +127,13 @@ export function handleCorsPrefligh(
 
 /**
  * Add CORS headers to an existing response
- * 
+ *
  * @param response - The response to add headers to
  * @param request - The original request
  * @param options - CORS configuration options
  * @returns New response with CORS headers
  */
-export function addCorsHeaders(
-	response: Response,
-	request: Request,
-	options: CorsOptions = {}
-): Response {
+export function addCorsHeaders(response: Response, request: Request, options: CorsOptions = {}): Response {
 	const requestOrigin = request.headers.get('Origin');
 	const corsHeaders = getCorsHeaders(options, requestOrigin || undefined);
 
@@ -160,13 +150,13 @@ export function addCorsHeaders(
 
 /**
  * CORS middleware wrapper
- * 
+ *
  * Wraps a request handler and automatically handles CORS.
- * 
+ *
  * @param handler - The request handler function
  * @param options - CORS configuration options
  * @returns Wrapped handler with CORS support
- * 
+ *
  * @example
  * const handler = corsMiddleware(async (request, env) => {
  *   return new Response('Hello');
@@ -174,7 +164,7 @@ export function addCorsHeaders(
  */
 export function corsMiddleware<T extends any[]>(
 	handler: (request: Request, ...args: T) => Promise<Response>,
-	options: CorsOptions = {}
+	options: CorsOptions = {},
 ): (request: Request, ...args: T) => Promise<Response> {
 	return async (request: Request, ...args: T): Promise<Response> => {
 		// Handle preflight

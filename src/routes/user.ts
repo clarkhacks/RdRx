@@ -86,7 +86,7 @@ async function handleUpdateUserUrl(request: Request, env: Env, path: string, use
 			`
 			UPDATE short_urls SET target_url = ?
 			WHERE shortcode = ? AND creator_id = ?
-		`
+		`,
 		)
 			.bind(url, shortcode, userId)
 			.run();
@@ -128,7 +128,7 @@ async function handleGetUserSnippet(request: Request, env: Env, path: string, us
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error getting user snippet:', error);
@@ -163,7 +163,7 @@ async function handleUpdateUserSnippet(request: Request, env: Env, path: string,
 			`
 			UPDATE short_urls SET target_url = ?
 			WHERE shortcode = ? AND creator_id = ?
-		`
+		`,
 		)
 			.bind(content, shortcode, userId)
 			.run();
@@ -217,7 +217,7 @@ async function handleGetUserFiles(request: Request, env: Env, path: string, user
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error getting user files:', error);
@@ -285,7 +285,7 @@ async function handleDeleteUserFile(request: Request, env: Env, path: string, us
 				`
 				UPDATE short_urls SET target_url = ?
 				WHERE shortcode = ? AND creator_id = ?
-			`
+			`,
 			)
 				.bind(JSON.stringify(updatedUrls), shortcode, userId)
 				.run();
@@ -351,7 +351,7 @@ async function handleUploadUserFiles(request: Request, env: Env, path: string, u
 			`
 			UPDATE short_urls SET target_url = ?
 			WHERE shortcode = ? AND creator_id = ?
-		`
+		`,
 		)
 			.bind(JSON.stringify(allUrls), shortcode, userId)
 			.run();
@@ -364,7 +364,7 @@ async function handleUploadUserFiles(request: Request, env: Env, path: string, u
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error uploading user files:', error);
@@ -390,7 +390,7 @@ async function handleCheckShortcodeAvailability(request: Request, env: Env, path
 				}),
 				{
 					headers: { 'Content-Type': 'application/json' },
-				}
+				},
 			);
 		}
 
@@ -406,7 +406,7 @@ async function handleCheckShortcodeAvailability(request: Request, env: Env, path
 			}),
 			{
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error checking shortcode availability:', error);
@@ -418,7 +418,7 @@ async function handleCheckShortcodeAvailability(request: Request, env: Env, path
 			{
 				status: 500,
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	}
 }

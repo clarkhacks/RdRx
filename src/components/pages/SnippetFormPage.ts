@@ -7,7 +7,7 @@ interface Env {
 
 function renderSnippetFormPage(env: Env, shortcode?: string, shortcodeValue?: string): Response {
 	const shortDomain = env.SHORT_DOMAIN;
-	
+
 	// Assemble the content
 	const content = renderSnippetFormUI({ shortcode, shortcodeValue, shortDomain });
 

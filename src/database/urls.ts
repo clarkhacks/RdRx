@@ -2,10 +2,10 @@ import { Env } from '../types';
 
 /**
  * Save a URL to the D1 database
- * 
+ *
  * Stores a shortcode-to-URL mapping in the database with optional password protection.
  * Automatically detects the type of shortcode (snippet, file, or bio) based on prefix.
- * 
+ *
  * @param shortcode - The unique shortcode identifier
  * @param url - The target URL to redirect to
  * @param env - Cloudflare Workers environment bindings
@@ -13,17 +13,17 @@ import { Env } from '../types';
  * @param passwordHash - Optional hashed password for protection
  * @param isPasswordProtected - Whether the shortcode requires password authentication
  * @returns Promise that resolves when the URL is saved
- * 
+ *
  * @throws {Error} When database insertion fails
- * 
+ *
  * @example
  * await saveUrlToDatabase('abc123', 'https://example.com', env);
- * 
+ *
  * @example
  * // With password protection
  * const hash = await hashPassword('secret');
  * await saveUrlToDatabase('abc123', 'https://example.com', env, userId, hash, true);
- * 
+ *
  * @remarks
  * - Shortcodes starting with 'c-' are marked as snippets
  * - Shortcodes starting with 'f-' are marked as files
@@ -36,7 +36,7 @@ export async function saveUrlToDatabase(
 	env: Env,
 	creatorId: string | null = null,
 	passwordHash: string | null = null,
-	isPasswordProtected: boolean = false
+	isPasswordProtected: boolean = false,
 ): Promise<void> {
 	try {
 		// Determine if it's a snippet, file, or bio
@@ -48,7 +48,7 @@ export async function saveUrlToDatabase(
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO short_urls 
       (shortcode, target_url, created_at, creator_id, is_snippet, is_file, is_bio, password_hash, is_password_protected)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(
 				shortcode,
@@ -59,7 +59,7 @@ export async function saveUrlToDatabase(
 				isFile ? 1 : 0,
 				isBio ? 1 : 0,
 				passwordHash,
-				isPasswordProtected ? 1 : 0
+				isPasswordProtected ? 1 : 0,
 			)
 			.run();
 
@@ -72,20 +72,20 @@ export async function saveUrlToDatabase(
 
 /**
  * Fetch a URL from the database by shortcode
- * 
+ *
  * Retrieves the target URL associated with a shortcode.
  * Includes special handling for legacy shortcodes with specific prefixes.
- * 
+ *
  * @param shortcode - The shortcode to look up
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to the target URL, or null if not found
- * 
+ *
  * @example
  * const url = await fetchUrlByShortcode('abc123', env);
  * if (url) {
  *   console.log('Redirecting to:', url);
  * }
- * 
+ *
  * @remarks
  * Special handling for shortcodes starting with '19102-':
  * Appends a date-based query parameter to the URL for tracking purposes.
@@ -117,13 +117,13 @@ export async function fetchUrlByShortcode(shortcode: string, env: Env): Promise<
 
 /**
  * Get URL from database by shortcode
- * 
+ *
  * Alias for fetchUrlByShortcode for backward compatibility.
- * 
+ *
  * @param shortcode - The shortcode to look up
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to the target URL, or null if not found
- * 
+ *
  * @deprecated Use fetchUrlByShortcode instead
  */
 export async function getUrlFromDatabase(shortcode: string, env: Env): Promise<string | null> {
@@ -132,19 +132,19 @@ export async function getUrlFromDatabase(shortcode: string, env: Env): Promise<s
 
 /**
  * Delete a URL by shortcode
- * 
+ *
  * Removes a shortcode and its associated URL from the database.
- * 
+ *
  * @param shortcode - The shortcode to delete
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise that resolves when deletion is complete
- * 
+ *
  * @throws {Error} When database deletion fails
- * 
+ *
  * @example
  * await deleteUrlByShortcode('abc123', env);
  * console.log('Shortcode deleted');
- * 
+ *
  * @remarks
  * This does not delete associated analytics data or scheduled deletions.
  * Use the deletion module for comprehensive cleanup.

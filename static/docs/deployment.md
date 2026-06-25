@@ -31,6 +31,7 @@ npx wrangler secret put ADMIN_UID
 ```
 
 **Important:** Generate strong, random values for:
+
 - `JWT_SECRET`: At least 32 characters, cryptographically random
 - `API_KEY`: Unique API key for general operations
 - `API_KEY_ADMIN`: Separate admin API key
@@ -38,11 +39,13 @@ npx wrangler secret put ADMIN_UID
 ### 3. Database Setup
 
 - [ ] **Create D1 Database**
+
   ```bash
   npx wrangler d1 create rdrx-shorturls
   ```
 
 - [ ] **Run Database Migrations**
+
   ```bash
   npx wrangler d1 execute rdrx-shorturls --file=./schema.sql
   ```
@@ -57,11 +60,13 @@ npx wrangler secret put ADMIN_UID
 ### 4. Storage Setup
 
 - [ ] **Create R2 Bucket**
+
   ```bash
   npx wrangler r2 bucket create rdrx-files
   ```
 
 - [ ] **Create KV Namespace**
+
   ```bash
   npx wrangler kv:namespace create KV_RDRX
   npx wrangler kv:namespace create KV_RDRX --preview
@@ -74,16 +79,19 @@ npx wrangler secret put ADMIN_UID
 ### 5. Code Quality
 
 - [ ] **Run Tests**
+
   ```bash
   npm run test
   ```
 
 - [ ] **Format Code**
+
   ```bash
   npm run format
   ```
 
 - [ ] **Build CSS**
+
   ```bash
   npm run build:css
   ```
@@ -269,6 +277,7 @@ npx wrangler d1 export rdrx-shorturls --output=backup.sql
 ## Support
 
 For issues or questions:
+
 - Check [README.md](README.md) for setup instructions
 - Review [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines
 - Open an issue on GitHub

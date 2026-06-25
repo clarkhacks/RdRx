@@ -14,23 +14,23 @@ export interface DeletionEntry {
 
 /**
  * Save a deletion entry to the database
- * 
+ *
  * Schedules a shortcode for automatic deletion at a specified time.
  * Used for temporary URLs and files that should be automatically cleaned up.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param shortcode - The shortcode to schedule for deletion
  * @param deleteTimestamp - Unix timestamp (milliseconds) when deletion should occur
  * @param isFile - Whether this is a file shortcode (requires R2 cleanup)
  * @returns Promise that resolves when the deletion entry is saved
- * 
+ *
  * @throws {Error} When database insertion fails
- * 
+ *
  * @example
  * // Schedule deletion in 24 hours
  * const deleteAt = Date.now() + (24 * 60 * 60 * 1000);
  * await saveDeletionEntry(env, 'abc123', deleteAt, false);
- * 
+ *
  * @remarks
  * Deletion entries are processed by a scheduled cron job.
  * The actual deletion happens when executeScheduledDeletions() is called.
@@ -40,7 +40,7 @@ export async function saveDeletionEntry(env: Env, shortcode: string, deleteTimes
 		// Insert the deletion entry
 		await env.DB.prepare(
 			`INSERT INTO deletions (shortcode, delete_at, is_file, created_at)
-      VALUES (?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?)`,
 		)
 			.bind(shortcode, deleteTimestamp, isFile ? 1 : 0, new Date().toISOString())
 			.run();
@@ -54,16 +54,16 @@ export async function saveDeletionEntry(env: Env, shortcode: string, deleteTimes
 
 /**
  * Get all deletion entries from the database
- * 
+ *
  * Retrieves all scheduled deletions, typically for processing by a cron job.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to an array of deletion entries
- * 
+ *
  * @example
  * const entries = await getDeletionEntries(env);
  * console.log(`${entries.length} deletions scheduled`);
- * 
+ *
  * @remarks
  * Returns an empty array if no deletions are scheduled or on error.
  * Results include both pending and overdue deletions.
@@ -85,19 +85,19 @@ export async function getDeletionEntries(env: Env): Promise<DeletionEntry[]> {
 
 /**
  * Delete a deletion entry from the database
- * 
+ *
  * Removes a scheduled deletion entry, typically after the deletion has been executed.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param shortcode - The shortcode whose deletion entry should be removed
  * @returns Promise that resolves when the entry is deleted
- * 
+ *
  * @throws {Error} When database deletion fails
- * 
+ *
  * @example
  * await deleteDeletionEntry(env, 'abc123');
  * console.log('Deletion entry removed');
- * 
+ *
  * @remarks
  * This only removes the deletion schedule, not the shortcode itself.
  * Use deleteUrlByShortcode() to remove the actual shortcode.
@@ -114,17 +114,17 @@ export async function deleteDeletionEntry(env: Env, shortcode: string): Promise<
 
 /**
  * Execute scheduled deletions
- * 
+ *
  * Processes all deletion entries whose scheduled time has passed.
  * Deletes the shortcodes from the database and R2 (for files), then removes the deletion entries.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise that resolves when all scheduled deletions are processed
- * 
+ *
  * @example
  * // Called by cron trigger
  * await executeScheduledDeletions(env);
- * 
+ *
  * @remarks
  * This function should be called periodically by a cron job.
  * It processes all deletions whose delete_at timestamp is in the past.

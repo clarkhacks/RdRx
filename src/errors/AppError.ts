@@ -1,13 +1,13 @@
 /**
  * Base application error class
- * 
+ *
  * All custom errors in the application should extend this class.
  * Provides consistent error handling with HTTP status codes.
  */
 export class AppError extends Error {
 	/**
 	 * Create a new application error
-	 * 
+	 *
 	 * @param message - Human-readable error message
 	 * @param statusCode - HTTP status code (default: 500)
 	 * @param code - Machine-readable error code for client handling
@@ -15,11 +15,11 @@ export class AppError extends Error {
 	constructor(
 		public message: string,
 		public statusCode: number = 500,
-		public code?: string
+		public code?: string,
 	) {
 		super(message);
 		this.name = 'AppError';
-		
+
 		// Maintains proper stack trace for where error was thrown (V8 only)
 		if ((Error as any).captureStackTrace) {
 			(Error as any).captureStackTrace(this, this.constructor);

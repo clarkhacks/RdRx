@@ -13,19 +13,19 @@ export interface AnalyticsData {
 
 /**
  * Track a view in the analytics table
- * 
+ *
  * Records minimal analytics data when a shortcode is accessed.
  * Captures the country from Cloudflare's request metadata if available.
- * 
+ *
  * @param request - The incoming HTTP request
  * @param env - Cloudflare Workers environment bindings
  * @param shortcode - The shortcode that was accessed
  * @param redirectUrl - The target URL that was redirected to
  * @returns Promise that resolves when tracking is complete
- * 
+ *
  * @example
  * await trackView(request, env, 'abc123', 'https://example.com');
- * 
+ *
  * @remarks
  * This function does not throw errors - failures are logged but don't interrupt the redirect.
  * Analytics tracking is designed to be non-blocking and fault-tolerant.
@@ -49,7 +49,7 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
         target_url, 
         country,
         timestamp
-      ) VALUES (?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?)`,
 		)
 			.bind(shortcode, redirectUrl, country, timestamp)
 			.run();
@@ -62,17 +62,17 @@ export async function trackView(request: Request, env: Env, shortcode: string, r
 
 /**
  * Get analytics data for a shortcode
- * 
+ *
  * Retrieves all analytics records for a specific shortcode.
- * 
+ *
  * @param shortcode - The shortcode to get analytics for
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to an array of analytics data
- * 
+ *
  * @example
  * const analytics = await getAnalytics('abc123', env);
  * console.log(`Total views: ${analytics.length}`);
- * 
+ *
  * @remarks
  * Returns an empty array if no analytics data exists or on error.
  * Results are ordered by timestamp (newest first).

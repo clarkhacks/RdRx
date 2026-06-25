@@ -30,25 +30,32 @@ RdRx is a powerful URL shortener service built on Cloudflare's edge network. It 
 ## Features
 
 ### 🔗 URL Shortening
+
 Create short, memorable links that redirect to any URL. Perfect for sharing on social media, emails, or anywhere character count matters.
 
 ### 💻 Code Snippets
+
 Share code snippets with automatic syntax highlighting. Supports multiple programming languages and file formats.
 
 ### 📁 File Sharing
+
 Upload and share files securely using Cloudflare R2 storage. Set expiration dates for automatic cleanup.
 
 ### 🎨 Bio Pages
+
 Create beautiful landing pages with multiple links, social media connections, and custom themes.
 
 ### 📊 Analytics
+
 Track link performance with detailed analytics including:
+
 - Total visits
 - Geographic distribution
 - Visit trends over time
 - Referrer information
 
 ### 🔐 Security
+
 - Password-protected links
 - PBKDF2 password hashing
 - API key authentication

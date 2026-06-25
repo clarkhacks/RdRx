@@ -15,6 +15,7 @@ Phase 2 focuses on splitting the monolithic `src/utils/database.ts` file (538 li
 ### File to Split: `src/utils/database.ts` (538 lines)
 
 **Function Breakdown:**
+
 - **Initialization:** 1 function (72 lines)
 - **URL Operations:** 4 functions (115 lines)
 - **Password Operations:** 3 functions (58 lines)
@@ -48,13 +49,16 @@ src/database/
 **Purpose:** Database table initialization
 
 **Functions to Move:**
+
 - `initializeTables(env: Env): Promise<void>`
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 - Import `initializeUsersTable` from `../components/auth/database`
 
 **New Imports Needed:**
+
 - None (self-contained)
 
 **Lines:** ~80 (with JSDoc)
@@ -66,16 +70,19 @@ src/database/
 **Purpose:** URL shortening CRUD operations
 
 **Functions to Move:**
+
 - `saveUrlToDatabase(shortcode, url, env, creatorId?, passwordHash?, isPasswordProtected?): Promise<void>`
 - `fetchUrlByShortcode(shortcode, env): Promise<string | null>`
 - `getUrlFromDatabase(shortcode, env): Promise<string | null>` (alias)
 - `deleteUrlByShortcode(shortcode, env): Promise<void>`
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 - Import `FILE_SHORTCODE_PREFIX`, `SNIPPET_SHORTCODE_PREFIX` from `../config/constants`
 
 **Special Logic:**
+
 - Line 127-132: Special handling for `19102-` prefixed shortcodes (needs comment explaining why)
 
 **Lines:** ~140 (with JSDoc)
@@ -87,16 +94,19 @@ src/database/
 **Purpose:** Password hashing and verification for shortcodes
 
 **Functions to Move:**
+
 - `isShortcodePasswordProtected(shortcode, env): Promise<boolean>`
 - `verifyShortcodePassword(shortcode, password, env): Promise<boolean>`
 - ~~`hashPassword(password): Promise<string>`~~ **DEPRECATED** - Use `src/utils/crypto.ts` instead
 
 **Migration Strategy:**
+
 - Mark old `hashPassword()` as deprecated
 - Update `verifyShortcodePassword()` to use new crypto utilities
 - Add migration note for existing password hashes
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 - Import `verifyPassword` from `../utils/crypto`
 
@@ -109,10 +119,12 @@ src/database/
 **Purpose:** Analytics tracking and retrieval
 
 **Functions to Move:**
+
 - `trackView(request, env, shortcode, redirectUrl): Promise<void>`
 - `getAnalytics(shortcode, env): Promise<AnalyticsData[]>`
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 
 **Lines:** ~60 (with JSDoc)
@@ -124,12 +136,14 @@ src/database/
 **Purpose:** Scheduled deletion management
 
 **Functions to Move:**
+
 - `saveDeletionEntry(env, shortcode, deleteTimestamp, isFile): Promise<void>`
 - `getDeletionEntries(env): Promise<DeletionEntry[]>`
 - `deleteDeletionEntry(env, shortcode): Promise<void>`
 - `executeScheduledDeletions(env): Promise<void>`
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 
 **Lines:** ~100 (with JSDoc)
@@ -141,12 +155,14 @@ src/database/
 **Purpose:** Bio profile operations
 
 **Functions to Move:**
+
 - `saveBioProfile(env, userId, shortId, title, description, ...): Promise<void>`
 - `getBioPage(env, shortcode): Promise<BioProfile | null>`
 - `updateBioProfile(env, userId, data): Promise<void>`
 - `deleteBioProfile(env, userId): Promise<void>`
 
 **Dependencies:**
+
 - Import `Env` from `../types`
 
 **Lines:** ~200 (with JSDoc)
@@ -158,12 +174,13 @@ src/database/
 **Purpose:** Barrel export for easy imports
 
 **Content:**
+
 ```typescript
 /**
  * Database operations module
- * 
+ *
  * This module provides all database operations organized by domain.
- * 
+ *
  * @module database
  */
 
@@ -171,40 +188,19 @@ src/database/
 export { initializeTables } from './init';
 
 // URL operations
-export {
-  saveUrlToDatabase,
-  fetchUrlByShortcode,
-  getUrlFromDatabase,
-  deleteUrlByShortcode,
-} from './urls';
+export { saveUrlToDatabase, fetchUrlByShortcode, getUrlFromDatabase, deleteUrlByShortcode } from './urls';
 
 // Password operations
-export {
-  isShortcodePasswordProtected,
-  verifyShortcodePassword,
-} from './passwords';
+export { isShortcodePasswordProtected, verifyShortcodePassword } from './passwords';
 
 // Analytics operations
-export {
-  trackView,
-  getAnalytics,
-} from './analytics';
+export { trackView, getAnalytics } from './analytics';
 
 // Deletion operations
-export {
-  saveDeletionEntry,
-  getDeletionEntries,
-  deleteDeletionEntry,
-  executeScheduledDeletions,
-} from './deletion';
+export { saveDeletionEntry, getDeletionEntries, deleteDeletionEntry, executeScheduledDeletions } from './deletion';
 
 // Bio operations
-export {
-  saveBioProfile,
-  getBioPage,
-  updateBioProfile,
-  deleteBioProfile,
-} from './bio';
+export { saveBioProfile, getBioPage, updateBioProfile, deleteBioProfile } from './bio';
 
 // Deprecated exports (for backward compatibility)
 /**
@@ -265,6 +261,7 @@ export { hashPassword } from './passwords';
 ## Implementation Steps
 
 ### Step 1: Create New Directory Structure
+
 ```bash
 mkdir src/database
 ```
@@ -272,6 +269,7 @@ mkdir src/database
 ### Step 2: Create Individual Module Files
 
 **Order of Creation:**
+
 1. `src/database/init.ts` (no dependencies on other db modules)
 2. `src/database/urls.ts` (no dependencies on other db modules)
 3. `src/database/passwords.ts` (depends on crypto utils)
@@ -283,22 +281,23 @@ mkdir src/database
 ### Step 3: Add Comprehensive JSDoc
 
 **Template for Each Function:**
+
 ```typescript
 /**
  * [Brief description]
- * 
+ *
  * @param [paramName] - [Description]
  * @param env - Cloudflare Workers environment bindings
  * @returns Promise resolving to [description]
- * 
+ *
  * @throws {Error} When [condition]
- * 
+ *
  * @example
  * const url = await fetchUrlByShortcode('abc123', env);
  * if (url) {
  *   console.log('Found:', url);
  * }
- * 
+ *
  * @remarks
  * [Any special notes, caveats, or implementation details]
  */
@@ -307,24 +306,27 @@ mkdir src/database
 ### Step 4: Update Imports in Existing Files
 
 **Use Find & Replace:**
+
 ```
 Find: from '../utils/database'
 Replace: from '../database'
 ```
 
 **Manual Updates Needed:**
+
 - `hashPassword` imports → change to `'../utils/crypto'`
 - Verify each file compiles after update
 
 ### Step 5: Deprecate Old File
 
 **Option A: Keep as Deprecated**
+
 ```typescript
 // src/utils/database.ts
 /**
  * @deprecated This file has been split into domain-specific modules.
  * Import from '../database' instead.
- * 
+ *
  * This file will be removed in a future version.
  */
 
@@ -333,6 +335,7 @@ export * from '../database';
 ```
 
 **Option B: Delete Immediately**
+
 - More aggressive but cleaner
 - Requires all imports to be updated first
 - Recommended after testing
@@ -354,22 +357,17 @@ export * from '../database';
 ## Migration Guide for Developers
 
 ### Before (Old Way)
+
 ```typescript
-import { 
-  saveUrlToDatabase, 
-  fetchUrlByShortcode,
-  hashPassword 
-} from '../utils/database';
+import { saveUrlToDatabase, fetchUrlByShortcode, hashPassword } from '../utils/database';
 
 // Use functions...
 ```
 
 ### After (New Way)
+
 ```typescript
-import { 
-  saveUrlToDatabase, 
-  fetchUrlByShortcode 
-} from '../database';
+import { saveUrlToDatabase, fetchUrlByShortcode } from '../database';
 import { hashPassword } from '../utils/crypto';
 
 // Use functions...
@@ -378,6 +376,7 @@ import { hashPassword } from '../utils/crypto';
 ### Deprecated Functions
 
 **`hashPassword()` from database module:**
+
 ```typescript
 // ❌ Old (deprecated)
 import { hashPassword } from '../utils/database';
@@ -393,43 +392,42 @@ The new `hashPassword()` uses PBKDF2 with 100,000 iterations instead of plain SH
 ## Password Hash Migration Strategy
 
 ### Problem
+
 Existing shortcode passwords use SHA-256 (weak), new system uses PBKDF2 (strong).
 
 ### Solution Options
 
 **Option 1: Gradual Migration (Recommended)**
+
 ```typescript
 // In verifyShortcodePassword()
 async function verifyShortcodePassword(shortcode: string, password: string, env: Env): Promise<boolean> {
-  const result = await env.DB.prepare(
-    `SELECT password_hash FROM short_urls WHERE shortcode = ?`
-  ).bind(shortcode).first();
+	const result = await env.DB.prepare(`SELECT password_hash FROM short_urls WHERE shortcode = ?`).bind(shortcode).first();
 
-  if (!result?.password_hash) return false;
+	if (!result?.password_hash) return false;
 
-  const storedHash = result.password_hash as string;
+	const storedHash = result.password_hash as string;
 
-  // Check if it's new format (contains ':' separator)
-  if (storedHash.includes(':')) {
-    // New PBKDF2 format
-    return await verifyPassword(password, storedHash);
-  } else {
-    // Old SHA-256 format - verify and upgrade
-    const oldHash = await legacyHashPassword(password);
-    if (oldHash === storedHash) {
-      // Password correct - upgrade to new format
-      const newHash = await hashPassword(password);
-      await env.DB.prepare(
-        `UPDATE short_urls SET password_hash = ? WHERE shortcode = ?`
-      ).bind(newHash, shortcode).run();
-      return true;
-    }
-    return false;
-  }
+	// Check if it's new format (contains ':' separator)
+	if (storedHash.includes(':')) {
+		// New PBKDF2 format
+		return await verifyPassword(password, storedHash);
+	} else {
+		// Old SHA-256 format - verify and upgrade
+		const oldHash = await legacyHashPassword(password);
+		if (oldHash === storedHash) {
+			// Password correct - upgrade to new format
+			const newHash = await hashPassword(password);
+			await env.DB.prepare(`UPDATE short_urls SET password_hash = ? WHERE shortcode = ?`).bind(newHash, shortcode).run();
+			return true;
+		}
+		return false;
+	}
 }
 ```
 
 **Option 2: Force Re-hash**
+
 - Invalidate all existing password-protected shortcodes
 - Require users to set new passwords
 - More secure but disruptive
@@ -441,18 +439,22 @@ async function verifyShortcodePassword(shortcode: string, password: string, env:
 ## Risk Assessment
 
 ### Low Risk
+
 - ✅ Creating new files (no impact on existing code)
 - ✅ Adding JSDoc comments
 - ✅ Barrel exports
 
 ### Medium Risk
+
 - ⚠️ Updating imports (could miss some files)
 - ⚠️ Password hash migration (needs careful testing)
 
 ### High Risk
+
 - ❌ Deleting old `database.ts` before verifying all imports updated
 
 ### Mitigation Strategies
+
 1. **Keep old file as deprecated** initially
 2. **Test thoroughly** before deleting
 3. **Use TypeScript compiler** to find missing imports
@@ -462,6 +464,7 @@ async function verifyShortcodePassword(shortcode: string, password: string, env:
 ---
 
 ## Security Risk Fix ASAP
+
 In admin -> Url Management Tables snippets are being rendered. Sanitize snippets shown in tables.
 
 ## Success Criteria

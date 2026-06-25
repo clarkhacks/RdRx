@@ -52,31 +52,37 @@ src/
 The database module is organized by domain for better maintainability:
 
 ### Initialization (`database/init.ts`)
+
 - Creates all database tables
 - Initializes users table via auth module
 - Safe to call multiple times (uses IF NOT EXISTS)
 
 ### URLs (`database/urls.ts`)
+
 - CRUD operations for URL shortcodes
 - Special handling for legacy shortcodes
 - Automatic type detection (snippet, file, bio)
 
 ### Passwords (`database/passwords.ts`)
+
 - Password hashing and verification
 - Automatic migration from SHA-256 to PBKDF2
 - Backward compatible with existing hashes
 
 ### Analytics (`database/analytics.ts`)
+
 - View tracking with minimal data
 - Geographic distribution
 - Privacy-focused (no PII)
 
 ### Deletion (`database/deletion.ts`)
+
 - Scheduled deletion management
 - Automatic cleanup via cron
 - R2 file deletion for file shortcodes
 
 ### Bio (`database/bio.ts`)
+
 - Bio profile CRUD operations
 - Link and social media management
 - SEO metadata support
@@ -166,6 +172,7 @@ pnpm test:coverage
 ## Project History
 
 ### Phase 1: Foundation Refactoring
+
 - Created modular error handling system
 - Implemented input validation layer
 - Set up middleware architecture
@@ -174,6 +181,7 @@ pnpm test:coverage
 See [Phase 1 Summary](phase1-summary.md) for details.
 
 ### Phase 2: Database Refactoring
+
 - Split monolithic database file into domain modules
 - Implemented password hash migration
 - Added comprehensive JSDoc documentation
@@ -184,6 +192,7 @@ See [Phase 2 Plan](phase2-plan.md) for details.
 ## Contributing
 
 See [Contributing Guide](../contributing.md) for information on:
+
 - Code of conduct
 - Pull request process
 - Coding standards

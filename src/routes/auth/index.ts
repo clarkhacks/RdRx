@@ -1,12 +1,6 @@
 import { Env } from '../../types';
 import { handleAuthAPI } from './api';
-import {
-	handleSignupPage,
-	handleLoginPage,
-	handleForgotPasswordPage,
-	handleResetPasswordPage,
-	handleTestAuthPage,
-} from './pages';
+import { handleSignupPage, handleLoginPage, handleForgotPasswordPage, handleResetPasswordPage, handleTestAuthPage } from './pages';
 
 /**
  * Handle custom authentication routes

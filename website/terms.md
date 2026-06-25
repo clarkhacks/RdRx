@@ -1,9 +1,9 @@
 ---
 layout: legal.njk
-title: "Terms of Service | RdRx"
-description: "Terms of Service for RdRx"
+title: 'Terms of Service | RdRx'
+description: 'Terms of Service for RdRx'
 permalink: /terms/
-lastUpdated: "January 24, 2025"
+lastUpdated: 'January 24, 2025'
 ---
 
 ## 1. Acceptance of Terms

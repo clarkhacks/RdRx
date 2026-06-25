@@ -1,6 +1,6 @@
 /**
  * Centralized validation utilities
- * 
+ *
  * This module provides validation functions for common data types
  * used throughout the application.
  */

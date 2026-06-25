@@ -11,10 +11,10 @@ export interface ValidationResult {
 
 /**
  * Validate an email address
- * 
+ *
  * @param email - The email to validate
  * @returns Validation result with error message if invalid
- * 
+ *
  * @example
  * const result = validateEmail('user@example.com');
  * if (!result.valid) {
@@ -36,10 +36,10 @@ export function validateEmail(email: string): ValidationResult {
 
 /**
  * Check if an email is valid (boolean version)
- * 
+ *
  * @param email - The email to check
  * @returns True if valid, false otherwise
- * 
+ *
  * @example
  * if (isValidEmail('user@example.com')) {
  *   // Email is valid
@@ -51,10 +51,10 @@ export function isValidEmail(email: string): boolean {
 
 /**
  * Validate email and throw error if invalid
- * 
+ *
  * @param email - The email to validate
  * @throws {ValidationError} If email is invalid
- * 
+ *
  * @example
  * try {
  *   assertValidEmail(userInput);
@@ -71,10 +71,10 @@ export function assertValidEmail(email: string): void {
 
 /**
  * Validate a password
- * 
+ *
  * @param password - The password to validate
  * @returns Validation result with error message if invalid
- * 
+ *
  * @example
  * const result = validatePassword('mypassword123');
  * if (!result.valid) {
@@ -96,10 +96,10 @@ export function validatePassword(password: string): ValidationResult {
 
 /**
  * Check if a password is valid (boolean version)
- * 
+ *
  * @param password - The password to check
  * @returns True if valid, false otherwise
- * 
+ *
  * @example
  * if (isValidPassword('mypassword123')) {
  *   // Password is valid
@@ -111,10 +111,10 @@ export function isValidPassword(password: string): boolean {
 
 /**
  * Validate password and throw error if invalid
- * 
+ *
  * @param password - The password to validate
  * @throws {ValidationError} If password is invalid
- * 
+ *
  * @example
  * try {
  *   assertValidPassword(userInput);

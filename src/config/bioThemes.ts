@@ -142,7 +142,7 @@ export function getAvailableThemes(): string[] {
  * Get all themes with display names for UI selection
  */
 export function getThemesForSelection(): Array<{ value: string; label: string }> {
-	return Object.values(BIO_THEMES).map(theme => ({
+	return Object.values(BIO_THEMES).map((theme) => ({
 		value: theme.name,
 		label: theme.displayName,
 	}));

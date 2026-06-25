@@ -1,10 +1,10 @@
 /**
  * Cryptographic utilities for secure password hashing and token generation
- * 
+ *
  * This module provides a unified, secure implementation of cryptographic
  * operations used throughout the application. All password hashing uses
  * PBKDF2 with 100,000 iterations for security.
- * 
+ *
  * @module utils/crypto
  */
 
@@ -12,10 +12,10 @@ import { PBKDF2_ITERATIONS, SALT_LENGTH, API_KEY_PREFIX, API_KEY_LENGTH, SHORTCO
 
 /**
  * Generates a cryptographically secure random salt
- * 
+ *
  * @param length - Length of the salt in bytes (default: 16)
  * @returns Hex-encoded salt string
- * 
+ *
  * @example
  * const salt = generateSalt(); // "a1b2c3d4e5f6..."
  */
@@ -27,18 +27,18 @@ export function generateSalt(length: number = SALT_LENGTH): string {
 
 /**
  * Hashes a password using PBKDF2 with a random salt
- * 
+ *
  * This is the primary password hashing function used for user accounts
  * and password-protected shortcodes. It uses PBKDF2 with 100,000 iterations
  * for strong security against brute-force attacks.
- * 
+ *
  * @param password - Plain text password to hash
  * @returns Promise resolving to "salt:hash" format string
- * 
+ *
  * @example
  * const hash = await hashPassword("mySecurePassword123");
  * // Returns: "a1b2c3d4...:e5f6g7h8..."
- * 
+ *
  * @remarks
  * - Uses PBKDF2 with SHA-256
  * - 100,000 iterations (OWASP recommended minimum)
@@ -53,11 +53,11 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Hashes a password with a specific salt (used for verification)
- * 
+ *
  * @param password - Plain text password
  * @param salt - Hex-encoded salt
  * @returns Promise resolving to hex-encoded hash
- * 
+ *
  * @internal
  */
 async function hashPasswordWithSalt(password: string, salt: string): Promise<string> {
@@ -77,7 +77,7 @@ async function hashPasswordWithSalt(password: string, salt: string): Promise<str
 			hash: 'SHA-256',
 		},
 		keyMaterial,
-		256 // 256 bits = 32 bytes
+		256, // 256 bits = 32 bytes
 	);
 
 	// Convert to hex string
@@ -86,11 +86,11 @@ async function hashPasswordWithSalt(password: string, salt: string): Promise<str
 
 /**
  * Verifies a password against a stored hash
- * 
+ *
  * @param password - Plain text password to verify
  * @param storedHash - Stored hash in "salt:hash" format
  * @returns Promise resolving to true if password matches, false otherwise
- * 
+ *
  * @example
  * const isValid = await verifyPassword("myPassword", storedHash);
  * if (isValid) {
@@ -109,12 +109,12 @@ export async function verifyPassword(password: string, storedHash: string): Prom
 
 /**
  * Generates a cryptographically secure random token
- * 
+ *
  * Used for email verification tokens, password reset tokens, etc.
- * 
+ *
  * @param length - Length of the token in bytes (default: 32)
  * @returns Hex-encoded token string
- * 
+ *
  * @example
  * const resetToken = generateToken(32);
  * // Returns: "a1b2c3d4e5f6g7h8..."
@@ -127,11 +127,11 @@ export function generateToken(length: number = 32): string {
 
 /**
  * Generates a cryptographically secure API key
- * 
+ *
  * Format: "rdrx_live_" + 24 random alphanumeric characters
- * 
+ *
  * @returns API key string
- * 
+ *
  * @example
  * const apiKey = generateApiKey();
  * // Returns: "rdrx_live_A7xK9mP2nQ8vR4wS6tY1zB3c"
@@ -151,13 +151,13 @@ export function generateApiKey(): string {
 
 /**
  * Generates a random shortcode for URL shortening
- * 
+ *
  * @param length - Length of the shortcode (default: 6)
  * @returns Random shortcode string
- * 
+ *
  * @example
  * const code = generateShortcode(); // "aB3xY9"
- * 
+ *
  * @remarks
  * - Uses crypto.getRandomValues() for cryptographically secure randomness
  * - Character set: a-z, A-Z, 0-9 (62 possible characters)
@@ -177,9 +177,9 @@ export function generateShortcode(length: number = 6): string {
 
 /**
  * Generates a cryptographically secure random UID
- * 
+ *
  * @returns 32-character hex string
- * 
+ *
  * @example
  * const uid = generateUid();
  * // Returns: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"

@@ -23,12 +23,12 @@ export async function handleApiRoutes(request: Request, env: Env): Promise<Respo
 
 	if (authHeader && authHeader.startsWith('Bearer ')) {
 		const apiKey = authHeader.substring(7); // Remove 'Bearer ' prefix
-		
+
 		// Check if it's an API key (starts with rdrx_live_)
 		if (apiKey.startsWith('rdrx_live_')) {
 			const { getUserByApiKey } = await import('../components/auth/database');
 			const user = await getUserByApiKey(env, apiKey);
-			
+
 			if (user) {
 				userId = user.uid;
 				isAuthenticated = true;
@@ -46,7 +46,7 @@ export async function handleApiRoutes(request: Request, env: Env): Promise<Respo
 	// If not authenticated via API key, check session authentication
 	if (!isAuthenticated) {
 		const isAuthenticatedUser = request.user !== undefined && request.user !== null;
-		
+
 		// Return unauthorized response if not authenticated
 		const unauthorizedResponse = unauthorizedResponseIfNotAuthenticated(isAuthenticatedUser);
 		if (unauthorizedResponse) {
@@ -190,7 +190,7 @@ async function handleCreateTempUrl(request: Request, env: Env): Promise<Response
 					'Access-Control-Allow-Methods': 'POST, OPTIONS',
 					'Access-Control-Allow-Headers': 'Content-Type',
 				},
-			}
+			},
 		);
 	} catch (error) {
 		console.error('Error handling temporary URL creation:', error);
@@ -295,7 +295,7 @@ async function handleAdminOverride(
 	env: Env,
 	creatorId: string | null,
 	passwordHash: string | null = null,
-	isPasswordProtected: boolean = false
+	isPasswordProtected: boolean = false,
 ): Promise<Response> {
 	if (!custom_code || !url) {
 		return new Response('Missing custom code or URL', { status: 400 });

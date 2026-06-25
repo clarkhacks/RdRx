@@ -355,7 +355,7 @@ function renderPasswordPrompt(shortcode: string, isError: boolean = false): Resp
     </html>`,
 		{
 			headers: { 'Content-Type': 'text/html' },
-		}
+		},
 	);
 }
 
@@ -440,6 +440,6 @@ function renderNotFoundPage(): Response {
 		{
 			headers: { 'Content-Type': 'text/html' },
 			status: 404,
-		}
+		},
 	);
 }

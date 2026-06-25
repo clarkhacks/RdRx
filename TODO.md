@@ -103,6 +103,7 @@ This document outlines the tasks, improvements, and exciting features planned fo
   - Time, device, or random-based routing
 
 ### 📧 Email Verify Links
+
 - [ ] Emai Required Links
   - Allow user to enter emails that can view the link
   - Unauthed link (not emailed to that email) must enter their email, email must be on the list, receive a code, and then be allowed to view.

@@ -20,6 +20,7 @@
 **Complete documentation is available at [/static/docs](/static/docs)** or visit the live docs site.
 
 Quick links:
+
 - [Getting Started](static/docs/getting-started.md) - Installation and setup
 - [Deployment Guide](static/docs/deployment.md) - Production deployment
 - [API Documentation](static/docs/api/README.md) - REST API reference
@@ -134,6 +135,7 @@ This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) f
 ## ⭐ Support
 
 If you find RdRx useful, please consider:
+
 - ⭐ [Starring the repository](https://github.com/clarkhacks/RdRx/stargazers)
 - 🐛 [Reporting issues](https://github.com/clarkhacks/RdRx/issues)
 - 💬 [Joining discussions](https://github.com/clarkhacks/RdRx/discussions)

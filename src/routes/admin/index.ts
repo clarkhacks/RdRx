@@ -1,43 +1,27 @@
 import { Env } from '../../types';
-import {
-	handleGetUsers,
-	handleCreateUser,
-	handleToggleUserVerification,
-	handleDeleteUser,
-} from './users';
-import {
-	handleGetUrls,
-	handleUpdateUrl,
-	handleDeleteUrl,
-} from './urls';
-import {
-	handleAdminCheck,
-	handleGetStats,
-	handleGetAnalytics,
-} from './stats';
-import {
-	handleGetEmailConfig,
-	handleTestEmail,
-} from './email';
+import { handleGetUsers, handleCreateUser, handleToggleUserVerification, handleDeleteUser } from './users';
+import { handleGetUrls, handleUpdateUrl, handleDeleteUrl } from './urls';
+import { handleAdminCheck, handleGetStats, handleGetAnalytics } from './stats';
+import { handleGetEmailConfig, handleTestEmail } from './email';
 
 /**
  * Handle admin API routes
  */
 export async function handleAdminRoutes(request: Request, env: Env): Promise<Response | null> {
 	const url = new URL(request.url);
-	
+
 	// Check if user is authenticated and is admin
 	if (!request.user || request.user.uid !== env.ADMIN_UID) {
 		return new Response(JSON.stringify({ success: false, message: 'Forbidden' }), {
 			status: 403,
-			headers: { 'Content-Type': 'application/json' }
+			headers: { 'Content-Type': 'application/json' },
 		});
 	}
 
 	// Handle different admin API endpoints
 	if (url.pathname.startsWith('/api/admin/')) {
 		const path = url.pathname.replace('/api/admin/', '');
-		
+
 		switch (true) {
 			case path === 'check' && request.method === 'GET':
 				return handleAdminCheck(request, env);
@@ -66,7 +50,7 @@ export async function handleAdminRoutes(request: Request, env: Env): Promise<Res
 			default:
 				return new Response(JSON.stringify({ success: false, message: 'Not found' }), {
 					status: 404,
-					headers: { 'Content-Type': 'application/json' }
+					headers: { 'Content-Type': 'application/json' },
 				});
 		}
 	}

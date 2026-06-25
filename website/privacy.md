@@ -1,9 +1,9 @@
 ---
 layout: legal.njk
-title: "Privacy Policy | RdRx"
-description: "Privacy Policy for RdRx"
+title: 'Privacy Policy | RdRx'
+description: 'Privacy Policy for RdRx'
 permalink: /privacy/
-lastUpdated: "January 24, 2025"
+lastUpdated: 'January 24, 2025'
 ---
 
 This Privacy Policy describes how we collect, use, and handle your information when you use our services.

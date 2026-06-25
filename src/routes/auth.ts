@@ -4,7 +4,7 @@ import { Env } from '../types';
  * Handle authentication routes
  * - /login - Render login page
  * - /verify - Handle authentication verification
- * 
+ *
  * @deprecated This file is deprecated. Authentication routes are now handled by customAuth.ts
  * This file can be safely removed.
  */

@@ -23,21 +23,21 @@ export interface BioProfile {
 
 /**
  * Check if shortcode is available for bio page
- * 
+ *
  * Verifies that a shortcode is not already in use by another user.
  * Allows the same user to reuse their own bio shortcode.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param shortcode - The shortcode to check
  * @param userId - The user ID requesting the shortcode
  * @returns Promise resolving to true if available, false otherwise
- * 
+ *
  * @example
  * const available = await isBioShortcodeAvailable(env, 'john', userId);
  * if (!available) {
  *   console.log('Shortcode already taken');
  * }
- * 
+ *
  * @remarks
  * A shortcode is available if:
  * - It doesn't exist in the database, OR
@@ -67,10 +67,10 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
 
 /**
  * Save a complete bio profile to the database
- * 
+ *
  * Creates or updates a user's bio profile with all associated data.
  * Handles shortcode changes and ensures proper URL redirects.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID who owns the bio profile
  * @param shortcode - The custom shortcode for the bio page
@@ -85,9 +85,9 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
  * @param metaTags - Optional additional meta tags
  * @param ogImageUrl - Optional Open Graph image URL
  * @returns Promise that resolves when the profile is saved
- * 
+ *
  * @throws {Error} When database operations fail
- * 
+ *
  * @example
  * await saveBioProfile(
  *   env,
@@ -100,7 +100,7 @@ export async function isBioShortcodeAvailable(env: Env, shortcode: string, userI
  *   [{ title: 'Website', url: 'https://example.com' }],
  *   [{ platform: 'twitter', url: 'https://twitter.com/john' }]
  * );
- * 
+ *
  * @remarks
  * - If user changes their shortcode, the old one is deleted
  * - Bio profiles are stored with userId as the primary key
@@ -121,7 +121,7 @@ export async function saveBioProfile(
 	metaDescription: string | null = null,
 	metaTags: string | null = null,
 	ogImageUrl: string | null = null,
-	noIndex: boolean = false
+	noIndex: boolean = false,
 ): Promise<void> {
 	try {
 		const now = new Date().toISOString();
@@ -149,7 +149,7 @@ export async function saveBioProfile(
 		await env.DB.prepare(
 			`INSERT OR REPLACE INTO bio_profiles 
 			(id, short_id, title, description, profile_picture_url, theme, bio_links, social_media_links, meta_title, meta_description, meta_tags, og_image_url, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(
 				userId,
@@ -165,7 +165,7 @@ export async function saveBioProfile(
 				metaTags,
 				ogImageUrl,
 				now,
-				now
+				now,
 			)
 			.run();
 
@@ -178,19 +178,19 @@ export async function saveBioProfile(
 
 /**
  * Get bio profile by user ID
- * 
+ *
  * Retrieves a user's bio profile data with parsed JSON fields.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID to get the profile for
  * @returns Promise resolving to the bio profile or null if not found
- * 
+ *
  * @example
  * const profile = await getBioProfile(env, userId);
  * if (profile) {
  *   console.log(profile.title, profile.bio_links);
  * }
- * 
+ *
  * @remarks
  * JSON fields (bio_links, social_media_links) are automatically parsed.
  * Returns null if the profile doesn't exist or on error.
@@ -218,15 +218,15 @@ export async function getBioProfile(env: Env, userId: string): Promise<BioProfil
 
 /**
  * Get user's bio page (if they have one)
- * 
+ *
  * Compatibility function that returns bio data in a simplified format.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID to get the bio page for
  * @returns Promise resolving to simplified bio data or null
- * 
+ *
  * @deprecated Use getBioProfile instead for full profile data
- * 
+ *
  * @remarks
  * This function exists for backward compatibility.
  * Returns a subset of the full profile data.
@@ -254,24 +254,24 @@ export async function getUserBioPage(env: Env, userId: string): Promise<any | nu
 
 /**
  * Get bio page by shortcode - for viewing
- * 
+ *
  * Retrieves bio profile data for display, supporting both shortcode and direct user ID access.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param shortcode - The shortcode or user ID to look up
  * @returns Promise resolving to bio page data or null
- * 
+ *
  * @example
  * const bioPage = await getBioPage(env, 'john');
  * if (bioPage) {
  *   // Render bio page
  * }
- * 
+ *
  * @remarks
  * Supports two access patterns:
  * 1. Direct user ID (contains '-' and length > 20) - looks up profile directly
  * 2. Shortcode - looks up redirect, then gets profile by user ID
- * 
+ *
  * Returns profile data with meta fields for SEO.
  */
 export async function getBioPage(env: Env, shortcode: string): Promise<any | null> {
@@ -301,7 +301,9 @@ export async function getBioPage(env: Env, shortcode: string): Promise<any | nul
 		}
 
 		// Otherwise, get the user ID from the shortcode redirect
-		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`).bind(shortcode).first();
+		const shortUrlResult = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`)
+			.bind(shortcode)
+			.first();
 
 		if (!shortUrlResult || !shortUrlResult.creator_id) {
 			return null;
@@ -335,11 +337,11 @@ export async function getBioPage(env: Env, shortcode: string): Promise<any | nul
 
 /**
  * Get bio links - for compatibility
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID to get links for
  * @returns Promise resolving to array of bio links
- * 
+ *
  * @deprecated Use getBioProfile instead and access bio_links property
  */
 export async function getBioLinks(env: Env, userId: string): Promise<any[]> {
@@ -354,11 +356,11 @@ export async function getBioLinks(env: Env, userId: string): Promise<any[]> {
 
 /**
  * Get social media links - for compatibility
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID to get social media links for
  * @returns Promise resolving to social media links object
- * 
+ *
  * @deprecated Use getBioProfile instead and access social_media_links property
  */
 export async function getBioSocialMedia(env: Env, userId: string): Promise<Record<string, any>> {
@@ -386,22 +388,22 @@ export async function getBioSocialMedia(env: Env, userId: string): Promise<Recor
 
 /**
  * Update bio profile
- * 
+ *
  * Updates an existing bio profile with new data.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID whose profile to update
  * @param data - Partial profile data to update
  * @returns Promise that resolves when update is complete
- * 
+ *
  * @throws {Error} When update fails or profile doesn't exist
- * 
+ *
  * @example
  * await updateBioProfile(env, userId, {
  *   title: 'New Title',
  *   description: 'Updated description'
  * });
- * 
+ *
  * @remarks
  * This is a convenience function that fetches the existing profile,
  * merges the new data, and saves it back.
@@ -427,7 +429,7 @@ export async function updateBioProfile(env: Env, userId: string, data: Partial<B
 			data.meta_title !== undefined ? data.meta_title : existingProfile.meta_title,
 			data.meta_description !== undefined ? data.meta_description : existingProfile.meta_description,
 			data.meta_tags !== undefined ? data.meta_tags : existingProfile.meta_tags,
-			data.og_image_url !== undefined ? data.og_image_url : existingProfile.og_image_url
+			data.og_image_url !== undefined ? data.og_image_url : existingProfile.og_image_url,
 		);
 	} catch (error) {
 		console.error('Error updating bio profile:', error);
@@ -437,19 +439,19 @@ export async function updateBioProfile(env: Env, userId: string, data: Partial<B
 
 /**
  * Delete bio profile
- * 
+ *
  * Removes a user's bio profile and associated shortcode redirect.
- * 
+ *
  * @param env - Cloudflare Workers environment bindings
  * @param userId - The user ID whose profile to delete
  * @returns Promise that resolves when deletion is complete
- * 
+ *
  * @throws {Error} When deletion fails
- * 
+ *
  * @example
  * await deleteBioProfile(env, userId);
  * console.log('Bio profile deleted');
- * 
+ *
  * @remarks
  * Deletes both the bio_profiles entry and the shortcode redirect.
  * This operation cannot be undone.

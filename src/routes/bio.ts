@@ -7,11 +7,4 @@
  */
 
 // Re-export from the new modular structure for backward compatibility
-export {
-	handleBioFormPage,
-	handleBioEditorPage,
-	handleGetUserBio,
-	handleSaveBio,
-	handleViewBio,
-	handleOgImageUpload,
-} from './bio/index';
+export { handleBioFormPage, handleBioEditorPage, handleGetUserBio, handleSaveBio, handleViewBio, handleOgImageUpload } from './bio/index';

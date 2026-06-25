@@ -27,7 +27,7 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 
 	// Check if noindex is set
 	const noIndex = bioPage?.no_index === 1 || bioPage?.no_index === true;
-	
+
 	// Prepare custom meta data for DocumentHead
 	const customMeta = {
 		description: metaDescription,
@@ -36,7 +36,7 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 		ogImage: ogImage,
 		ogUrl: pageUrl,
 		keywords: metaTags,
-		robots: noIndex ? 'noindex, nofollow' : undefined
+		robots: noIndex ? 'noindex, nofollow' : undefined,
 	};
 
 	// Get theme name from bioPage
@@ -45,10 +45,10 @@ function renderBioViewPage({ bioPage, links, shortDomain, profilePictureUrl = nu
 	return `
 <!DOCTYPE html>
 <html lang="en">
-${renderDocumentHead({ 
-	title: metaTitle, 
+${renderDocumentHead({
+	title: metaTitle,
 	customMeta: customMeta,
-	noMeta: false 
+	noMeta: false,
 })}
 <body>
   ${renderBioViewStyles(themeName)}

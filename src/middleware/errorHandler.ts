@@ -2,13 +2,13 @@ import { AppError } from '../errors';
 
 /**
  * Centralized error handler middleware
- * 
+ *
  * Converts errors into consistent HTTP responses with appropriate
  * status codes and error messages.
- * 
+ *
  * @param error - The error to handle (can be any type)
  * @returns HTTP Response with error details
- * 
+ *
  * @example
  * try {
  *   // ... some operation
@@ -21,13 +21,10 @@ export function handleError(error: unknown): Response {
 
 	// Handle known AppError instances
 	if (error instanceof AppError) {
-		return new Response(
-			JSON.stringify(error.toJSON()),
-			{
-				status: error.statusCode,
-				headers: { 'Content-Type': 'application/json' },
-			}
-		);
+		return new Response(JSON.stringify(error.toJSON()), {
+			status: error.statusCode,
+			headers: { 'Content-Type': 'application/json' },
+		});
 	}
 
 	// Handle standard Error instances
@@ -41,7 +38,7 @@ export function handleError(error: unknown): Response {
 			{
 				status: 500,
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	}
 
@@ -55,28 +52,26 @@ export function handleError(error: unknown): Response {
 		{
 			status: 500,
 			headers: { 'Content-Type': 'application/json' },
-		}
+		},
 	);
 }
 
 /**
  * Async error handler wrapper
- * 
+ *
  * Wraps an async function and automatically handles any errors
  * that occur during execution.
- * 
+ *
  * @param fn - Async function to wrap
  * @returns Wrapped function that handles errors
- * 
+ *
  * @example
  * const handler = asyncErrorHandler(async (request, env) => {
  *   // ... your code
  *   return new Response('Success');
  * });
  */
-export function asyncErrorHandler<T extends any[], R>(
-	fn: (...args: T) => Promise<R>
-): (...args: T) => Promise<R | Response> {
+export function asyncErrorHandler<T extends any[], R>(fn: (...args: T) => Promise<R>): (...args: T) => Promise<R | Response> {
 	return async (...args: T): Promise<R | Response> => {
 		try {
 			return await fn(...args);

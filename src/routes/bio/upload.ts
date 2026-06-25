@@ -67,32 +67,41 @@ export async function handleOgImageUpload(request: Request, env: Env): Promise<R
 				// Return the public URL with timestamp to prevent caching
 				const timestamp = Date.now();
 				const imageUrl = `${env.R2_URL}/${filePath}?t=${timestamp}`;
-				
-				return new Response(JSON.stringify({ 
-					success: true, 
-					imageUrl: imageUrl 
-				}), {
-					headers: { 'Content-Type': 'application/json' },
-				});
+
+				return new Response(
+					JSON.stringify({
+						success: true,
+						imageUrl: imageUrl,
+					}),
+					{
+						headers: { 'Content-Type': 'application/json' },
+					},
+				);
 			} else {
 				// Fallback: return error if R2 not configured
-				return new Response(JSON.stringify({ 
-					success: false, 
-					message: 'File storage not configured' 
-				}), {
-					status: 500,
-					headers: { 'Content-Type': 'application/json' },
-				});
+				return new Response(
+					JSON.stringify({
+						success: false,
+						message: 'File storage not configured',
+					}),
+					{
+						status: 500,
+						headers: { 'Content-Type': 'application/json' },
+					},
+				);
 			}
 		} catch (uploadError) {
 			console.error('Error uploading OG image:', uploadError);
-			return new Response(JSON.stringify({ 
-				success: false, 
-				message: 'Failed to upload image' 
-			}), {
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			});
+			return new Response(
+				JSON.stringify({
+					success: false,
+					message: 'Failed to upload image',
+				}),
+				{
+					status: 500,
+					headers: { 'Content-Type': 'application/json' },
+				},
+			);
 		}
 	} catch (error) {
 		console.error('Error handling OG image upload:', error);

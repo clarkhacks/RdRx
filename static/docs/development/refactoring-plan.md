@@ -1,6 +1,5 @@
 # RdRx Codebase Refactoring Plan
 
-
 ## 🚧 In Progress
 
 ### Priority 2: File Organization & Structure
@@ -10,6 +9,7 @@
 **Files to Split:**
 
 ##### `src/routes/customAuth.ts` (821 lines) → Split into:
+
 ```
 src/routes/auth/
   ├── login.ts          # POST /login
@@ -21,6 +21,7 @@ src/routes/auth/
 ```
 
 ##### `src/routes/admin.ts` (454 lines) → Split into:
+
 ```
 src/routes/admin/
   ├── users.ts          # User management
@@ -30,6 +31,7 @@ src/routes/admin/
 ```
 
 ##### `src/routes/bio.ts` (435 lines) → Split into:
+
 ```
 src/routes/bio/
   ├── view.ts           # GET /bio-view/:shortcode
@@ -44,6 +46,7 @@ src/routes/bio/
 **Large Components to Refactor:**
 
 ##### `src/components/ui/BioEditorUI.ts` (986 lines) → Extract:
+
 ```
 src/components/bio/
   ├── BioEditor.ts      # Main editor component
@@ -55,6 +58,7 @@ src/components/bio/
 ```
 
 ##### `src/components/auth/ResetPasswordForm.ts` (807 lines) → Extract:
+
 ```
 src/components/auth/
   ├── ResetPasswordForm.ts  # Main form (200 lines)
@@ -72,35 +76,28 @@ src/components/auth/
 #### 3.1 Extract Common UI Patterns
 
 **Create `src/components/common/`:**
+
 ```typescript
 // src/components/common/Button.ts
-export function Button(props: {
-  text: string;
-  type?: 'primary' | 'secondary' | 'danger';
-  onClick?: string;
-  disabled?: boolean;
-}) { /* ... */ }
+export function Button(props: { text: string; type?: 'primary' | 'secondary' | 'danger'; onClick?: string; disabled?: boolean }) {
+	/* ... */
+}
 
 // src/components/common/Card.ts
-export function Card(props: {
-  title?: string;
-  children: string;
-  className?: string;
-}) { /* ... */ }
+export function Card(props: { title?: string; children: string; className?: string }) {
+	/* ... */
+}
 
 // src/components/common/Input.ts
-export function Input(props: {
-  name: string;
-  type: string;
-  label: string;
-  required?: boolean;
-  value?: string;
-}) { /* ... */ }
+export function Input(props: { name: string; type: string; label: string; required?: boolean; value?: string }) {
+	/* ... */
+}
 ```
 
 #### 3.2 Extract Common Styles
 
 **Create `src/styles/`:**
+
 ```
 src/styles/
   ├── variables.css     # CSS custom properties
@@ -116,28 +113,30 @@ src/styles/
 #### 4.1 Add JSDoc Comments
 
 **Example for `src/utils/shortcode.ts`:**
+
 ```typescript
 /**
  * Generates a random shortcode for URL shortening
- * 
+ *
  * @returns {string} A 6-character alphanumeric shortcode
- * 
+ *
  * @example
  * const code = generateShortcode(); // "aB3xY9"
- * 
+ *
  * @remarks
  * Uses crypto.getRandomValues() for cryptographically secure randomness.
  * Character set: a-z, A-Z, 0-9 (62 possible characters)
  * Collision probability: ~1 in 56 billion for 6 characters
  */
 export function generateShortcode(): string {
-  // Implementation...
+	// Implementation...
 }
 ```
 
 #### 4.2 Add README Files
 
 **Create documentation in each major directory:**
+
 ```
 src/routes/README.md
 src/components/README.md
@@ -152,51 +151,52 @@ src/middleware/README.md
 #### 5.1 Create Comprehensive Type Definitions
 
 **Enhance `src/types.ts`:**
+
 ```typescript
 // Request types
 export interface CreateShortUrlRequest {
-  url?: string;
-  snippet?: string;
-  custom: boolean;
-  custom_code?: string;
-  admin_override_code?: string;
-  delete_after?: string;
-  userId?: string;
-  password_protected?: boolean;
-  password?: string;
+	url?: string;
+	snippet?: string;
+	custom: boolean;
+	custom_code?: string;
+	admin_override_code?: string;
+	delete_after?: string;
+	userId?: string;
+	password_protected?: boolean;
+	password?: string;
 }
 
 // Response types
 export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
+	success: boolean;
+	data?: T;
+	error?: string;
+	message?: string;
 }
 
 export interface ShortUrlResponse {
-  shortcode: string;
-  url?: string;
-  expires_at?: string;
+	shortcode: string;
+	url?: string;
+	expires_at?: string;
 }
 
 // Database types
 export interface ShortUrl {
-  shortcode: string;
-  target_url: string;
-  created_at: number;
-  user_id: string | null;
-  password_hash: string | null;
-  is_password_protected: boolean;
+	shortcode: string;
+	target_url: string;
+	created_at: number;
+	user_id: string | null;
+	password_hash: string | null;
+	is_password_protected: boolean;
 }
 
 export interface User {
-  uid: string;
-  email: string;
-  password_hash: string;
-  created_at: number;
-  verified: boolean;
-  api_key: string | null;
+	uid: string;
+	email: string;
+	password_hash: string;
+	created_at: number;
+	verified: boolean;
+	api_key: string | null;
 }
 ```
 
@@ -205,6 +205,7 @@ export interface User {
 ## Implementation Roadmap
 
 ### Phase 3: Routes Refactoring ✅ **COMPLETED**
+
 - ✅ Split `customAuth.ts` into `src/routes/auth/`
   - ✅ `src/routes/auth/api.ts` - All API endpoint handlers
   - ✅ `src/routes/auth/pages.ts` - All page rendering handlers
@@ -222,12 +223,14 @@ export interface User {
 - ✅ Maintained backward compatibility with re-exports
 
 ### Phase 4: Components
+
 - [ ] Extract common UI components
 - [ ] Split large component files
 - [ ] Extract inline CSS to separate files
 - [ ] Create component documentation
 
 ### Phase 5: Testing & Documentation
+
 - [ ] Add unit tests for utilities
 - [ ] Add integration tests for routes
 - [ ] Write comprehensive README files
@@ -250,20 +253,25 @@ export interface User {
 ### Priority 1: Critical Security & Architecture Issues
 
 #### 1.1 Password Hashing Inconsistency ✅ **RESOLVED**
+
 **Problem:** Two different password hashing implementations:
+
 - `src/utils/database.ts` - Uses weak SHA-256 without salt for shortcode passwords
 - `src/components/auth/utils.ts` - Uses secure PBKDF2 with 100,000 iterations
 
 **Solution Implemented:**
+
 - ✅ Created `src/utils/crypto.ts` with unified secure hashing
 - ✅ All password hashing now uses PBKDF2 with 100,000 iterations
 - ✅ Secure salt generation implemented
 - ✅ Token generation for email verification/password reset
 
 #### 1.2 CORS Headers Duplication ✅ **RESOLVED**
+
 **Problem:** CORS headers repeated in 5+ files
 
 **Solution Implemented:**
+
 - ✅ Created `src/middleware/cors.ts`
 - ✅ Centralized CORS configuration
 - ✅ Preflight request handling
@@ -277,6 +285,7 @@ export interface User {
 #### 2.2 Split Database Utilities ✅ **COMPLETED**
 
 **`src/utils/database.ts` (538 lines) → Split into:**
+
 ```
 src/database/
   ✅ urls.ts           # URL operations (saveUrlToDatabase, getUrlFromDatabase)
@@ -295,6 +304,7 @@ src/database/
 #### 3.3 Centralize Constants ✅ **COMPLETED**
 
 **Created `src/config/constants.ts`:**
+
 - ✅ Authentication & security constants (PASSWORD_MIN_LENGTH, PBKDF2_ITERATIONS, etc.)
 - ✅ Shortcode configuration (length, charset, reserved words)
 - ✅ File upload limits and allowed types
@@ -314,6 +324,7 @@ src/database/
 #### 5.2 Add Validation Schemas ✅ **COMPLETED**
 
 **Created `src/validation/`:**
+
 ```typescript
 ✅ src/validation/url.ts        # URL validation with error messages
 ✅ src/validation/shortcode.ts  # Shortcode validation with reserved words
@@ -322,6 +333,7 @@ src/database/
 ```
 
 Features:
+
 - ✅ Boolean validation functions (isValidUrl, isValidShortcode, isValidEmail)
 - ✅ Detailed validation results with error messages
 - ✅ Assert functions that throw ValidationError
@@ -335,6 +347,7 @@ Features:
 #### 6.1 Create Error Classes ✅ **COMPLETED**
 
 **Created `src/errors/`:**
+
 ```typescript
 ✅ src/errors/AppError.ts            # Base error class with HTTP status codes
 ✅ src/errors/ValidationError.ts     # Input validation errors (400)
@@ -345,6 +358,7 @@ Features:
 ```
 
 Features:
+
 - ✅ Proper stack traces
 - ✅ HTTP status codes
 - ✅ Machine-readable error codes
@@ -354,6 +368,7 @@ Features:
 #### 6.2 Centralized Error Handler ✅ **COMPLETED**
 
 **Created `src/middleware/errorHandler.ts`:**
+
 - ✅ Centralized error handling function
 - ✅ Consistent error responses
 - ✅ Async error wrapper utility
@@ -363,6 +378,7 @@ Features:
 ---
 
 ### Phase 1: Foundation ✅ **COMPLETED**
+
 - ✅ Create new directory structure
 - ✅ Extract constants to `src/config/constants.ts`
 - ✅ Create unified crypto utilities in `src/utils/crypto.ts` (already existed)
@@ -372,6 +388,7 @@ Features:
 - ✅ Create validation utilities in `src/validation/`
 
 ### Phase 2: Database Layer ✅ **COMPLETED**
+
 - ✅ Split `src/utils/database.ts` into `src/database/` modules
 - ✅ Add comprehensive JSDoc comments
 - ✅ Implement type-safe database operations

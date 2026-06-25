@@ -1,6 +1,6 @@
 /**
  * Application-wide constants and configuration values
- * 
+ *
  * This file centralizes all magic numbers, strings, and configuration
  * values used throughout the application for easier maintenance.
  */

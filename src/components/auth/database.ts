@@ -19,7 +19,7 @@ export async function initializeUsersTable(env: Env): Promise<void> {
 				reset_token TEXT,
 				reset_token_expires TEXT,
 				api_key TEXT
-			)`
+			)`,
 		).run();
 
 		// Create index on email for faster lookups
@@ -51,7 +51,7 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 			`INSERT INTO users (
 				uid, name, email, password_hash, profile_picture_url,
 				created_at, updated_at, email_verified, reset_token, reset_token_expires, api_key
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		)
 			.bind(
 				newUser.uid,
@@ -64,7 +64,7 @@ export async function createUser(env: Env, user: Omit<User, 'created_at' | 'upda
 				newUser.email_verified ? 1 : 0,
 				newUser.reset_token || null,
 				newUser.reset_token_expires || null,
-				newUser.api_key || null
+				newUser.api_key || null,
 			)
 			.run();
 
@@ -229,9 +229,7 @@ export async function markEmailVerified(env: Env, uid: string): Promise<void> {
  */
 export async function updateUserApiKey(env: Env, uid: string, apiKey: string): Promise<void> {
 	try {
-		await env.DB.prepare(`UPDATE users SET api_key = ?, updated_at = ? WHERE uid = ?`)
-			.bind(apiKey, new Date().toISOString(), uid)
-			.run();
+		await env.DB.prepare(`UPDATE users SET api_key = ?, updated_at = ? WHERE uid = ?`).bind(apiKey, new Date().toISOString(), uid).run();
 
 		console.log(`API key updated for user: ${uid}`);
 	} catch (error) {
