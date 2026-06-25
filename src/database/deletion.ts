@@ -8,7 +8,7 @@ export interface DeletionEntry {
 	id: number;
 	shortcode: string;
 	delete_at: number;
-	is_file: number;
+	is_file: number; // Keep for backward compatibility with existing deletion entries
 	created_at: string;
 }
 

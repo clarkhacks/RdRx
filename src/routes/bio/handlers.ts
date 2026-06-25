@@ -244,7 +244,7 @@ export async function handleViewBio(request: Request, env: Env, shortcode: strin
 
 		// If this is a custom shortcode, get the user ID from the database
 		if (!shortcode.includes('-') || shortcode.length <= 20) {
-			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND is_bio = 1`)
+			const shortUrlInfo = await env.DB.prepare(`SELECT creator_id FROM short_urls WHERE shortcode = ? AND type = 'bio'`)
 				.bind(shortcode)
 				.first();
 			if (shortUrlInfo && shortUrlInfo.creator_id) {
