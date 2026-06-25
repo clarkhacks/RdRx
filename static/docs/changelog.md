@@ -5,6 +5,31 @@ All notable changes to RdRx will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-06-25
+
+### Added
+- **A/B Testing & Link Rotation Feature**
+  - Create rotator links with multiple destinations
+  - Three rotation strategies: round-robin, weighted, and random
+  - Click tracking per destination
+  - Beautiful UI for creating and managing rotators
+  - API endpoints for programmatic access
+  - Comprehensive documentation
+- New database tables: `rotator_links`, `rotator_destinations`, `rotator_state`
+- New route `/rotator` for A/B testing interface
+- API endpoints: `/api/rotator/create` and `/api/rotator/stats/:shortcode`
+- "A/B Testing" navigation link in sidebar
+
+### Fixed
+- Fixed 404 errors for `/api/upload` endpoint
+- Fixed 404 errors for `/api/create` endpoint
+- Improved destination management in rotator form (minimum 2 destinations enforced)
+
+### Documentation
+- Added comprehensive A/B testing guide at `/static/docs/ab-testing.md`
+- Updated README.md with A/B testing feature
+- Added API documentation for rotator endpoints
+
 ## [Unreleased]
 
 ### Added

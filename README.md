@@ -60,6 +60,7 @@ Visit `http://localhost:8787` to see your RdRx instance!
 ## ✨ Features
 
 - **URL Shortening** - Create short, memorable links
+- **A/B Testing & Link Rotation** - One URL, multiple destinations with round-robin, weighted, or random distribution
 - **Code Snippets** - Share code with syntax highlighting
 - **File Sharing** - Upload and share files securely
 - **Bio Pages** - Create custom landing pages (like Linktree)

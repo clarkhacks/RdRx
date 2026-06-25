@@ -97,10 +97,16 @@ This document outlines the tasks, improvements, and exciting features planned fo
 
 ### 🔄 Campaign / Link Rotator
 
-- [ ] **Multi-destination routing**
+- [x] **Multi-destination routing** ✅ COMPLETED (v1.3.0)
   - One short URL, multiple destinations with rotation
-  - A/B testing capabilities
-  - Time, device, or random-based routing
+  - A/B testing capabilities with 3 strategies (round-robin, weighted, random)
+  - Click tracking per destination
+  - Beautiful UI at `/rotator`
+  - API endpoints for programmatic access
+- [ ] **Advanced routing features** (Future enhancement)
+  - Time-based routing (schedule activation/deactivation)
+  - Device-based routing (mobile vs desktop)
+  - Geo-based routing (by country/region)
 
 ### 📧 Email Verify Links
 
