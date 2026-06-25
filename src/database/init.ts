@@ -1,5 +1,6 @@
 import { Env } from '../types';
 import { initializeUsersTable } from '../components/auth/database';
+import { initializeRotatorTables } from './rotator';
 
 /**
  * Initialize all database tables
@@ -82,6 +83,9 @@ export async function initializeTables(env: Env): Promise<void> {
 
 		// Initialize users table for custom auth
 		await initializeUsersTable(env);
+
+		// Initialize rotator tables for link rotation/A/B testing
+		await initializeRotatorTables(env);
 
 		console.log('All database tables initialized');
 	} catch (error) {

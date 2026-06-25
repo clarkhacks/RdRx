@@ -3,7 +3,7 @@ import { renderCreateFormPage as renderCreateForm } from '../components/pages/Cr
 import { renderSnippetFormPage as renderSnippetForm } from '../components/pages/SnippetFormPage';
 import { renderUploadFormPage as renderUploadForm } from '../components/pages/UploadFormPage';
 import { renderViewFiles } from '../components/viewFiles';
-import { fetchUrlByShortcode, trackView, isShortcodePasswordProtected, verifyShortcodePassword } from '../database';
+import { fetchUrlByShortcode, trackView, isShortcodePasswordProtected, verifyShortcodePassword, isRotatorLink, getNextDestination } from '../database';
 import { isSnippetShortcode, isFileShortcode, getContentTypeForExtension } from '../utils/shortcode';
 import { redirectToLoginIfNotAuthenticated } from '../middleware/auth';
 
@@ -239,6 +239,20 @@ async function handleShortcodeRedirect(request: Request, shortcode: string, env:
 		console.log('Found URL in KV:', shortcode);
 		// No need to track views for temporary URLs to save costs
 		return Response.redirect(kvUrl);
+	}
+
+	// Check if this is a rotator link
+	const isRotator = await isRotatorLink(env, shortcode);
+	if (isRotator) {
+		console.log('Handling rotator link:', shortcode);
+		const destination = await getNextDestination(env, shortcode);
+		if (destination) {
+			// Track the view
+			await trackView(request, env, shortcode, destination);
+			return Response.redirect(destination);
+		}
+		// If no destination found, fall through to 404
+		return renderNotFoundPage();
 	}
 
 	// Check if the shortcode is password protected

@@ -36,3 +36,14 @@ export {
 	isBioShortcodeAvailable,
 } from './bio';
 export type { BioProfile } from './bio';
+
+// Rotator operations
+export {
+	createRotatorLink,
+	getRotatorLink,
+	getRotatorDestinations,
+	getNextDestination,
+	getRotatorStats,
+	isRotatorLink,
+} from './rotator';
+export type { RotatorLink, RotatorDestination } from './rotator';
