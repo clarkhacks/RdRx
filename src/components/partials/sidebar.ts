@@ -112,6 +112,23 @@ function renderSidebar(currentPage: string = ''): string {
           </li>
           <li>
             <a 
+              href="/rotator" 
+              class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${
+								currentPage === 'rotator' ? 'bg-primary-50 text-primary-700 font-medium' : ''
+							}"
+            >
+              <div class="w-6 h-6 flex items-center justify-center mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${
+									currentPage === 'rotator' ? 'text-primary-500' : 'text-gray-500'
+								}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+              </div>
+              <span class="text-sm">A/B Testing</span>
+            </a>
+          </li>
+          <li>
+            <a 
               id="analytics-link"
               href="/analytics" 
               class="flex items-center px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-all duration-200 ${

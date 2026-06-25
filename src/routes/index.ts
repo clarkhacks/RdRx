@@ -116,6 +116,25 @@ export async function router(request: Request, env: Env): Promise<Response> {
 		return handleApiRoutes(enhancedRequest, env);
 	}
 
+	// Handle rotator routes
+	if (url.pathname === '/rotator') {
+		const { handleRotatorFormPage } = await import('./rotator');
+		return handleRotatorFormPage(enhancedRequest, env);
+	}
+
+	// Handle rotator API routes
+	if (url.pathname.startsWith('/api/rotator/')) {
+		const { handleCreateRotator, handleGetRotatorStats } = await import('./rotator');
+		if (url.pathname === '/api/rotator/create' && request.method === 'POST') {
+			return handleCreateRotator(enhancedRequest, env);
+		}
+		// Stats endpoint: /api/rotator/stats/:shortcode
+		const statsMatch = url.pathname.match(/^\/api\/rotator\/stats\/(.+)$/);
+		if (statsMatch && request.method === 'GET') {
+			return handleGetRotatorStats(enhancedRequest, env, statsMatch[1]);
+		}
+	}
+
 	// Static files (landing page, terms, privacy, verify) are now served from /static directory
 	// Landing page (/), terms (/terms/), privacy (/privacy/), and verify (/verify/)
 	// are handled by Cloudflare Workers static asset serving
