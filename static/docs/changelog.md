@@ -19,16 +19,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New route `/rotator` for A/B testing interface
 - API endpoints: `/api/rotator/create` and `/api/rotator/stats/:shortcode`
 - "A/B Testing" navigation link in sidebar
+- **Database Schema Consolidation**
+  - Replaced boolean flags (`is_snippet`, `is_file`, `is_bio`) with `type` enum column
+  - Consolidated `bio_profiles` and `bio_pages` into single `bio_pages` table
+  - Added performance indexes for `type` column
+  - Merged schema files into single `schema.sql`
+  - Created migration scripts for production deployment
 
 ### Fixed
 - Fixed 404 errors for `/api/upload` endpoint
 - Fixed 404 errors for `/api/create` endpoint
 - Improved destination management in rotator form (minimum 2 destinations enforced)
+- Fixed delete button functionality in analytics and admin panels with proper error handling
+- Updated all 41 code references to use new schema structure
+
+### Changed
+- **Database Schema**: Migrated from boolean flags to type enum for better maintainability
+- **Query Performance**: Simplified queries from `WHERE is_snippet = 1 AND is_file = 0` to `WHERE type = 'snippet'`
+- **Code Quality**: Reduced complexity and improved maintainability across 8 files
 
 ### Documentation
 - Added comprehensive A/B testing guide at `/static/docs/ab-testing.md`
 - Updated README.md with A/B testing feature
 - Added API documentation for rotator endpoints
+- Updated schema consolidation plan with completion status
+- Updated security improvements document with new index recommendations
 
 ## [Unreleased]
 

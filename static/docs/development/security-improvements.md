@@ -161,8 +161,8 @@ async fetch(request: Request, env: Env, ctx: any) {
 **Fix Required:**
 
 - [ ] Add index on `short_urls.creator_id`
-- [ ] Add composite index on `short_urls(is_snippet, is_file, created_at)`
-- [ ] Add index on `analytics.shortcode`
+- [x] Add composite index on `short_urls(type, created_at)` - **COMPLETED**
+- [x] Add index on `analytics.shortcode` - **COMPLETED**
 - [ ] Add index on `analytics.timestamp` for time-based queries
 - [ ] Add index on `deletions.delete_at` for cron job efficiency
 
@@ -170,11 +170,14 @@ async fetch(request: Request, env: Env, ctx: any) {
 
 ```sql
 CREATE INDEX IF NOT EXISTS idx_short_urls_creator ON short_urls(creator_id);
-CREATE INDEX IF NOT EXISTS idx_short_urls_type ON short_urls(is_snippet, is_file);
+CREATE INDEX IF NOT EXISTS idx_short_urls_type ON short_urls(type);
+CREATE INDEX IF NOT EXISTS idx_short_urls_shortcode ON short_urls(shortcode);
 CREATE INDEX IF NOT EXISTS idx_analytics_shortcode ON analytics(shortcode);
 CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON analytics(timestamp);
 CREATE INDEX IF NOT EXISTS idx_deletions_delete_at ON deletions(delete_at);
 ```
+
+**Note:** Schema has been updated to use `type` enum column instead of boolean flags (`is_snippet`, `is_file`, `is_bio`). See `schema-consolidation-plan.md` for details.
 
 ---
 
